@@ -1,0 +1,40 @@
+-- 1. สร้าง user
+CREATE USER 'kds_user'@'%'         IDENTIFIED BY 'kds@2026';
+CREATE USER 'kds_user'@'localhost'  IDENTIFIED BY 'kds@2026';
+CREATE USER 'kds_user'@'127.0.0.1' IDENTIFIED BY 'kds@2026';
+
+-- 2. Grant SELECT
+GRANT SELECT ON sushiseki_branch.ordertransactionfront       TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.orderdetailfront            TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.ordercommentlinkfront       TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.ordercommentdetail          TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.ordercommentwithpricedetail TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.orderdetail                 TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.staffs                      TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.salemode                    TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.productdept                 TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.productgroup                TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.printers                    TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.checkeraccessprinter        TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.productlevel                TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.tablezone                   TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.tableno                     TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT ON sushiseki_branch.computername                TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+
+-- 3. Grant SELECT, UPDATE
+GRANT SELECT, UPDATE ON sushiseki_branch.products                     TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+
+-- 4. Grant SELECT, INSERT, UPDATE, DELETE
+GRANT SELECT, INSERT, UPDATE, DELETE ON sushiseki_branch.orderprocessdetailfront TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+
+-- 5. Grant SELECT, INSERT
+GRANT SELECT, INSERT ON sushiseki_branch.kds_printjoborderdetailfront TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+GRANT SELECT, INSERT ON sushiseki_branch.kds_printjoborderdetail      TO 'kds_user'@'%', 'kds_user'@'localhost', 'kds_user'@'127.0.0.1';
+
+-- 6. Apply
+FLUSH PRIVILEGES;
+
+-- 7. ตรวจสอบ
+SHOW GRANTS FOR 'kds_user'@'%';
+SHOW GRANTS FOR 'kds_user'@'localhost';
+SHOW GRANTS FOR 'kds_user'@'127.0.0.1';
