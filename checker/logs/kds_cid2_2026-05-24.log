@@ -1,0 +1,36 @@
+2026-05-24 10:26:32 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-24 10:26:39 | LOGIN          | CID:2 | Staff:5 | Staff:Manager1 -
+2026-05-24 10:26:40 | CHECKOUT       | CID:2 | Staff:5 | Table:12 Menu:หมูสันคอสไลซ์ Qty:1 Process:2
+2026-05-24 10:26:41 | CHECKOUT       | CID:2 | Staff:5 | Table:12 Menu:หมูสามชั้นสไลซ์ Qty:1 Process:3
+2026-05-24 10:26:41 | CHECKOUT       | CID:2 | Staff:5 | Table:12 Menu:หมูสันนอกสไลซ์ Qty:1 Process:4
+2026-05-24 10:26:41 | CHECKOUT       | CID:2 | Staff:5 | Table:12 Menu:กุ้งแม่น้ำ Qty:1 Process:5
+2026-05-24 10:26:41 | CHECKOUT       | CID:2 | Staff:5 | Table:12 Menu:เบคอนรมควัน Qty:1 Process:6
+2026-05-24 10:26:42 | CHECKOUT       | CID:2 | Staff:5 | Table:12 Menu:(TW)ข้าวหน้าไก่เทอริยากิ Qty:1 Process:7
+2026-05-24 10:26:42 | CHECKOUT       | CID:2 | Staff:5 | Table:12 Menu:(TW)ข้าวหน้าเนื้อ Qty:1 Process:8
+2026-05-24 10:26:42 | CHECKOUT       | CID:2 | Staff:5 | Table:(TW) : 1 Menu:(TW)ข้าวหน้าเนื้อ Qty:1 Process:9
+2026-05-24 10:26:43 | CHECKOUT       | CID:2 | Staff:5 | Table:(TW) : 1 Menu:(TW)ข้าวหน้าหมูทอด Qty:1 Process:10
+2026-05-24 20:16:25 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-24 20:16:36 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-24 20:16:37 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-24 20:20:35 | LOGIN          | CID:2 | Staff:5 | Staff:Manager1 -
+2026-05-24 20:20:36 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Qty:1 Process:2
+2026-05-24 20:20:37 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูคุโรบุตะ Qty:1 Process:3
+2026-05-24 20:20:37 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:กุ้งแม่น้ำ Qty:1 Process:4
+2026-05-24 20:20:37 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:เบคอนรมควัน Qty:1 Process:5
+2026-05-24 20:20:38 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:เบคอนรมควัน Qty:1 Process:5
+2026-05-24 20:20:38 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสามชั้นสไลซ์ Qty:1 Process:6
+2026-05-24 20:20:39 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสันนอกสไลซ์ Qty:1 Process:7
+2026-05-24 20:20:40 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:แซนวิซไส้ไก่ Qty:1 Process:18
+2026-05-24 20:20:40 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:แซนวิซไส้หมู Qty:1 Process:17
+2026-05-24 20:20:41 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:แซนวิซไส้กุ้ง Qty:1 Process:19
+2026-05-24 20:20:41 | CHECKOUT       | CID:2 | Staff:5 | Table:2 Menu:หมูสันคอสไลซ์ Qty:1 Process:21
+2026-05-24 20:20:42 | CHECKOUT       | CID:2 | Staff:5 | Table:2 Menu:หมูสามชั้นสไลซ์ Qty:1 Process:22
+2026-05-24 20:20:42 | CHECKOUT       | CID:2 | Staff:5 | Table:2 Menu:กุ้งแม่น้ำ Qty:1 Process:23
+2026-05-24 20:20:43 | CHECKOUT       | CID:2 | Staff:5 | Table:2 Menu:กุ้งแม่น้ำ Qty:1 Process:23
+2026-05-24 20:20:43 | CHECKOUT       | CID:2 | Staff:5 | Table:G123 Menu:(Grab)แซนวิซไส้หมู Qty:1 Process:25
+2026-05-24 20:20:44 | CHECKOUT       | CID:2 | Staff:5 | Table:G123 Menu:(Grab)แซนวิซไส้ไก่ Qty:1 Process:26
+2026-05-24 20:20:44 | CHECKOUT       | CID:2 | Staff:5 | Table:G123 Menu:(Grab)แซนวิซไส้กุ้ง Qty:1 Process:27
+2026-05-24 20:20:45 | CHECKOUT       | CID:2 | Staff:5 | Table:TW Menu:(TW)ข้าวหน้าไก่เทอริยากิ Qty:1 Process:28
+2026-05-24 20:20:45 | CHECKOUT       | CID:2 | Staff:5 | Table:TW Menu:(TW)ข้าวหน้าเนื้อ Qty:1 Process:29
+2026-05-24 20:23:01 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-24 20:23:02 | APP_START      | CID:2 | Staff:0 | CID:2

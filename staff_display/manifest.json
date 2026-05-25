@@ -1,0 +1,26 @@
+{
+  "name": "Staff Display KDS",
+  "short_name": "Staff Display",
+  "description": "ระบบแสดงสถานะออเดอร์สำหรับพนักงาน (หลังร้าน)",
+  "scope": "./",
+  "start_url": "./staff_display.php",
+  "display": "standalone",
+  "background_color": "#edf5ff",
+  "theme_color": "#1683ff",
+  "orientation": "any",
+  "lang": "th",
+  "icons": [
+    {
+      "src": "logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

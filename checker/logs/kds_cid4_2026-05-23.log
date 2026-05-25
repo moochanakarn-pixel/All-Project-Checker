@@ -1,0 +1,12 @@
+2026-05-23 09:25:02 | APP_START      | CID:4 | Staff:0 | CID:4
+2026-05-23 09:25:08 | SETTINGS_SAVE  | CID:4 | Staff:5 | ComputerID:4 StaffID:5
+2026-05-23 09:25:09 | APP_START      | CID:4 | Staff:0 | CID:4
+2026-05-23 09:25:12 | SETTINGS_SAVE  | CID:4 | Staff:5 | ComputerID:4 StaffID:5
+2026-05-23 09:25:13 | APP_START      | CID:4 | Staff:0 | CID:4
+2026-05-23 09:26:41 | APP_START      | CID:4 | Staff:0 | CID:4
+2026-05-23 09:47:32 | CHECKOUT       | CID:4 | Staff:5 | Table:(Grab) : 2 Menu:(Grab)ข้าวหน้าไก่เทอริยากิ Qty:1 Process:40
+2026-05-23 09:47:32 | CHECKOUT       | CID:4 | Staff:5 | Table:(Grab) : 2 Menu:(Grab)ข้าวหน้าเนื้อ Qty:1 Process:39
+2026-05-23 09:47:33 | CHECKOUT       | CID:4 | Staff:5 | Table:(TW) : 1 Menu:(TW)ข้าวผัดหมู Qty:1 Process:34
+2026-05-23 09:55:09 | CHECKOUT       | CID:4 | Staff:5 | Table:(Grab) : 2 Menu:(Grab)ข้าวหน้าเนื้อ Qty:1 Process:39
+2026-05-23 09:55:10 | CHECKOUT       | CID:4 | Staff:5 | Table:(Grab) : 2 Menu:(Grab)ข้าวหน้าไก่เทอริยากิ Qty:1 Process:40
+2026-05-23 09:55:23 | CHECKOUT       | CID:4 | Staff:5 | Table:(TW) : 1 Menu:(TW)ข้าวผัดหมู Qty:1 Process:34

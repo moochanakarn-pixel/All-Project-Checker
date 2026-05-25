@@ -1,0 +1,78 @@
+2026-05-21 00:41:43 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:41:48 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-21 00:41:49 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:42:02 | LOGIN          | CID:2 | Staff:5 | Staff:Manager1 -
+2026-05-21 00:42:10 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-21 00:42:11 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:42:33 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:43:45 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:3 StaffID:5
+2026-05-21 00:43:54 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:47:22 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-21 00:47:23 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:48:59 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:50:41 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-21 00:50:42 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:56:13 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:56:18 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-21 00:56:19 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:56:21 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:59:15 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:59:16 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:59:16 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:59:25 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 00:59:29 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-21 00:59:30 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 01:02:24 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 01:02:25 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 01:02:28 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 01:02:34 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 01:02:35 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 01:03:00 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 01:07:09 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 08:57:28 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 09:28:02 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 09:28:13 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:ข้าวหน้าเนื้อ Qty:1 Process:1
+2026-05-21 09:28:13 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:2
+2026-05-21 09:28:14 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:ข้าวหน้าหมูทอด Qty:1 Process:3
+2026-05-21 09:28:14 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:ข้าวผัดกระเทียม Qty:1 Process:4
+2026-05-21 09:28:15 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:ข้าวผัดไก่ Qty:1 Process:5
+2026-05-21 09:28:27 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้หมู Qty:1 Process:7
+2026-05-21 09:28:27 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้ชีส Qty:1 Process:8
+2026-05-21 09:28:28 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:ข้าวหน้าเนื้อ Qty:1 Process:9
+2026-05-21 09:28:28 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:ข้าวหน้าหมูทอด Qty:1 Process:10
+2026-05-21 09:28:29 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้กุ้ง Qty:1 Process:11
+2026-05-21 09:52:58 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้ชีส Qty:1 Process:12
+2026-05-21 09:52:58 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:ข้าวหน้าเนื้อ Qty:1 Process:14
+2026-05-21 09:52:58 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:ข้าวหน้าเนื้อ Qty:1 Process:14
+2026-05-21 09:52:59 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:ข้าวหน้าหมูทอด Qty:1 Process:15
+2026-05-21 09:52:59 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:ข้าวหน้าหมูทอด Qty:1 Process:15
+2026-05-21 09:53:00 | CHECKOUT       | CID:2 | Staff:5 | Table:5 Menu:ข้าวหน้าเนื้อ Qty:1 Process:16
+2026-05-21 09:53:00 | CHECKOUT       | CID:2 | Staff:5 | Table:5 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:17
+2026-05-21 09:53:00 | CHECKOUT       | CID:2 | Staff:5 | Table:5 Menu:ข้าวหน้าหมูทอด Qty:1 Process:18
+2026-05-21 09:53:00 | CHECKOUT       | CID:2 | Staff:5 | Table:5 Menu:ข้าวผัดกระเทียม Qty:1 Process:19
+2026-05-21 09:53:00 | CHECKOUT       | CID:2 | Staff:5 | Table:5 Menu:ข้าวผัดไก่ Qty:1 Process:20
+2026-05-21 10:01:53 | CHECKOUT       | CID:2 | Staff:5 | Table:6 Menu:แซนวิซไส้หมู Qty:1 Process:22
+2026-05-21 10:01:53 | CHECKOUT       | CID:2 | Staff:5 | Table:6 Menu:แซนวิซไส้ไก่ Qty:1 Process:23
+2026-05-21 10:01:54 | CHECKOUT       | CID:2 | Staff:5 | Table:6 Menu:แซนวิซไส้กุ้ง Qty:1 Process:24
+2026-05-21 10:01:54 | CHECKOUT       | CID:2 | Staff:5 | Table:6 Menu:ข้าวหน้าเนื้อ Qty:1 Process:26
+2026-05-21 10:01:55 | CHECKOUT       | CID:2 | Staff:5 | Table:6 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:27
+2026-05-21 10:01:56 | CHECKOUT       | CID:2 | Staff:5 | Table:6 Menu:ข้าวหน้าหมูทอด Qty:1 Process:28
+2026-05-21 14:57:41 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 14:57:45 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:SETB Qty:1 Process:30
+2026-05-21 14:57:47 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้หมู Qty:1 Process:31
+2026-05-21 14:57:55 | UNDO           | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้หมู Process:31
+2026-05-21 14:57:56 | UNDO           | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้ไก่ Process:32
+2026-05-21 14:57:56 | UNDO           | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้กุ้ง Process:33
+2026-05-21 14:57:57 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้หมู Qty:1 Process:31
+2026-05-21 14:57:58 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้ไก่ Qty:1 Process:32
+2026-05-21 14:57:59 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้กุ้ง Qty:1 Process:33
+2026-05-21 14:58:20 | CHECKOUT       | CID:2 | Staff:5 | Table:6 Menu:แซนวิซไส้หมู Qty:1 Process:44
+2026-05-21 14:58:21 | CHECKOUT       | CID:2 | Staff:5 | Table:6 Menu:แซนวิซไส้ไก่ Qty:1 Process:45
+2026-05-21 14:58:22 | CHECKOUT       | CID:2 | Staff:5 | Table:6 Menu:แซนวิซไส้กุ้ง Qty:1 Process:46
+2026-05-21 14:58:22 | CHECKOUT       | CID:2 | Staff:5 | Table:6 Menu:SETB Qty:1 Process:43
+2026-05-21 14:58:33 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-21 14:58:34 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 23:26:06 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 23:26:10 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-21 23:26:11 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-21 23:26:13 | LOGIN          | CID:2 | Staff:5 | Staff:Manager1 -

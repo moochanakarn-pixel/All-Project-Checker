@@ -1,0 +1,39 @@
+2026-05-23 09:11:34 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 09:11:50 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-23 09:11:51 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 09:11:58 | LOGIN          | CID:2 | Staff:5 | Staff:Manager1 -
+2026-05-23 09:12:02 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูคุโรบุตะ Qty:1 Process:5
+2026-05-23 09:12:02 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูบดทรงเครื่อง Qty:1 Process:6
+2026-05-23 09:12:03 | CHECKOUT       | CID:2 | Staff:5 | Table:12->3 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:13
+2026-05-23 09:12:03 | CHECKOUT       | CID:2 | Staff:5 | Table:12->3 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:13
+2026-05-23 09:12:04 | CHECKOUT       | CID:2 | Staff:5 | Table:12 Menu:ข้าวผัดหมู Qty:1 Process:14
+2026-05-23 09:14:08 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-23 09:14:09 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 09:15:00 | CHECKOUT       | CID:2 | Staff:5 | Table:(Grab) : 1 Menu:(Grab)SETB Qty:1 Process:35
+2026-05-23 09:16:57 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 09:23:50 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-23 09:23:51 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 09:23:57 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-23 09:23:58 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 09:25:23 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 09:25:47 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 09:30:57 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-23 09:30:58 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 09:47:23 | CHECKOUT       | CID:2 | Staff:5 | Table:5 Menu:ข้าวหน้าหมูทอด Qty:1 Process:31
+2026-05-23 09:47:24 | CHECKOUT       | CID:2 | Staff:5 | Table:5 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:30
+2026-05-23 09:47:25 | CHECKOUT       | CID:2 | Staff:5 | Table:5 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:30
+2026-05-23 09:48:35 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-23 09:48:36 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 09:48:48 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-23 09:48:49 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 12:26:06 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 12:26:14 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-23 12:26:15 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-23 12:26:19 | CHECKOUT       | CID:2 | Staff:5 | Table:(Grab) : 2 Menu:(Grab)ข้าวหน้าไก่เทอริยากิ Qty:1 Process:14
+2026-05-23 12:26:20 | CHECKOUT       | CID:2 | Staff:5 | Table:(Grab) : 2 Menu:(Grab)ข้าวหน้าเนื้อ Qty:1 Process:15
+2026-05-23 12:26:20 | CHECKOUT       | CID:2 | Staff:5 | Table:(Grab) : 3 Menu:(Grab)ข้าวหน้าไก่เทอริยากิ Qty:1 Process:16
+2026-05-23 12:26:20 | CHECKOUT       | CID:2 | Staff:5 | Table:(Grab) : 3 Menu:(Grab)ข้าวหน้าเนื้อ Qty:1 Process:17
+2026-05-23 12:26:21 | CHECKOUT       | CID:2 | Staff:5 | Table:(Grab) : 3 Menu:(Grab)ข้าวหน้าหมูทอด Qty:1 Process:18
+2026-05-23 12:26:21 | CHECKOUT       | CID:2 | Staff:5 | Table:LM111 Menu:(Line)ข้าวหน้าเนื้อ Qty:1 Process:13
+2026-05-23 12:26:22 | CHECKOUT       | CID:2 | Staff:5 | Table:(TW) : 1 Menu:(TW)แซนวิซไส้หมู Qty:1 Process:11
+2026-05-23 12:26:23 | CHECKOUT       | CID:2 | Staff:5 | Table:LM111 Menu:(Line)แซนวิซไส้ชีส Qty:1 Process:12

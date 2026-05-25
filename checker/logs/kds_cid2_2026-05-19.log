@@ -1,0 +1,149 @@
+2026-05-19 09:14:42 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 09:14:58 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 09:14:58 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 09:15:01 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 09:15:18 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 09:15:19 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 09:17:04 | ZONE_CHANGE    | CID:2 | Staff:5 | Zone:Zone A(1)
+2026-05-19 09:17:06 | ZONE_CHANGE    | CID:2 | Staff:5 | Zone:Zone B(2)
+2026-05-19 09:33:26 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 09:33:29 | ZONE_CHANGE    | CID:2 | Staff:5 | Zone:ทั้งหมด(0)
+2026-05-19 10:18:25 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 10:18:26 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 10:29:05 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 10:29:19 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 10:29:20 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 10:29:56 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 10:29:57 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 11:58:23 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 13:10:22 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 13:10:25 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 13:10:26 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 14:04:48 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 14:04:49 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 14:06:56 | LOGIN          | CID:2 | Staff:5 | Staff:Manager1 -
+2026-05-19 14:06:58 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้หมู Qty:1 Process:9
+2026-05-19 14:06:58 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้ไก่ Qty:1 Process:10
+2026-05-19 14:06:59 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้กุ้ง Qty:1 Process:11
+2026-05-19 14:07:00 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:SETA Qty:1 Process:1
+2026-05-19 14:07:02 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:ข้าวหน้าเนื้อ Qty:1 Process:2
+2026-05-19 14:07:07 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:ข้าวผัดไก่ Qty:1 Process:8
+2026-05-19 14:07:07 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:ข้าวหน้าหมูทอด Qty:1 Process:7
+2026-05-19 14:10:11 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้หมู Qty:1 Process:5
+2026-05-19 14:10:11 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้ชีส Qty:1 Process:4
+2026-05-19 14:10:13 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:3
+2026-05-19 14:27:08 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 14:27:17 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 14:27:18 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 14:29:00 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 14:29:06 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวผัดกระเทียม Qty:1 Process:12
+2026-05-19 14:29:08 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวผัดกระเทียม Qty:1 Process:12
+2026-05-19 14:29:09 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:ข้าวหน้าหมูทอด Qty:1 Process:7
+2026-05-19 14:37:10 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 14:37:11 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 14:49:01 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 14:49:02 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 14:49:12 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 14:49:13 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 14:51:36 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:16
+2026-05-19 14:52:05 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าเนื้อ Qty:1 Process:17
+2026-05-19 14:52:06 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าหมูทอด Qty:1 Process:18
+2026-05-19 14:52:17 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้กุ้ง Qty:1 Process:22
+2026-05-19 14:52:18 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้ไก่ Qty:1 Process:21
+2026-05-19 14:52:19 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้หมู Qty:1 Process:20
+2026-05-19 14:52:27 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:SETA Qty:1 Process:19
+2026-05-19 14:58:58 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 14:59:00 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 14:59:22 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 14:59:29 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 14:59:29 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 14:59:34 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 14:59:35 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 15:15:55 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 15:15:58 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 15:15:59 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 15:39:45 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 15:39:52 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 15:39:53 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 15:46:22 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 15:46:23 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 16:35:51 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 16:35:54 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 16:35:55 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 16:39:58 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 16:39:59 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 16:48:30 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 16:48:37 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 16:48:38 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 16:49:05 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 16:53:50 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้กุ้ง Qty:1 Process:26
+2026-05-19 16:53:51 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้ไก่ Qty:1 Process:25
+2026-05-19 16:53:57 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าเนื้อ Qty:1 Process:28
+2026-05-19 16:53:57 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:29
+2026-05-19 16:57:17 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 17:06:04 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวผัดกระเทียม Qty:1 Process:31
+2026-05-19 17:06:05 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวผัดไก่ Qty:1 Process:32
+2026-05-19 17:06:06 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวผัดหมู Qty:1 Process:33
+2026-05-19 17:07:42 | UNDO           | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้กุ้ง Process:11
+2026-05-19 17:07:42 | UNDO           | CID:2 | Staff:5 | Table:14 Menu:ข้าวหน้าเนื้อ Process:2
+2026-05-19 17:07:43 | UNDO           | CID:2 | Staff:5 | Table:14 Menu:ข้าวหน้าหมูทอด Process:7
+2026-05-19 17:07:44 | UNDO           | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้ไก่ Process:10
+2026-05-19 17:07:45 | UNDO           | CID:2 | Staff:5 | Table:14 Menu:ข้าวผัดไก่ Process:8
+2026-05-19 17:07:46 | UNDO           | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้หมู Process:9
+2026-05-19 17:07:47 | UNDO           | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้หมู Process:5
+2026-05-19 17:07:48 | UNDO           | CID:2 | Staff:5 | Table:14 Menu:ข้าวหน้าไก่เทอริยากิ Process:3
+2026-05-19 17:07:48 | UNDO           | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าไก่เทอริยากิ Process:14
+2026-05-19 17:07:50 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 17:07:55 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:ข้าวหน้าเนื้อ Qty:1 Process:2
+2026-05-19 17:07:55 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:3
+2026-05-19 17:07:56 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้หมู Qty:1 Process:5
+2026-05-19 17:07:56 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:ข้าวหน้าหมูทอด Qty:1 Process:7
+2026-05-19 17:07:57 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:ข้าวผัดไก่ Qty:1 Process:8
+2026-05-19 17:07:57 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้หมู Qty:1 Process:9
+2026-05-19 17:07:58 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้ไก่ Qty:1 Process:10
+2026-05-19 17:08:00 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:14
+2026-05-19 17:08:00 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:14
+2026-05-19 17:08:50 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 17:09:00 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าเนื้อ Qty:1 Process:35
+2026-05-19 17:09:02 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:36
+2026-05-19 17:09:22 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้กุ้ง Qty:1 Process:41
+2026-05-19 17:09:23 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้ไก่ Qty:1 Process:40
+2026-05-19 17:14:51 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 17:16:09 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 17:16:10 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 17:16:25 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 17:23:04 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:42
+2026-05-19 17:23:09 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าเนื้อ Qty:1 Process:43
+2026-05-19 17:23:10 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าหมูทอด Qty:1 Process:44
+2026-05-19 17:23:11 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้หมู Qty:1 Process:45
+2026-05-19 19:22:55 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 19:23:00 | LOGIN          | CID:2 | Staff:5 | Staff:Manager1 -
+2026-05-19 19:23:01 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้หมู Qty:1 Process:24
+2026-05-19 19:23:01 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าหมูทอด Qty:1 Process:30
+2026-05-19 19:23:02 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าหมูทอด Qty:1 Process:37
+2026-05-19 19:23:03 | CHECKOUT       | CID:2 | Staff:5 | Table:14 Menu:แซนวิซไส้กุ้ง Qty:1 Process:11
+2026-05-19 19:23:05 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้หมู Qty:1 Process:39
+2026-05-19 19:31:18 | UNDO           | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้หมู Process:39
+2026-05-19 19:31:19 | UNDO           | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้ไก่ Process:40
+2026-05-19 19:31:19 | UNDO           | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้กุ้ง Process:41
+2026-05-19 19:31:19 | UNDO           | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าหมูทอด Process:37
+2026-05-19 19:31:21 | UNDO           | CID:2 | Staff:5 | Table:15 Menu:SETA Process:38
+2026-05-19 19:31:21 | UNDO           | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าไก่เทอริยากิ Process:36
+2026-05-19 19:31:22 | UNDO           | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าเนื้อ Process:35
+2026-05-19 19:31:23 | UNDO           | CID:2 | Staff:5 | Table:15 Menu:SETB Process:34
+2026-05-19 19:31:23 | UNDO           | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าหมูทอด Process:30
+2026-05-19 19:31:24 | UNDO           | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าไก่เทอริยากิ Process:29
+2026-05-19 19:31:25 | UNDO           | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าเนื้อ Process:28
+2026-05-19 19:31:28 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าเนื้อ Qty:1 Process:35
+2026-05-19 19:31:29 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:36
+2026-05-19 19:31:29 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าหมูทอด Qty:1 Process:30
+2026-05-19 19:31:30 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:29
+2026-05-19 19:31:31 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าเนื้อ Qty:1 Process:28
+2026-05-19 19:31:31 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:ข้าวหน้าหมูทอด Qty:1 Process:37
+2026-05-19 19:31:32 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้หมู Qty:1 Process:39
+2026-05-19 19:31:32 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้ไก่ Qty:1 Process:40
+2026-05-19 19:31:32 | CHECKOUT       | CID:2 | Staff:5 | Table:15 Menu:แซนวิซไส้กุ้ง Qty:1 Process:41
+2026-05-19 19:31:46 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-19 19:31:47 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-19 19:31:57 | LOGOUT         | CID:2 | Staff:5 | Staff:👤 901 - Manager1 -
+2026-05-19 20:52:33 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:82 StaffID:5

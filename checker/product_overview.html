@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web KDS Checker — ภาพรวมระบบ</title>
+<style>
+:root{
+    --bg:#edf5ff;
+    --bg-2:#fff7ed;
+    --surface:#ffffff;
+    --surface-soft:#f8fbff;
+    --text:#122033;
+    --muted:#6b7a90;
+    --line:#dbe8f7;
+    --primary:#1683ff;
+    --primary-dark:#0f69cf;
+    --secondary:#ff8a1f;
+    --secondary-soft:#fff1e4;
+    --success:#12a150;
+    --success-soft:#e6f8ee;
+    --danger:#e44c3a;
+    --danger-soft:#ffe8e4;
+    --shadow:0 12px 28px rgba(15,23,42,.10);
+    --shadow-soft:0 8px 18px rgba(22,131,255,.08);
+    --radius:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+    font-family:Tahoma,Arial,sans-serif;
+    color:var(--text);
+    background:
+        radial-gradient(circle at top left,rgba(22,131,255,.12),transparent 28%),
+        radial-gradient(circle at top right,rgba(255,138,31,.14),transparent 24%),
+        linear-gradient(180deg,var(--bg),var(--bg-2));
+    min-height:100vh;
+}
+
+/* ── Topbar (เหมือนจริง) ── */
+.topbar{
+    padding:10px 18px 9px;
+    backdrop-filter:blur(12px);
+    background:linear-gradient(135deg,rgba(8,58,112,.92),rgba(22,131,255,.88),rgba(255,138,31,.84));
+    color:#fff;
+    box-shadow:0 8px 20px rgba(8,58,112,.18);
+}
+.topbar-inner{
+    max-width:1200px;margin:0 auto;
+    display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+    justify-content:space-between;
+}
+.brand h1{margin:0;font-size:22px;font-weight:bold;white-space:nowrap}
+.brand-sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:1px}
+.controls{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.field-chip{
+    display:flex;align-items:center;gap:6px;padding:5px 10px;
+    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:14px;
+    font-size:12px;color:#fff;font-weight:bold;white-space:nowrap
+}
+.topbar-badge{
+    display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:12px;
+    background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);
+    color:#fff;font-size:12px;font-weight:bold;white-space:nowrap
+}
+.btn{
+    appearance:none;border:none;border-radius:12px;min-height:34px;padding:0 12px;font-size:13px;font-weight:bold;
+    cursor:pointer;box-shadow:var(--shadow-soft);font-family:inherit
+}
+.btn-primary{background:#fff;color:var(--primary-dark)}
+.btn-checkout-dark{background:linear-gradient(135deg,var(--secondary),#ffad59);color:#fff}
+.btn-neutral{background:#eef4fb;color:#1f324a}
+.btn-ghost{background:#e9f3ff;color:#0f5bba}
+.btn-success{background:linear-gradient(135deg,var(--success),#1cc76a);color:#fff}
+
+/* ── Stats ── */
+.stats{display:flex;gap:8px;padding:8px 14px 4px;max-width:1200px;margin:0 auto;flex-wrap:wrap}
+.stat{
+    display:flex;align-items:center;gap:8px;
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:7px 14px;box-shadow:var(--shadow)
+}
+.stat-label{font-size:12px;color:var(--muted);white-space:nowrap}
+.stat-value{font-size:20px;font-weight:bold;line-height:1;color:var(--text)}
+.stat-value.orange{color:var(--secondary)}
+.stat-value.blue{color:var(--primary)}
+.stat-value.green{color:var(--success)}
+
+/* ── Page ── */
+.page{max-width:1200px;margin:0 auto;padding:6px 12px 20px}
+
+/* ── Panel ── */
+.panel{
+    background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.75);border-radius:20px;
+    box-shadow:var(--shadow);overflow:hidden;margin-bottom:12px
+}
+.panel-head{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;
+    padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface)
+}
+.panel-title{margin:0;font-size:17px;font-weight:bold}
+.panel-badge{
+    display:inline-flex;align-items:center;min-height:28px;padding:4px 12px;border-radius:999px;
+    background:var(--secondary-soft);color:#9a5200;font-size:13px;font-weight:bold
+}
+
+/* ── Cards grid ── */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;padding:10px}
+
+.card{
+    background:linear-gradient(180deg,var(--surface),var(--surface-soft));border:1px solid var(--line);
+    border-radius:16px;padding:10px;box-shadow:0 4px 12px rgba(17,56,92,.05);
+    display:flex;flex-direction:column
+}
+.card.warn-yellow{border-color:#ffe066;background:linear-gradient(180deg,#fffde7,#fffbf0);box-shadow:0 0 0 3px rgba(255,214,0,.18)}
+.card.warn-red{border-color:#ffb3ab;background:linear-gradient(180deg,#fff2f0,#fff8f7);box-shadow:0 0 0 3px rgba(228,76,58,.14)}
+.card.checkout-dark{border-color:#ffd8b0;background:linear-gradient(180deg,#fff7ed,#fff1e4);box-shadow:0 0 0 3px rgba(255,138,31,.14)}
+.card.moved{border-color:#93c5fd;background:linear-gradient(180deg,#eff6ff,#f5f9ff);box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+
+.card-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;margin-bottom:8px}
+.table-name{font-size:20px;font-weight:bold;line-height:1.1;word-break:break-word}
+.order-line{margin-top:3px;color:var(--muted);font-size:11px;line-height:1.4}
+.qty-badge{
+    min-width:52px;min-height:52px;display:flex;align-items:center;justify-content:center;
+    border-radius:14px;background:linear-gradient(135deg,var(--secondary-soft),#fff);
+    color:#b35e00;border:1px solid #ffd8b0;font-size:22px;font-weight:bold
+}
+.qty-badge.checkout-dark{background:linear-gradient(135deg,var(--secondary),#ffad59);border-color:#ffd8b0;color:#fff}
+.qty-badge.green{background:linear-gradient(135deg,var(--success-soft),#fff);color:#0e6e35;border-color:#bfeacc}
+
+.product-name{margin:0 0 8px;font-size:17px;line-height:1.2;word-break:break-word;font-weight:bold}
+
+.status-badge{
+    display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;
+    font-size:11px;font-weight:bold;margin-bottom:6px
+}
+.status-badge.moved{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}
+.status-badge.checkout-dark{background:linear-gradient(135deg,var(--secondary),#ffad59);color:#fff}
+.status-badge.confirm{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff}
+
+.parent-name-label{
+    display:inline-block;margin-bottom:3px;font-size:11px;font-weight:bold;color:#fff;
+    background:linear-gradient(135deg,#16a34a,#15803d);
+    padding:2px 8px;border-radius:999px;letter-spacing:.3px
+}
+
+.tag{
+    display:inline-flex;align-items:center;min-height:26px;padding:4px 9px;border-radius:999px;
+    font-size:11px;font-weight:bold;background:var(--surface-soft);color:var(--primary);border:1px solid var(--line)
+}
+.tag.wait{background:var(--secondary-soft);color:#9f5200;border-color:#ffd2a4}
+.tag.good{background:var(--success-soft);color:#11783c;border-color:#bfeacc}
+.tag.urgent{background:#ffe8e4;color:#b33023;border-color:#ffb3ab}
+.queue-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:8px}
+.field{padding:7px 10px;border-radius:12px;background:var(--surface-soft);border:1px solid var(--line)}
+.field-label{font-size:11px;color:var(--muted);margin-bottom:2px}
+.field-value{font-size:13px;font-weight:bold;word-break:break-word}
+.field.is-special{background:#fff8f0;border-color:#ffd8b0}
+.field.is-special .field-label{color:#9a5200}
+
+.card-actions{display:flex;gap:8px;margin-top:auto}
+.card-actions .btn{flex:1;min-height:42px;font-size:13px}
+
+/* ── Section headers ── */
+.section{padding:44px 0 20px}
+.section-label{font-size:12px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:var(--primary);margin-bottom:8px}
+.section-heading{font-size:clamp(20px,3vw,30px);font-weight:bold;color:var(--text);margin-bottom:6px;letter-spacing:-.3px}
+.section-desc{font-size:14px;color:var(--muted);max-width:560px;margin-bottom:28px;line-height:1.6}
+
+/* ── Feature cards ── */
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;margin-bottom:20px}
+.feat-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:18px;
+    padding:20px;box-shadow:var(--shadow)
+}
+.feat-icon{
+    width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+    font-size:20px;margin-bottom:12px;flex-shrink:0
+}
+.feat-icon.blue{background:var(--surface-soft);border:1px solid var(--line)}
+.feat-icon.orange{background:var(--secondary-soft);border:1px solid #ffd2a4}
+.feat-icon.green{background:var(--success-soft);border:1px solid #bfeacc}
+.feat-icon.red{background:var(--danger-soft);border:1px solid #f6beb7}
+.feat-title{font-size:15px;font-weight:bold;margin-bottom:5px;color:var(--text)}
+.feat-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ── Settings mock ── */
+.settings-mock{
+    background:var(--surface);border:1px solid var(--line);border-radius:20px;
+    box-shadow:var(--shadow);overflow:hidden
+}
+.modal-head{padding:16px 20px 12px;border-bottom:1px solid var(--line)}
+.modal-title{font-size:19px;font-weight:bold}
+.modal-tabs{display:flex;gap:4px;padding:0 20px;border-bottom:1px solid var(--line);margin-top:4px}
+.modal-tab{
+    background:none;border:none;border-bottom:2px solid transparent;padding:8px 14px;
+    font-size:13px;font-weight:bold;color:var(--muted);cursor:default;margin-bottom:-1px;
+    font-family:inherit
+}
+.modal-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.modal-body-inner{padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.setting-check{
+    display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+    padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface-soft)
+}
+.setting-check-title{font-size:14px;font-weight:600;color:var(--text)}
+.setting-check-sub{margin-top:3px;font-size:12px;color:var(--muted);line-height:1.45}
+.toggle-on{
+    display:inline-block;width:36px;height:20px;background:var(--primary);border-radius:999px;
+    position:relative;flex-shrink:0;margin-top:2px
+}
+.toggle-on::after{content:'';position:absolute;top:3px;right:3px;width:14px;height:14px;background:#fff;border-radius:50%}
+.toggle-off{
+    display:inline-block;width:36px;height:20px;background:#dbe8f7;border-radius:999px;
+    position:relative;flex-shrink:0;margin-top:2px
+}
+.toggle-off::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;background:var(--muted);border-radius:50%}
+.radio-col{display:flex;flex-direction:column;gap:5px;margin-top:2px}
+.radio-item{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--muted)}
+.radio-item.active{color:var(--text);font-weight:600}
+.radio-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--line);flex-shrink:0}
+.radio-dot.active{border-color:var(--primary);background:var(--primary)}
+.appearance-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.app-btn{
+    padding:6px 14px;border-radius:10px;border:2px solid var(--line);background:var(--surface);
+    font-size:13px;font-weight:bold;color:var(--muted);font-family:inherit
+}
+.app-btn.active{border-color:var(--primary);background:var(--primary);color:#fff}
+.filter-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.filter-chip{
+    display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:999px;
+    border:1.5px solid var(--line);background:var(--surface-soft);font-size:13px;font-weight:600;color:var(--muted)
+}
+.filter-chip.active{border-color:var(--primary);background:var(--primary);color:#fff}
+.modal-foot-inner{
+    padding:12px 20px 16px;border-top:1px solid var(--line);
+    display:flex;justify-content:flex-end;gap:8px
+}
+
+/* ── Spec table ── */
+.spec-table{
+    width:100%;border-collapse:collapse;background:var(--surface);
+    border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)
+}
+.spec-table th{
+    background:var(--surface-soft);font-size:12px;font-weight:bold;text-transform:uppercase;
+    letter-spacing:1px;color:var(--muted);padding:12px 16px;text-align:left;border-bottom:1px solid var(--line)
+}
+.spec-table td{padding:11px 16px;font-size:14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.spec-table tr:last-child td{border-bottom:none}
+.spec-table tr:hover td{background:var(--surface-soft)}
+.badge-yes{
+    display:inline-block;background:var(--success-soft);color:#0e6e35;
+    font-size:11px;font-weight:bold;padding:2px 10px;border-radius:999px;border:1px solid #bfeacc
+}
+
+/* ── Notice bar ── */
+.notice-demo{
+    padding:11px 14px;border-radius:14px;font-size:14px;font-weight:bold;
+    margin-bottom:8px;display:flex;align-items:center;gap:8px
+}
+.notice-demo.success{background:var(--success-soft);color:#0f7b3b;border:1px solid #bfeacc}
+.notice-demo.error{background:var(--danger-soft);color:#b33023;border:1px solid #f6beb7}
+.notice-demo.offline{background:var(--danger);color:#fff;border-radius:0;margin-bottom:0;justify-content:center;font-size:15px}
+
+/* ── Timeline ── */
+.timeline{position:relative;padding-left:28px}
+.timeline::before{
+    content:'';position:absolute;left:7px;top:6px;bottom:6px;
+    width:2px;background:var(--line)
+}
+.tl-item{position:relative;margin-bottom:26px}
+.tl-dot{
+    position:absolute;left:-28px;top:5px;width:16px;height:16px;
+    border-radius:50%;background:var(--primary);border:3px solid var(--surface);
+    box-shadow:0 0 0 2px var(--primary)
+}
+.tl-ver{font-size:11px;font-weight:bold;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.tl-title{font-size:15px;font-weight:bold;margin-bottom:3px}
+.tl-desc{font-size:13px;color:var(--muted)}
+
+/* ── Use case ── */
+.usecase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.usecase-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    padding:20px 16px;text-align:center;box-shadow:var(--shadow)
+}
+.usecase-emoji{font-size:32px;margin-bottom:10px}
+.usecase-title{font-size:14px;font-weight:bold;margin-bottom:4px}
+.usecase-desc{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* ── CTA banner ── */
+.cta-banner{
+    background:linear-gradient(135deg,rgba(8,58,112,.92),rgba(22,131,255,.88),rgba(255,138,31,.84));
+    color:#fff;padding:48px 24px;text-align:center;margin-top:32px;border-radius:24px;
+    box-shadow:var(--shadow)
+}
+.cta-banner h2{font-size:clamp(22px,3.5vw,34px);font-weight:bold;margin-bottom:10px}
+.cta-banner p{font-size:15px;color:rgba(255,255,255,.75);max-width:480px;margin:0 auto 24px}
+.cta-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.cta-pill{
+    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+    color:#fff;font-size:13px;font-weight:bold;padding:7px 16px;border-radius:999px
+}
+
+/* ── Finished list ── */
+.finished-item{border:1px solid var(--line);border-radius:14px;padding:10px;background:var(--surface);margin-bottom:6px}
+.finished-top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;margin-bottom:5px}
+.finished-name{font-size:15px;font-weight:bold;line-height:1.2}
+.finished-qty{font-size:18px;font-weight:bold;color:var(--success)}
+.finished-meta{font-size:12px;color:var(--muted);line-height:1.5}
+
+.container{max-width:1200px;margin:0 auto;padding:0 14px}
+.divider{border:none;border-top:1px solid var(--line);margin:32px 0}
+.highlight{
+    background:var(--success-soft);border:1px solid #bfeacc;border-radius:14px;
+    padding:14px 18px;display:flex;align-items:flex-start;gap:12px;margin-bottom:24px
+}
+.highlight p{font-size:14px;color:#0a5c2e;line-height:1.6}
+.highlight span{font-size:22px;flex-shrink:0;margin-top:1px}
+
+@media(max-width:700px){
+    .cards{grid-template-columns:repeat(2,1fr)}
+    .feature-grid{grid-template-columns:1fr}
+    .usecase-grid{grid-template-columns:repeat(2,1fr)}
+    .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOPBAR (เหมือนจริง) ── -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <h1>🍽️ KDS Checker</h1>
+      <div class="brand-sub">ระบบจอครัวดิจิทัล · Pixel POS</div>
+    </div>
+    <div class="controls">
+      <div class="field-chip">📍 โซน: ครัวหลัก</div>
+      <div class="field-chip">👨‍🍳 สมชาย</div>
+      <div class="topbar-badge">🔥 v1.10.0</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── STATS BAR (เหมือนจริง) ── -->
+<div class="stats">
+  <div class="stat">
+    <span class="stat-label">รายการทั้งหมด</span>
+    <span class="stat-value orange">8</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">จำนวนรวม</span>
+    <span class="stat-value blue">14</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">เสร็จวันนี้</span>
+    <span class="stat-value green">47</span>
+  </div>
+  <div class="stat" style="background:var(--surface-soft);border-color:#ffd2a4">
+    <span class="stat-label" style="color:#9a5200">⚠️ เกินเวลา</span>
+    <span class="stat-value" style="color:var(--danger)">2</span>
+  </div>
+</div>
+
+<!-- ── DEMO KDS QUEUE ── -->
+<div class="page">
+  <div class="panel">
+    <div class="panel-head">
+      <h2 class="panel-title">คิวอาหาร</h2>
+      <span class="panel-badge">⏱ อัปเดตทุก 15 วิ</span>
+    </div>
+    <div class="cards">
+
+      <!-- Card: urgent -->
+      <div class="card warn-red">
+        <div class="card-head">
+          <div>
+            <div class="table-name">โต๊ะ A3</div>
+            <div class="order-line">Dine-in · #00281</div>
+          </div>
+          <div class="qty-badge checkout-dark">3</div>
+        </div>
+        <div class="queue-tags">
+          <span class="tag urgent">🔴 18:24 — เกินเวลา</span>
+        </div>
+        <p class="product-name">ผัดกะเพราหมูสับ</p>
+        <div class="grid">
+          <div class="field is-special"><div class="field-label">พนักงาน</div><div class="field-value">สมชาย</div></div>
+          <div class="field is-special"><div class="field-label">สถานะ</div><div class="field-value" style="color:var(--danger)">รอทำ</div></div>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-checkout-dark">Checkout 1 รายการ</button>
+        </div>
+      </div>
+
+      <!-- Card: warn yellow + 2-step -->
+      <div class="card warn-yellow">
+        <div class="card-head">
+          <div>
+            <span class="status-badge confirm">✋ รอยืนยัน</span>
+            <div class="table-name">โต๊ะ B1</div>
+            <div class="order-line">Dine-in · #00282</div>
+          </div>
+          <div class="qty-badge">2</div>
+        </div>
+        <div class="queue-tags">
+          <span class="tag wait">⚡ 12:05 — ใกล้เกิน</span>
+        </div>
+        <p class="product-name">ต้มยำกุ้งน้ำข้น</p>
+        <div class="grid">
+          <div class="field"><div class="field-label">พนักงาน</div><div class="field-value">มานี</div></div>
+          <div class="field"><div class="field-label">สถานะ</div><div class="field-value" style="color:var(--secondary)">รอทำ</div></div>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-ghost">ยืนยันไปครัว</button>
+        </div>
+      </div>
+
+      <!-- Card: SET menu -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="table-name">โต๊ะ C2</div>
+            <div class="order-line">Dine-in · #00283</div>
+          </div>
+          <div class="qty-badge">1</div>
+        </div>
+        <div class="queue-tags">
+          <span class="tag good">✔ 04:30 — ปกติ</span>
+        </div>
+        <span class="parent-name-label">ชุด A</span>
+        <p class="product-name">ข้าวหมูแดง + ไข่ดาว</p>
+        <div class="grid">
+          <div class="field"><div class="field-label">เมนูชุด</div><div class="field-value">ชุด A</div></div>
+          <div class="field"><div class="field-label">สถานะ</div><div class="field-value" style="color:var(--success)">กำลังทำ</div></div>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-checkout-dark">Checkout 1 รายการ</button>
+        </div>
+      </div>
+
+      <!-- Card: moved table -->
+      <div class="card moved">
+        <div class="card-head">
+          <div>
+            <span class="status-badge moved">🔀 ย้ายโต๊ะ</span>
+            <div class="table-name">โต๊ะ D4</div>
+            <div class="order-line">Dine-in · #00284</div>
+          </div>
+          <div class="qty-badge">1</div>
+        </div>
+        <div class="queue-tags">
+          <span class="tag">🕐 07:10</span>
+        </div>
+        <p class="product-name">สปาเก็ตตี้คาโบนาร่า</p>
+        <div class="grid">
+          <div class="field is-special"><div class="field-label">ย้ายจาก</div><div class="field-value">โต๊ะ D2</div></div>
+          <div class="field"><div class="field-label">สถานะ</div><div class="field-value" style="color:var(--primary)">รอทำ</div></div>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-checkout-dark">Checkout</button>
+        </div>
+      </div>
+
+      <!-- Card: checkout done -->
+      <div class="card checkout-dark">
+        <div class="card-head">
+          <div>
+            <span class="status-badge checkout-dark">✅ Checkout แล้ว</span>
+            <div class="table-name">โต๊ะ A1</div>
+            <div class="order-line">Dine-in · #00280</div>
+          </div>
+          <div class="qty-badge checkout-dark">2</div>
+        </div>
+        <p class="product-name">น้ำส้มคั้น</p>
+        <div class="grid">
+          <div class="field"><div class="field-label">เสร็จเมื่อ</div><div class="field-value">08:52</div></div>
+          <div class="field"><div class="field-label">พนักงาน</div><div class="field-value">สมชาย</div></div>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-neutral">↩ Undo</button>
+        </div>
+      </div>
+
+      <!-- Card: normal -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="table-name">โต๊ะ E5</div>
+            <div class="order-line">Delivery · #00285</div>
+          </div>
+          <div class="qty-badge">4</div>
+        </div>
+        <div class="queue-tags">
+          <span class="tag">🕐 02:15</span>
+        </div>
+        <p class="product-name">ข้าวผัดปู</p>
+        <div class="grid">
+          <div class="field"><div class="field-label">ช่องทาง</div><div class="field-value">Delivery</div></div>
+          <div class="field"><div class="field-label">สถานะ</div><div class="field-value" style="color:var(--success)">กำลังทำ</div></div>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-checkout-dark">Checkout 1 รายการ</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── FEATURES ── -->
+  <div class="section">
+    <div class="section-label">ฟีเจอร์ทั้งหมด</div>
+    <div class="section-heading">ครบทุกการใช้งานในครัว</div>
+    <p class="section-desc">ออกแบบจากการใช้งานจริง ลดขั้นตอน เพิ่มความเร็ว</p>
+
+    <div class="feature-grid">
+      <div class="feat-card">
+        <div class="feat-icon blue">🔄</div>
+        <div class="feat-title">Real-time Queue</div>
+        <div class="feat-desc">ดึงคิวจาก Pixel POS อัตโนมัติทุก 15 วิ ไม่ต้อง refresh มือ แสดงสถานะรอทำ / กำลังทำ แบบ live</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon green">✅</div>
+        <div class="feat-title">Checkout &amp; Undo</div>
+        <div class="feat-desc">กด Checkout ยืนยันรายการเสร็จ กด Undo ย้อนกลับทันทีหากกดผิด — ป้องกันข้อมูลหาย</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon orange">🔢</div>
+        <div class="feat-title">Checkout 3 โหมด (qty &gt; 1)</div>
+        <div class="feat-desc"><b>โหมด 1</b> ทีละ 1 รายการ &nbsp;·&nbsp; <b>โหมด 2</b> จบทั้งหมดครั้งเดียว &nbsp;·&nbsp; <b>โหมด 3</b> เชฟเลือกจำนวนเองจาก popup</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon blue">🔒</div>
+        <div class="feat-title">2-Step Checkout</div>
+        <div class="feat-desc">กดครั้งแรก "ยืนยันไปครัว" ก่อน แล้วค่อย Checkout — ป้องกันกดพลาด เหมาะครัวที่ต้องการความแม่นยำ</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon blue">📷</div>
+        <div class="feat-title">Barcode / QR Scan</div>
+        <div class="feat-desc">สแกนเนอร์ USB (keyboard) และกล้องมือถือ / tablet สแกนต่อเนื่องอัตโนมัติทุก 800ms รองรับ QR code</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon orange">🔔</div>
+        <div class="feat-title">เสียงแจ้งเตือน order ใหม่</div>
+        <div class="feat-desc">เล่นเสียงเมื่อมี order ใหม่ อัปโหลดไฟล์เสียงเองได้ (.wav/.mp3) ทดสอบเสียงได้จาก Settings</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon red">⏱️</div>
+        <div class="feat-title">Timer &amp; Color Alert</div>
+        <div class="feat-desc">นับเวลาทุกรายการ การ์ดเปลี่ยนสีเมื่อใกล้เกินเวลา (เหลือง) และเกินเวลา (แดง) ตั้งค่าเกณฑ์นาทีได้เอง</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon green">🗂️</div>
+        <div class="feat-title">SET Menu</div>
+        <div class="feat-desc">แสดงชุดอาหาร (parent/child) แยกชัดเจนด้วย label สีเขียว เชฟรู้ว่าต้องทำอะไรครบในชุดเดียว</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon blue">📍</div>
+        <div class="feat-title">Zone Filter</div>
+        <div class="feat-desc">แต่ละจอดูเฉพาะโซนที่รับผิดชอบ ล็อคโซนไม่ให้เปลี่ยนโดยไม่ตั้งใจ จำโซนข้ามรอบ refresh</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon green">🍽️</div>
+        <div class="feat-title">SaleMode Filter</div>
+        <div class="feat-desc">แต่ละสถานีกรอง SaleMode ได้อิสระ เช่น ครัวดูเฉพาะ Dine-in, บาร์ดูเฉพาะ Delivery</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon orange">❌</div>
+        <div class="feat-title">ควบคุมสินค้าหมด</div>
+        <div class="feat-desc">กด "สินค้าหมด" จากหน้าจอ KDS ได้เลย ค้นหาชื่อ toggle สถานะหมด/มี ส่งข้อมูลกลับ Pixel POS ทันที</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon blue">🔀</div>
+        <div class="feat-title">แสดงโต๊ะย้าย</div>
+        <div class="feat-desc">การ์ดแสดง badge "ย้ายโต๊ะ" (สีน้ำเงิน) เมื่อ order มีการย้ายโต๊ะ เชฟรู้ทันทีว่าควรส่งไปโต๊ะไหน</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon green">👨‍🍳</div>
+        <div class="feat-title">Staff Login บน Topbar</div>
+        <div class="feat-desc">กรอกรหัสพนักงานจากหน้าหลักโดยตรง บังคับ login ก่อน checkout ทุกช่องทาง บันทึก activity log</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon blue">📐</div>
+        <div class="feat-title">ปรับขนาด Card &amp; Font</div>
+        <div class="feat-desc">เลือกขนาดการ์ด S/M/L/XL และ Font Scale 85–130% รองรับจอทุกขนาดตั้งแต่ tablet ถึงจอ TV</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon red">📡</div>
+        <div class="feat-title">DB Offline Banner</div>
+        <div class="feat-desc">แสดงแถบแดงเมื่อขาดการเชื่อมต่อ 3 รอบติดกัน พร้อมปุ่มลองใหม่ หายเองเมื่อกลับมา online</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon green">🏪</div>
+        <div class="feat-title">Multi-KDS หลายจุด</div>
+        <div class="feat-desc">ติดตั้งหลายสถานีบน IIS เดียวกัน ผ่าน subfolder แต่ละจุด settings แยกกัน ไม่ปนกัน</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon blue">🔐</div>
+        <div class="feat-title">Screen Lock</div>
+        <div class="feat-desc">ล็อคหน้าจอเมื่อไม่ใช้งาน ป้องกันกดโดยไม่ตั้งใจ รองรับหลายเครื่องพร้อมกัน</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon orange">📋</div>
+        <div class="feat-title">Activity Log</div>
+        <div class="feat-desc">บันทึกทุก checkout / undo / confirm พร้อมรหัสพนักงาน วันเวลา และเมนู ใช้ตรวจสอบย้อนหลังได้</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── SETTINGS DEMO ── -->
+  <div class="section" style="padding-top:20px">
+    <div class="section-label">การตั้งค่า</div>
+    <div class="section-heading">ปรับทุกอย่างจากหน้าจอ</div>
+    <p class="section-desc">ไม่ต้องแก้ไฟล์ config — ตั้งค่าทุกอย่างผ่าน Settings modal</p>
+
+    <div class="settings-mock">
+      <div class="modal-head">
+        <div class="modal-title">⚙️ ตั้งค่า</div>
+      </div>
+      <div class="modal-tabs">
+        <button class="modal-tab active">ทั่วไป</button>
+        <button class="modal-tab">ฟีเจอร์</button>
+        <button class="modal-tab">ตัวกรอง</button>
+        <button class="modal-tab">หน้าตา</button>
+      </div>
+      <div class="modal-body-inner">
+
+        <div class="setting-check">
+          <div>
+            <div class="setting-check-title">2-Step Checkout</div>
+            <div class="setting-check-sub">กดยืนยันก่อน แล้วค่อย Checkout — ป้องกันกดพลาด</div>
+          </div>
+          <span class="toggle-on"></span>
+        </div>
+
+        <div class="setting-check">
+          <div>
+            <div class="setting-check-title">เสียงแจ้งเตือน order ใหม่</div>
+            <div class="setting-check-sub">เล่นเสียงเมื่อมี order ใหม่เข้า</div>
+          </div>
+          <span class="toggle-on"></span>
+        </div>
+
+        <div class="setting-check">
+          <div>
+            <div class="setting-check-title">การ Checkout เมื่อจำนวน &gt; 1</div>
+            <div class="setting-check-sub">เลือกพฤติกรรมเมื่อ order มีจำนวนมากกว่า 1</div>
+            <div class="radio-col" style="margin-top:8px">
+              <div class="radio-item"><span class="radio-dot"></span>ทีละ 1 จำนวน</div>
+              <div class="radio-item active"><span class="radio-dot active"></span>จบทั้งหมดในครั้งเดียว</div>
+              <div class="radio-item"><span class="radio-dot"></span>เลือกจำนวนเอง (popup)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-check">
+          <div>
+            <div class="setting-check-title">กรอง Zone</div>
+            <div class="setting-check-sub">แต่ละจอเลือกโซนที่รับผิดชอบ</div>
+            <div class="filter-chips" style="margin-top:8px">
+              <span class="filter-chip active">ครัวหลัก</span>
+              <span class="filter-chip">บาร์</span>
+              <span class="filter-chip">สลัด</span>
+              <span class="filter-chip">ของหวาน</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="setting-check">
+          <div>
+            <div class="setting-check-title">ขนาด Card</div>
+            <div class="appearance-row" style="margin-top:8px">
+              <button class="app-btn">S</button>
+              <button class="app-btn active">M</button>
+              <button class="app-btn">L</button>
+              <button class="app-btn">XL</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-foot-inner">
+        <button class="btn btn-neutral">ปิด</button>
+        <button class="btn btn-checkout-dark">บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── USE CASE ── -->
+  <div class="section" style="padding-top:20px">
+    <div class="section-label">เหมาะกับ</div>
+    <div class="section-heading">ทุกรูปแบบร้านอาหาร</div>
+    <div class="usecase-grid">
+      <div class="usecase-card">
+        <div class="usecase-emoji">🍜</div>
+        <div class="usecase-title">ร้านอาหารทั่วไป</div>
+        <div class="usecase-desc">แทนการเขียนสลิป ลดข้อผิดพลาด จัดคิวเป็นระบบ</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-emoji">☕</div>
+        <div class="usecase-title">คาเฟ่ / บาร์</div>
+        <div class="usecase-desc">จอบาร์กรองเฉพาะเครื่องดื่ม Checkout ทั้งหมดได้ครั้งเดียว</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-emoji">🏨</div>
+        <div class="usecase-title">ร้านหลายโซน</div>
+        <div class="usecase-desc">ครัวหลัก / สลัด / บาร์ แต่ละจอดูเฉพาะโซนตัวเอง</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-emoji">🚚</div>
+        <div class="usecase-title">Delivery</div>
+        <div class="usecase-desc">กรอง SaleMode แยก Delivery ออกจาก Dine-in</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-emoji">📦</div>
+        <div class="usecase-title">เมนูชุด / SET</div>
+        <div class="usecase-desc">แสดงชุดอาหารพร้อมรายการย่อย เชฟรู้ว่าต้องทำอะไรครบ</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-emoji">🏪</div>
+        <div class="usecase-title">หลายสาขา</div>
+        <div class="usecase-desc">ติดตั้ง KDS หลายเครื่องบน server เดียว ดูแลได้จากที่เดียว</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── SPEC TABLE ── -->
+  <div class="section" style="padding-top:20px">
+    <div class="section-label">ข้อมูลทางเทคนิค</div>
+    <div class="section-heading">พร้อมใช้งานกับ Pixel POS</div>
+    <div class="highlight">
+      <span>💡</span>
+      <p><b>ทำงานผ่าน Browser ได้เลย</b> — ไม่ต้องติดตั้ง app เพิ่ม เปิดบน Chrome / Edge บน Windows, Android tablet, iPad ต่อ Wi-Fi เข้า server เดียวกับ Pixel POS</p>
+    </div>
+
+    <table class="spec-table">
+      <tr><th>รายการ</th><th>รายละเอียด</th><th></th></tr>
+      <tr><td><b>Platform</b></td><td>PHP + MySQL · Windows IIS และ Apache</td><td><span class="badge-yes">✓ รองรับ</span></td></tr>
+      <tr><td><b>Browser</b></td><td>Chrome, Edge (BarcodeDetector) · Firefox ใช้ jsQR fallback</td><td><span class="badge-yes">✓ รองรับ</span></td></tr>
+      <tr><td><b>อุปกรณ์</b></td><td>PC, Windows tablet, Android tablet, iPad — จอขนาดใดก็ได้</td><td><span class="badge-yes">✓ รองรับ</span></td></tr>
+      <tr><td><b>Multi-KDS</b></td><td>ติดตั้งหลายสถานีผ่าน subfolder บน IIS server เดียว</td><td><span class="badge-yes">✓ รองรับ</span></td></tr>
+      <tr><td><b>Barcode Scanner</b></td><td>USB / Bluetooth scanner (keyboard mode) และกล้อง QR</td><td><span class="badge-yes">✓ รองรับ</span></td></tr>
+      <tr><td><b>Offline Banner</b></td><td>แสดง banner เมื่อ DB ขาดการเชื่อมต่อ ลองใหม่อัตโนมัติ</td><td><span class="badge-yes">✓ รองรับ</span></td></tr>
+      <tr><td><b>PWA / Fullscreen</b></td><td>รองรับ manifest และปุ่มเต็มจอ — ดูสะอาดเหมือน native app</td><td><span class="badge-yes">✓ รองรับ</span></td></tr>
+      <tr><td><b>ฐานข้อมูล</b></td><td>MySQL 5.1+ เชื่อมตรงกับ DB ของ Pixel POS</td><td><span class="badge-yes">✓ รองรับ</span></td></tr>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ── TIMELINE ── -->
+  <div class="section" style="padding-top:20px">
+    <div class="section-label">ประวัติการพัฒนา</div>
+    <div class="section-heading">อัปเดตต่อเนื่องจากการใช้งานจริง</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-ver">v1.10.0 · ล่าสุด</div>
+        <div class="tl-title">Checkout จำนวน 3 โหมด</div>
+        <div class="tl-desc">เลือก mode เมื่อจำนวน &gt; 1 — ทีละ 1 / ทั้งหมด / เลือกเอง popup</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-ver">v1.9.0</div>
+        <div class="tl-title">ซ่อนรายการยกเลิก + แก้ Zone cache</div>
+        <div class="tl-desc">ไม่แสดง voided orders แก้ bug โต๊ะย้ายโซนแล้วการ์ดไม่โผล่</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-ver">v1.8.0</div>
+        <div class="tl-title">Appearance Panel + Zone Lock + SaleMode Filter</div>
+        <div class="tl-desc">ปรับขนาด Card/Font, Zone lock ถาวร, กรอง SaleMode ต่อสถานี</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-ver">v1.7.0</div>
+        <div class="tl-title">กล้องสแกน barcode ต่อเนื่อง + Multi-shop</div>
+        <div class="tl-desc">สแกนกล้องอัตโนมัติทุก 800ms รองรับหลายร้านบน server เดียว</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-ver">v1.5.0</div>
+        <div class="tl-title">Staff Login บังคับ + Zone Filter</div>
+        <div class="tl-desc">บังคับ login ก่อน checkout ทุกช่องทาง กรอง Zone ต่อสถานี</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-ver">v1.0.0</div>
+        <div class="tl-title">เปิดตัว</div>
+        <div class="tl-desc">แสดงคิว, Checkout, Undo, เสียงแจ้งเตือน, สินค้าหมด, Screen lock</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CTA ── -->
+  <div class="cta-banner">
+    <h2>พร้อมใช้งานกับ Pixel POS</h2>
+    <p>ติดตั้งได้บน Windows IIS เดิมที่มีอยู่ ไม่ต้องซื้อ server หรืออุปกรณ์เพิ่ม</p>
+    <div class="cta-pills">
+      <span class="cta-pill">✅ ไม่ต้องติดตั้ง app</span>
+      <span class="cta-pill">✅ ใช้ได้กับจอทุกขนาด</span>
+      <span class="cta-pill">✅ ตั้งค่าผ่านหน้าจอ</span>
+      <span class="cta-pill">✅ รองรับหลายสถานี</span>
+      <span class="cta-pill">✅ อัปเดตต่อเนื่อง</span>
+      <span class="cta-pill">✅ เชื่อมตรง DB Pixel POS</span>
+    </div>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>

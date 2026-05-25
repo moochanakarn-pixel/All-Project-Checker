@@ -1,0 +1,116 @@
+2026-05-22 16:25:07 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 16:25:29 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 16:25:30 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 16:26:37 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 16:26:37 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:48:21 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:48:35 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 21:48:36 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:48:44 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:48:49 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 21:48:49 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:48:51 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:48:56 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 21:48:57 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:49:05 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 21:49:06 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:49:14 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 21:49:15 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:49:53 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 21:49:54 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:49:59 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 21:50:00 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:50:05 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 21:50:06 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:50:11 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 21:50:12 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:50:35 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 21:50:36 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 21:54:39 | LOGIN          | CID:2 | Staff:5 | Staff:Manager1 -
+2026-05-22 21:57:04 | LOGOUT         | CID:2 | Staff:5 | Staff:👤 Manager1 -
+2026-05-22 21:57:12 | LOGIN          | CID:2 | Staff:5 | Staff:Manager1 -
+2026-05-22 21:58:03 | LOGOUT         | CID:2 | Staff:5 | Staff:👤 Manager1 -
+2026-05-22 22:00:19 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:00:25 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:00:25 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:00:29 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:00:30 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:00:48 | LOGIN          | CID:2 | Staff:5 | Staff:Manager1 -
+2026-05-22 22:02:08 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:02:09 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:04:43 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:04:44 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:04:47 | CHECKOUT       | CID:2 | Staff:5 | Table:12->3 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:13
+2026-05-22 22:04:48 | CHECKOUT       | CID:2 | Staff:5 | Table:12->3 Menu:ข้าวหน้าไก่เทอริยากิ Qty:1 Process:13
+2026-05-22 22:04:57 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:04:58 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:05:00 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Qty:1 Process:2
+2026-05-22 22:05:00 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Qty:1 Process:2
+2026-05-22 22:05:01 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Qty:1 Process:2
+2026-05-22 22:05:05 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:05:06 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:10:16 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:10:18 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:11:33 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:11:42 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:11:44 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:12:04 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:12:58 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:13:03 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:13:04 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:14:01 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:14:02 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:14:04 | UNDO           | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Process:2
+2026-05-22 22:14:05 | UNDO           | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Process:2
+2026-05-22 22:14:05 | UNDO           | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Process:2
+2026-05-22 22:14:05 | UNDO           | CID:2 | Staff:5 | Table:12->3 Menu:ข้าวหน้าไก่เทอริยากิ Process:13
+2026-05-22 22:14:05 | UNDO           | CID:2 | Staff:5 | Table:12->3 Menu:ข้าวหน้าไก่เทอริยากิ Process:13
+2026-05-22 22:14:43 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:14:49 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:14:50 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:14:59 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:15:00 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:15:01 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:15:24 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:15:25 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:15:26 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสันนอกสไลซ์ Qty:1 Process:4
+2026-05-22 22:16:36 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:16:47 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:16:48 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:16:51 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Qty:2 Process:2
+2026-05-22 22:16:53 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Qty:1 Process:2
+2026-05-22 22:16:58 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสามชั้นสไลซ์ Qty:1 Process:3
+2026-05-22 22:17:04 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:17:05 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:17:07 | UNDO           | CID:2 | Staff:5 | Table:1 Menu:หมูสามชั้นสไลซ์ Process:3
+2026-05-22 22:17:08 | UNDO           | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Process:2
+2026-05-22 22:17:08 | UNDO           | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Process:2
+2026-05-22 22:17:08 | UNDO           | CID:2 | Staff:5 | Table:1 Menu:หมูสันนอกสไลซ์ Process:4
+2026-05-22 22:17:10 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Qty:1 Process:2
+2026-05-22 22:18:31 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสามชั้นสไลซ์ Qty:1 Process:3
+2026-05-22 22:18:31 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Qty:1 Process:2
+2026-05-22 22:18:32 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสันคอสไลซ์ Qty:1 Process:2
+2026-05-22 22:18:32 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสามชั้นสไลซ์ Qty:1 Process:3
+2026-05-22 22:18:33 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:หมูสันนอกสไลซ์ Qty:1 Process:4
+2026-05-22 22:19:21 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:23:21 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:กุ้งแม่น้ำ Qty:1 Process:8
+2026-05-22 22:23:22 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:บะหมี่หยก Qty:1 Process:7
+2026-05-22 22:23:23 | CHECKOUT       | CID:2 | Staff:5 | Table:1 Menu:กุ้งแม่น้ำ Qty:1 Process:8
+2026-05-22 22:23:23 | CHECKOUT       | CID:2 | Staff:5 | Table:2 Menu:ข้าวผัดกระเทียม Qty:1 Process:9
+2026-05-22 22:23:23 | CHECKOUT       | CID:2 | Staff:5 | Table:2 Menu:ข้าวผัดหมู Qty:1 Process:10
+2026-05-22 22:23:50 | CHECKOUT       | CID:2 | Staff:5 | Table:2 Menu:ข้าวหน้าหมูทอด Qty:1 Process:11
+2026-05-22 22:23:51 | CHECKOUT       | CID:2 | Staff:5 | Table:2 Menu:ข้าวหน้าหมูทอด Qty:1 Process:11
+2026-05-22 22:23:52 | CHECKOUT       | CID:2 | Staff:5 | Table:(TW) : 1 Menu:(TW)ข้าวหน้าเนื้อ Qty:1 Process:15
+2026-05-22 22:23:53 | CHECKOUT       | CID:2 | Staff:5 | Table:(TW) : 1 Menu:(TW)ข้าวหน้าเนื้อ Qty:1 Process:15
+2026-05-22 22:26:19 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:26:31 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:26:32 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:30:33 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:30:50 | LOGIN          | CID:2 | Staff:5 | Staff:Manager1 -
+2026-05-22 22:36:00 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้หมู Qty:1 Process:17
+2026-05-22 22:36:01 | CHECKOUT       | CID:2 | Staff:5 | Table:4 Menu:แซนวิซไส้ชีส Qty:1 Process:18
+2026-05-22 22:36:13 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:38:53 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:40:27 | APP_START      | CID:2 | Staff:0 | CID:2
+2026-05-22 22:44:00 | SETTINGS_SAVE  | CID:2 | Staff:5 | ComputerID:2 StaffID:5
+2026-05-22 22:44:01 | APP_START      | CID:2 | Staff:0 | CID:2

@@ -1,0 +1,9 @@
+2026-05-19 20:52:34 | APP_START      | CID:82 | Staff:0 | CID:82
+2026-05-19 20:52:46 | SETTINGS_SAVE  | CID:82 | Staff:1 | ComputerID:82 StaffID:1
+2026-05-19 20:52:47 | APP_START      | CID:82 | Staff:0 | CID:82
+2026-05-19 20:52:50 | APP_START      | CID:82 | Staff:0 | CID:82
+2026-05-19 20:52:58 | UNDO           | CID:82 | Staff:1 | Table:1 Menu:J2 พุดดิ้งอะโวคาโด Avocado Pudding Process:1
+2026-05-19 20:52:59 | UNDO           | CID:82 | Staff:1 | Table:1 Menu:J1 สาคูมะม่วงนมสดส้มโอ Mango Puree with Sago and Pomelo Process:2
+2026-05-19 20:53:11 | LOGIN          | CID:82 | Staff:1 | Staff:pRoMiSe Administrator
+2026-05-19 20:53:14 | CHECKOUT       | CID:82 | Staff:1 | Table:1 Menu:J2 พุดดิ้งอะโวคาโด Avocado Pudding Qty:1 Process:1
+2026-05-19 20:53:14 | CHECKOUT       | CID:82 | Staff:1 | Table:1 Menu:J1 สาคูมะม่วงนมสดส้มโอ Mango Puree with Sago and Pomelo Qty:1 Process:2
