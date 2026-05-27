@@ -484,6 +484,26 @@ $_ckBase = _computeCheckerBase();
         .fs-ui-hidden .panel-head { opacity:0; max-height:0; overflow:hidden; margin:0; padding:0; pointer-events:none; transition:opacity .35s, max-height .35s; }
         .stats { max-height:80px; transition:opacity .35s, max-height .35s; }
         .panel-head { max-height:80px; transition:opacity .35s, max-height .35s; }
+
+        /* ─── Table View Toggle ─── */
+        .view-toggle{display:flex;gap:5px;align-items:center}
+        .view-btn{padding:5px 11px;border-radius:8px;border:1px solid var(--line,#e5e7eb);background:transparent;color:var(--muted,#6b7280);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;line-height:1.4}
+        .view-btn:hover{background:rgba(0,0,0,.05)}
+        .view-btn.active{background:var(--primary,#2563eb);color:#fff;border-color:var(--primary,#2563eb)}
+
+        /* ─── Table View Cards ─── */
+        #activeCards.table-view{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:10px;align-content:start}
+        .card-table{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:130px;border-radius:12px;border:2px solid var(--line,#e5e7eb);background:#fff;cursor:pointer;transition:transform .12s,box-shadow .12s;padding:14px 10px;text-align:center;gap:4px}
+        .card-table:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.10)}
+        .card-table.warn-yellow{border-color:#ffe066;background:linear-gradient(180deg,#fffde7,#fffbf0);box-shadow:0 0 0 3px rgba(255,214,0,.18)}
+        .card-table.warn-red{border-color:#ffb3ab;background:linear-gradient(180deg,#fff2f0,#fff8f7);box-shadow:0 0 0 3px rgba(228,76,58,.14);animation:pulse-red 1.6s ease-in-out infinite}
+        @keyframes pulse-red{0%,100%{box-shadow:0 0 0 3px rgba(228,76,58,.14)}50%{box-shadow:0 0 0 6px rgba(228,76,58,.28)}}
+        .ct-name{font-size:22px;font-weight:700;color:var(--primary-dark,#1e40af);line-height:1.1}
+        .ct-qty{font-size:13px;color:var(--muted,#6b7280);margin-top:2px}
+        .ct-time{font-size:12px;font-weight:600;margin-top:4px;padding:2px 8px;border-radius:20px;background:rgba(0,0,0,.06);color:var(--muted,#6b7280)}
+        .card-table.warn-yellow .ct-time{background:rgba(255,193,7,.18);color:#92660a}
+        .card-table.warn-red .ct-time{background:rgba(228,76,58,.14);color:#c0392b}
+        @media(max-width:480px){#activeCards.table-view{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
 </style>
 </head>
 <body>
@@ -542,7 +562,10 @@ $_ckBase = _computeCheckerBase();
                 <div class="panel-head">
                     <div>
                         <h2 class="panel-title">คิวครัวที่ยังค้างอยู่</h2>
-                        
+                    </div>
+                    <div class="view-toggle">
+                        <button type="button" class="view-btn active" data-view="list" title="มุมมองรายการ">📋 รายการ</button>
+                        <button type="button" class="view-btn" data-view="table" title="มุมมองโต๊ะ">🍽️ โต๊ะ</button>
                     </div>
                     <div class="panel-badge" id="queueSummary">กำลังโหลด...</div>
                 </div>
@@ -955,6 +978,9 @@ $_ckBase = _computeCheckerBase();
             yellow: 10,
             red: 20
         };
+
+        // ─── View mode state ───
+        const viewState = { current: localStorage.getItem('checker_view_mode') || 'list' };
 
         function getBarcodeAutoSubmitStorageKey() {
             return 'checker_barcode_auto_submit_' + String(currentComputerIdFromConfig || 0);
@@ -2218,7 +2244,7 @@ function initSoundSettings() {
 
         function updateView() {
             renderStats(state.stats || {});
-            renderActiveRows(state.active_rows || []);
+            renderActiveView(state.active_rows || []);
             renderRecentFinished(state.recent_finished_rows || []);
             syncDrawerState();
             applyZoneFilterSync();
@@ -2445,6 +2471,104 @@ function initSoundSettings() {
                 `;
             }).join('');
         }
+
+        // ─── Table View Functions ────────────────────────────────────────────
+
+        function groupRowsByTable(rows) {
+            const map = {};
+            rows.forEach(function(row) {
+                const key = 'tbl_' + (row.TableID || '0');
+                if (!map[key]) {
+                    map[key] = {
+                        tableId:   Number(row.TableID || 0),
+                        tableName: row.DisplayTableName || String(row.TableID || '-'),
+                        rows:      [],
+                        earliest:  row.SubmitOrderDateTime || ''
+                    };
+                }
+                map[key].rows.push(row);
+                if (row.SubmitOrderDateTime &&
+                    (!map[key].earliest || row.SubmitOrderDateTime < map[key].earliest)) {
+                    map[key].earliest = row.SubmitOrderDateTime;
+                }
+            });
+            return Object.values(map).sort(function(a, b) {
+                return (a.earliest || '').localeCompare(b.earliest || '');
+            });
+        }
+
+        function buildTableCard(tbl) {
+            const mins  = getMinutesDiff(tbl.earliest);
+            const yMin  = timerThresholds.yellow;
+            const rMin  = timerThresholds.red;
+            let cls = '';
+            if (mins >= rMin)       cls = 'warn-red';
+            else if (mins >= yMin)  cls = 'warn-yellow';
+            const timeLabel = mins >= 60
+                ? Math.floor(mins / 60) + 'ชม. ' + (mins % 60) + 'น.'
+                : mins + ' นาที';
+            const confirmedCount = tbl.rows.filter(function(r){ return Number(r.ProcessStatus) === 2; }).length;
+            const progressText   = confirmedCount > 0
+                ? tbl.rows.length + ' ราย (ยืนยัน ' + confirmedCount + ')'
+                : tbl.rows.length + ' รายการ';
+            return `<article class="card-table ${cls}" data-table-id="${tbl.tableId}" onclick="switchToListAndFocus(${tbl.tableId})" title="กดเพื่อดูรายละเอียด">
+                <div class="ct-name">${escapeHtml(tbl.tableName)}</div>
+                <div class="ct-qty">🍽️ ${escapeHtml(progressText)}</div>
+                <div class="ct-time">⏱️ ${timeLabel}</div>
+            </article>`;
+        }
+
+        function renderTableView(rows) {
+            const wrap = document.getElementById('activeCards');
+            wrap.classList.add('table-view');
+            document.getElementById('queueSummary').textContent =
+                rows.length ? ('ค้าง ' + rows.length + ' แถว') : 'ไม่มีคิวค้าง';
+            if (!rows.length) {
+                wrap.innerHTML = '<div class="empty">ไม่มีรายการค้างของวันนี้ในครัว</div>';
+                return;
+            }
+            const groups = groupRowsByTable(rows);
+            wrap.innerHTML = groups.map(buildTableCard).join('');
+        }
+
+        function renderActiveView(rows) {
+            const wrap = document.getElementById('activeCards');
+            if (viewState.current === 'table') {
+                wrap.classList.add('table-view');
+                renderTableView(rows);
+            } else {
+                wrap.classList.remove('table-view');
+                renderActiveRows(rows);
+            }
+        }
+
+        function setViewMode(mode) {
+            if (mode !== 'list' && mode !== 'table') return;
+            viewState.current = mode;
+            localStorage.setItem('checker_view_mode', mode);
+            document.querySelectorAll('.view-btn').forEach(function(btn) {
+                btn.classList.toggle('active', btn.dataset.view === mode);
+            });
+            const wrap = document.getElementById('activeCards');
+            if (mode === 'table') wrap.classList.add('table-view');
+            else wrap.classList.remove('table-view');
+            renderActiveView(state.active_rows || []);
+        }
+
+        function switchToListAndFocus(tableId) {
+            setViewMode('list');
+            // หา card แรกของโต๊ะนั้นแล้ว scroll ไปหา + highlight
+            requestAnimationFrame(function() {
+                const card = document.querySelector('#activeCards [data-table-id="' + tableId + '"]');
+                if (!card) return;
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                card.style.transition = 'outline .1s';
+                card.style.outline = '3px solid var(--primary,#2563eb)';
+                setTimeout(function(){ card.style.outline = ''; }, 1400);
+            });
+        }
+
+        // ─────────────────────────────────────────────────────────────────────
 
         function renderRecentFinished(rows) {
             const listWrap = document.getElementById('recentFinishedList');
@@ -2882,7 +3006,7 @@ function initSoundSettings() {
                 state.active_rows = (state.active_rows || []).filter(function(r) {
                     return !(Number(r.ProcessID) === Number(processId) && Number(r.SubProcessID) === Number(subProcessId));
                 });
-                renderActiveRows(state.active_rows);
+                renderActiveView(state.active_rows);
                 showNotice('ยืนยันยกเลิกเรียบร้อย', 'success');
             } catch (e) {
                 showNotice(e.message || 'เกิดข้อผิดพลาด', 'error');
@@ -3732,6 +3856,15 @@ function initSoundSettings() {
             })
             .catch(function(){ nameBox.textContent = 'เกิดข้อผิดพลาด'; });
         }
+
+        // ─── View mode toggle init ───
+        document.querySelectorAll('.view-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() { setViewMode(this.dataset.view); });
+        });
+        // ตั้ง active button ตาม saved preference
+        document.querySelectorAll('.view-btn').forEach(function(btn) {
+            btn.classList.toggle('active', btn.dataset.view === viewState.current);
+        });
 
         // populate staffcode จาก saved settings
         const savedId = localStorage.getItem('checker_finish_staff_id');
