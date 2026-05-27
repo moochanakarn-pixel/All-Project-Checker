@@ -492,18 +492,30 @@ $_ckBase = _computeCheckerBase();
         .view-btn.active{background:var(--primary,#2563eb);color:#fff;border-color:var(--primary,#2563eb)}
 
         /* ─── Table View Cards ─── */
-        #activeCards.table-view{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:10px;align-content:start}
-        .card-table{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:130px;border-radius:12px;border:2px solid var(--line,#e5e7eb);background:#fff;cursor:pointer;transition:transform .12s,box-shadow .12s;padding:14px 10px;text-align:center;gap:4px}
-        .card-table:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.10)}
-        .card-table.warn-yellow{border-color:#ffe066;background:linear-gradient(180deg,#fffde7,#fffbf0);box-shadow:0 0 0 3px rgba(255,214,0,.18)}
-        .card-table.warn-red{border-color:#ffb3ab;background:linear-gradient(180deg,#fff2f0,#fff8f7);box-shadow:0 0 0 3px rgba(228,76,58,.14);animation:pulse-red 1.6s ease-in-out infinite}
-        @keyframes pulse-red{0%,100%{box-shadow:0 0 0 3px rgba(228,76,58,.14)}50%{box-shadow:0 0 0 6px rgba(228,76,58,.28)}}
-        .ct-name{font-size:22px;font-weight:700;color:var(--primary-dark,#1e40af);line-height:1.1}
-        .ct-qty{font-size:13px;color:var(--muted,#6b7280);margin-top:2px}
-        .ct-time{font-size:12px;font-weight:600;margin-top:4px;padding:2px 8px;border-radius:20px;background:rgba(0,0,0,.06);color:var(--muted,#6b7280)}
-        .card-table.warn-yellow .ct-time{background:rgba(255,193,7,.18);color:#92660a}
-        .card-table.warn-red .ct-time{background:rgba(228,76,58,.14);color:#c0392b}
-        @media(max-width:480px){#activeCards.table-view{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
+        #activeCards.table-view{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;padding:12px;align-content:start}
+        .card-table{display:flex;flex-direction:column;border-radius:14px;border:2px solid var(--line,#e5e7eb);background:#fff;overflow:hidden}
+        .card-table.warn-yellow{border-color:#ffe066;background:linear-gradient(180deg,#fffde7 0%,#fff 60%);box-shadow:0 0 0 3px rgba(255,214,0,.18)}
+        .card-table.warn-red{border-color:#ffb3ab;background:linear-gradient(180deg,#fff2f0 0%,#fff 60%);box-shadow:0 0 0 3px rgba(228,76,58,.14);animation:pulse-red 1.6s ease-in-out infinite}
+        @keyframes pulse-red{0%,100%{box-shadow:0 0 0 3px rgba(228,76,58,.14)}50%{box-shadow:0 0 0 7px rgba(228,76,58,.28)}}
+        /* header */
+        .ct-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 8px;border-bottom:1px solid var(--line,#e5e7eb)}
+        .ct-name{font-size:20px;font-weight:700;color:var(--primary-dark,#1e40af);line-height:1.1}
+        .ct-sub{font-size:11px;color:var(--muted,#6b7280);margin-top:1px}
+        .ct-badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;background:rgba(0,0,0,.06);color:var(--muted,#6b7280);white-space:nowrap}
+        .warn-yellow .ct-badge{background:rgba(255,193,7,.18);color:#92660a}
+        .warn-red .ct-badge{background:rgba(228,76,58,.14);color:#c0392b}
+        /* items list */
+        .ct-items{display:flex;flex-direction:column;gap:0;flex:1}
+        .ct-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid rgba(0,0,0,.05)}
+        .ct-item:last-child{border-bottom:none}
+        .ct-item.item-confirmed{background:rgba(37,99,235,.04)}
+        .ct-item.item-voided{opacity:.55}
+        .ct-item-info{flex:1;min-width:0}
+        .ct-item-name{font-size:13px;font-weight:600;line-height:1.3;word-break:break-word}
+        .ct-item-meta{font-size:11px;color:var(--muted,#6b7280);margin-top:2px}
+        .ct-item-btn{flex-shrink:0}
+        .ct-item-btn .btn{min-height:32px;padding:0 10px;font-size:11px;border-radius:8px}
+        @media(max-width:600px){#activeCards.table-view{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -2497,24 +2509,75 @@ function initSoundSettings() {
             });
         }
 
-        function buildTableCard(tbl) {
-            const mins  = getMinutesDiff(tbl.earliest);
-            const yMin  = timerThresholds.yellow;
-            const rMin  = timerThresholds.red;
-            let cls = '';
-            if (mins >= rMin)       cls = 'warn-red';
-            else if (mins >= yMin)  cls = 'warn-yellow';
+        function buildTableCard(tbl, productTotals) {
+            const mins     = getMinutesDiff(tbl.earliest);
+            const yMin     = timerThresholds.yellow;
+            const rMin     = timerThresholds.red;
+            const isTwoStep = !!state.kdsTwoStepCheckout;
+            let warnCls = '';
+            if      (mins >= rMin)  warnCls = 'warn-red';
+            else if (mins >= yMin)  warnCls = 'warn-yellow';
+
             const timeLabel = mins >= 60
                 ? Math.floor(mins / 60) + 'ชม. ' + (mins % 60) + 'น.'
                 : mins + ' นาที';
+
             const confirmedCount = tbl.rows.filter(function(r){ return Number(r.ProcessStatus) === 2; }).length;
-            const progressText   = confirmedCount > 0
-                ? tbl.rows.length + ' ราย (ยืนยัน ' + confirmedCount + ')'
+            const subText = confirmedCount > 0
+                ? tbl.rows.length + ' รายการ (ยืนยัน ' + confirmedCount + ')'
                 : tbl.rows.length + ' รายการ';
-            return `<article class="card-table ${cls}" data-table-id="${tbl.tableId}" onclick="switchToListAndFocus(${tbl.tableId})" title="กดเพื่อดูรายละเอียด">
-                <div class="ct-name">${escapeHtml(tbl.tableName)}</div>
-                <div class="ct-qty">🍽️ ${escapeHtml(progressText)}</div>
-                <div class="ct-time">⏱️ ${timeLabel}</div>
+
+            // ─ items ─
+            const itemsHtml = tbl.rows.map(function(row) {
+                const isVoided    = Number(row.ProcessStatus) === 98;
+                const isConfirmed = Number(row.ProcessStatus) === 2;
+
+                let itemCls = '';
+                if (isVoided)    itemCls = 'item-voided';
+                else if (isConfirmed) itemCls = 'item-confirmed';
+
+                const checkoutTone = isTwoStep ? (isConfirmed ? 'dark' : 'soft') : 'dark';
+                const btnLabel     = isVoided ? 'ยืนยันยกเลิก'
+                    : isTwoStep ? (isConfirmed ? 'Checkout' : 'ยืนยัน')
+                    : 'Checkout';
+                const btnClass     = isVoided
+                    ? 'btn btn-confirm-void js-confirm-void'
+                    : 'btn btn-checkout-' + checkoutTone + ' js-checkout';
+
+                const qtyLabel = formatQty(row.ProductAmount) + '×';
+                const waitMins = getMinutesDiff(row.SubmitOrderDateTime);
+                const metaParts = [];
+                if (row.SaleModeName) metaParts.push(escapeHtml(row.SaleModeName));
+                metaParts.push('⏱️ ' + waitMins + ' น.');
+                if (isConfirmed) metaParts.push('✅ กำลังทำ');
+                if (isVoided)    metaParts.push('❌ ยกเลิก');
+
+                return `<div class="ct-item ${itemCls}">
+                    <div class="ct-item-info">
+                        <div class="ct-item-name">${qtyLabel} ${escapeHtml(row.ProductName || '-')}</div>
+                        <div class="ct-item-meta">${metaParts.join(' · ')}</div>
+                    </div>
+                    <div class="ct-item-btn">
+                        <button class="${btnClass}"
+                            data-product-level-id="${Number(row.ProductLevelID || 0)}"
+                            data-process-id="${Number(row.ProcessID || 0)}"
+                            data-sub-process-id="${Number(row.SubProcessID || 0)}"
+                            data-printer-id="${Number(row.PrinterID || 0)}"
+                            ${isSubmitting ? 'disabled' : ''}
+                        >${btnLabel}</button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            return `<article class="card-table ${warnCls}" data-table-id="${tbl.tableId}">
+                <div class="ct-head">
+                    <div>
+                        <div class="ct-name">โต๊ะ ${escapeHtml(tbl.tableName)}</div>
+                        <div class="ct-sub">${escapeHtml(subText)}</div>
+                    </div>
+                    <div class="ct-badge">⏱️ ${timeLabel}</div>
+                </div>
+                <div class="ct-items">${itemsHtml}</div>
             </article>`;
         }
 
@@ -2527,8 +2590,9 @@ function initSoundSettings() {
                 wrap.innerHTML = '<div class="empty">ไม่มีรายการค้างของวันนี้ในครัว</div>';
                 return;
             }
+            const productTotals = buildActiveProductTotals(rows);
             const groups = groupRowsByTable(rows);
-            wrap.innerHTML = groups.map(buildTableCard).join('');
+            wrap.innerHTML = groups.map(function(tbl){ return buildTableCard(tbl, productTotals); }).join('');
         }
 
         function renderActiveView(rows) {
@@ -2553,19 +2617,6 @@ function initSoundSettings() {
             if (mode === 'table') wrap.classList.add('table-view');
             else wrap.classList.remove('table-view');
             renderActiveView(state.active_rows || []);
-        }
-
-        function switchToListAndFocus(tableId) {
-            setViewMode('list');
-            // หา card แรกของโต๊ะนั้นแล้ว scroll ไปหา + highlight
-            requestAnimationFrame(function() {
-                const card = document.querySelector('#activeCards [data-table-id="' + tableId + '"]');
-                if (!card) return;
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                card.style.transition = 'outline .1s';
-                card.style.outline = '3px solid var(--primary,#2563eb)';
-                setTimeout(function(){ card.style.outline = ''; }, 1400);
-            });
         }
 
         // ─────────────────────────────────────────────────────────────────────
