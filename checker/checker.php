@@ -515,6 +515,18 @@ $_ckBase = _computeCheckerBase();
         .ct-item-meta{font-size:11px;color:var(--muted,#6b7280);margin-top:2px}
         .ct-item-btn{flex-shrink:0}
         .ct-item-btn .btn{min-height:32px;padding:0 10px;font-size:11px;border-radius:8px}
+        /* table-view: special status badges */
+        .ct-spec-badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px;margin-left:4px;vertical-align:middle;white-space:nowrap}
+        .ct-spec-badge.moved{background:#fef3c7;color:#92400e;border:1px solid #fcd34d}
+        .ct-spec-badge.combined{background:#ede9fe;color:#5b21b6;border:1px solid #c4b5fd}
+        /* table-view: row state variants */
+        .ct-item.item-moved .ct-item-name{color:#b45309}
+        .ct-item.item-combined .ct-item-name{color:#5b21b6}
+        .ct-item.item-combined{background:rgba(139,92,246,.05)}
+        /* table-view: sub-item info lines */
+        .ct-item-parent{font-size:10px;color:var(--muted,#6b7280);margin-top:1px;font-style:italic}
+        .ct-item-qtyhint{font-size:10px;color:var(--primary,#2563eb);margin-top:2px;font-weight:600}
+        .ct-item-ordnum{font-size:10px;color:var(--muted,#6b7280);font-weight:500;margin-left:4px}
         @media(max-width:600px){#activeCards.table-view{grid-template-columns:1fr}}
 </style>
 </head>
@@ -2510,10 +2522,11 @@ function initSoundSettings() {
         }
 
         function buildTableCard(tbl, productTotals) {
-            const mins     = getMinutesDiff(tbl.earliest);
-            const yMin     = timerThresholds.yellow;
-            const rMin     = timerThresholds.red;
+            const mins      = getMinutesDiff(tbl.earliest);
+            const yMin      = timerThresholds.yellow;
+            const rMin      = timerThresholds.red;
             const isTwoStep = !!state.kdsTwoStepCheckout;
+
             let warnCls = '';
             if      (mins >= rMin)  warnCls = 'warn-red';
             else if (mins >= yMin)  warnCls = 'warn-yellow';
@@ -2527,24 +2540,48 @@ function initSoundSettings() {
                 ? tbl.rows.length + ' รายการ (ยืนยัน ' + confirmedCount + ')'
                 : tbl.rows.length + ' รายการ';
 
-            // ─ items ─
+            // ─── items ───
             const itemsHtml = tbl.rows.map(function(row) {
                 const isVoided    = Number(row.ProcessStatus) === 98;
                 const isConfirmed = Number(row.ProcessStatus) === 2;
+                const isMoved     = !!row.is_moved;
+                const isCombined  = !!row.is_combined;
+                const movedTo     = row.moved_to || '';
 
+                // class ของ item row
                 let itemCls = '';
-                if (isVoided)    itemCls = 'item-voided';
+                if      (isVoided)    itemCls = 'item-voided';
                 else if (isConfirmed) itemCls = 'item-confirmed';
+                else if (isMoved)     itemCls = 'item-moved';
+                else if (isCombined)  itemCls = 'item-combined';
 
-                const checkoutTone = isTwoStep ? (isConfirmed ? 'dark' : 'soft') : 'dark';
-                const btnLabel     = isVoided ? 'ยืนยันยกเลิก'
-                    : isTwoStep ? (isConfirmed ? 'Checkout' : 'ยืนยัน')
-                    : 'Checkout';
-                const btnClass     = isVoided
-                    ? 'btn btn-confirm-void js-confirm-void'
-                    : 'btn btn-checkout-' + checkoutTone + ' js-checkout';
+                // badge พิเศษ (ย้ายโต๊ะ / รวมโต๊ะ)
+                let specialBadge = '';
+                if (isMoved)    specialBadge = `<span class="ct-spec-badge moved">🔀 ย้ายไปโต๊ะ ${escapeHtml(movedTo)}</span>`;
+                else if (isCombined) specialBadge = `<span class="ct-spec-badge combined">🔗 รวมโต๊ะแล้ว</span>`;
 
-                const qtyLabel = formatQty(row.ProductAmount) + '×';
+                // parent set label
+                const parentLabel = row.parent_name
+                    ? `<div class="ct-item-parent">↳ ${escapeHtml(row.parent_name)}</div>`
+                    : '';
+
+                // comments
+                const commentsHtml = (row.comments && row.comments.length)
+                    ? renderComments(row.comments, true)
+                    : '';
+
+                // total qty hint
+                const productKey = String(row.ProductName || '').trim();
+                const totalQty   = productKey && Object.prototype.hasOwnProperty.call(productTotals, productKey)
+                    ? productTotals[productKey] : Number(row.ProductAmount || 0);
+                const qtyHint = totalQty > Number(row.ProductAmount || 0)
+                    ? `<div class="ct-item-qtyhint">รวมทั้งคิว ${formatQty(totalQty)}</div>` : '';
+
+                // order number
+                const orderNum = state.showOrderNumber && row.ProcessID
+                    ? `<span class="ct-item-ordnum">#${String(Number(row.ProcessID)).padStart(6,'0')}</span>` : '';
+
+                // meta line
                 const waitMins = getMinutesDiff(row.SubmitOrderDateTime);
                 const metaParts = [];
                 if (row.SaleModeName) metaParts.push(escapeHtml(row.SaleModeName));
@@ -2552,12 +2589,18 @@ function initSoundSettings() {
                 if (isConfirmed) metaParts.push('✅ กำลังทำ');
                 if (isVoided)    metaParts.push('❌ ยกเลิก');
 
-                return `<div class="ct-item ${itemCls}">
-                    <div class="ct-item-info">
-                        <div class="ct-item-name">${qtyLabel} ${escapeHtml(row.ProductName || '-')}</div>
-                        <div class="ct-item-meta">${metaParts.join(' · ')}</div>
-                    </div>
-                    <div class="ct-item-btn">
+                // action button — isCombined ไม่มีปุ่ม (เหมือน list view)
+                let actionBtn = '';
+                if (!isCombined) {
+                    const checkoutTone = isTwoStep ? (isConfirmed ? 'dark' : 'soft') : 'dark';
+                    const btnLabel = isVoided    ? 'ยืนยันยกเลิก'
+                        : isTwoStep ? (isConfirmed ? 'Checkout' : 'ยืนยัน')
+                        : (isMoved  ? 'Checkout' : 'Checkout');
+                    const btnClass = isVoided
+                        ? 'btn btn-confirm-void js-confirm-void'
+                        : 'btn btn-checkout-' + checkoutTone + ' js-checkout';
+
+                    actionBtn = `<div class="ct-item-btn">
                         <button class="${btnClass}"
                             data-product-level-id="${Number(row.ProductLevelID || 0)}"
                             data-process-id="${Number(row.ProcessID || 0)}"
@@ -2565,7 +2608,19 @@ function initSoundSettings() {
                             data-printer-id="${Number(row.PrinterID || 0)}"
                             ${isSubmitting ? 'disabled' : ''}
                         >${btnLabel}</button>
+                    </div>`;
+                }
+
+                return `<div class="ct-item ${itemCls}">
+                    <div class="ct-item-info">
+                        ${specialBadge}
+                        ${parentLabel}
+                        <div class="ct-item-name">${formatQty(row.ProductAmount)}× ${escapeHtml(row.ProductName || '-')} ${orderNum}</div>
+                        ${qtyHint}
+                        ${commentsHtml}
+                        <div class="ct-item-meta">${metaParts.join(' · ')}</div>
                     </div>
+                    ${actionBtn}
                 </div>`;
             }).join('');
 
