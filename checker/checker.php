@@ -2570,6 +2570,10 @@ function initSoundSettings() {
                     ? renderComments(row.comments, true)
                     : '';
 
+                // set badge (เซ็ท)
+                const setbadge = (Number(row.ProductSetType) === 7 && Number(row.DisplayFlexibleAtChecker) === 1)
+                    ? '<div class="set-compact-badge">เซ็ท</div>' : '';
+
                 // total qty hint
                 const productKey = String(row.ProductName || '').trim();
                 const totalQty   = productKey && Object.prototype.hasOwnProperty.call(productTotals, productKey)
@@ -2616,6 +2620,7 @@ function initSoundSettings() {
                         ${specialBadge}
                         ${parentLabel}
                         <div class="ct-item-name">${formatQty(row.ProductAmount)}× ${escapeHtml(row.ProductName || '-')} ${orderNum}</div>
+                        ${setbadge}
                         ${qtyHint}
                         ${commentsHtml}
                         <div class="ct-item-meta">${metaParts.join(' · ')}</div>
