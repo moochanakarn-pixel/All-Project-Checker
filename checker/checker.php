@@ -2501,13 +2501,23 @@ function initSoundSettings() {
         function groupRowsByTable(rows) {
             const map = {};
             rows.forEach(function(row) {
-                // 1 bill = 1 ProcessID → ใช้เป็น key เพื่อให้แต่ละบิลได้การ์ดของตัวเอง
-                // (ถ้าใช้ TableID อย่างเดียว delivery/takeaway ทุกบิลจะกองในการ์ดเดียว)
-                const key = 'bill_' + (row.ProcessID || '0');
+                const tableId   = Number(row.TableID   || 0);
+                const processId = Number(row.ProcessID || 0);
+                let key;
+                if (tableId > 0) {
+                    // Dine-in: รวมทุกบิลโต๊ะเดียวกัน → หลายรอบ = การ์ดเดียว
+                    key = 'tbl_' + tableId;
+                } else if (processId > 0) {
+                    // ไม่มีโต๊ะ + มีบิล (delivery/takeaway) → 1 บิล 1 การ์ด
+                    key = 'bill_' + processId;
+                } else {
+                    // Fallback: ไม่มีทั้งคู่ → แยกตาม ProductLevelID
+                    key = 'item_' + (Number(row.ProductLevelID || 0) || ('r' + Math.random()));
+                }
                 if (!map[key]) {
                     map[key] = {
-                        processId:    Number(row.ProcessID || 0),
-                        tableId:      Number(row.TableID || 0),
+                        processId:    processId,
+                        tableId:      tableId,
                         tableName:    row.DisplayTableName || '',
                         saleModeName: row.SaleModeName || '',
                         rows:         [],
@@ -2633,15 +2643,22 @@ function initSoundSettings() {
                 </div>`;
             }).join('');
 
-            // header: ถ้ามีชื่อโต๊ะแสดง "โต๊ะ X" ถ้าไม่มี (delivery/takeaway) แสดง SaleMode
-            const hasTable = tbl.tableName && tbl.tableName !== '0' && tbl.tableName !== '-';
-            const primaryLabel = hasTable
-                ? 'โต๊ะ ' + escapeHtml(tbl.tableName)
+            // header: dine-in → "โต๊ะ X" / non-table → SaleMode name
+            const isTableGroup = tbl.tableId > 0;
+            const primaryLabel = isTableGroup
+                ? 'โต๊ะ ' + escapeHtml(tbl.tableName || String(tbl.tableId))
                 : escapeHtml(tbl.saleModeName || 'ออเดอร์');
-            const billNum = '#' + String(tbl.processId).padStart(6, '0');
-            const secondaryLabel = (hasTable && tbl.saleModeName)
-                ? escapeHtml(tbl.saleModeName) + ' · ' + billNum + ' · ' + subText
-                : billNum + ' · ' + subText;
+            let secondaryLabel;
+            if (isTableGroup) {
+                // dine-in: ไม่แสดงเลขบิล (อาจมีหลายบิลในการ์ดเดียว)
+                secondaryLabel = tbl.saleModeName
+                    ? escapeHtml(tbl.saleModeName) + ' · ' + subText
+                    : subText;
+            } else {
+                // non-table: แสดงเลขบิล
+                const billNum = tbl.processId > 0 ? '#' + String(tbl.processId).padStart(6, '0') + ' · ' : '';
+                secondaryLabel = billNum + subText;
+            }
 
             return `<article class="card-table ${warnCls}" data-process-id="${tbl.processId}" data-table-id="${tbl.tableId}">
                 <div class="ct-head">
@@ -2658,14 +2675,15 @@ function initSoundSettings() {
         function renderTableView(rows) {
             const wrap = document.getElementById('activeCards');
             wrap.classList.add('table-view');
-            document.getElementById('queueSummary').textContent =
-                rows.length ? ('ค้าง ' + rows.length + ' แถว') : 'ไม่มีคิวค้าง';
             if (!rows.length) {
+                document.getElementById('queueSummary').textContent = 'ไม่มีคิวค้าง';
                 wrap.innerHTML = '<div class="empty">ไม่มีรายการค้างของวันนี้ในครัว</div>';
                 return;
             }
             const productTotals = buildActiveProductTotals(rows);
             const groups = groupRowsByTable(rows);
+            // แสดงจำนวนการ์ด (บิล/โต๊ะ) ไม่ใช่จำนวน row
+            document.getElementById('queueSummary').textContent = 'ค้าง ' + groups.length + ' บิล';
             wrap.innerHTML = groups.map(function(tbl){ return buildTableCard(tbl, productTotals); }).join('');
         }
 
@@ -3732,7 +3750,8 @@ function initSoundSettings() {
             if (cachedZoneTableIds === null) return;
             document.querySelectorAll('article[data-table-id]').forEach(function(el) {
                 const tid = parseInt(el.dataset.tableId || '0');
-                el.style.display = cachedZoneTableIds.has(tid) ? '' : 'none';
+                // tableId=0 = ออเดอร์ไม่มีโต๊ะ (delivery/takeaway) → แสดงเสมอ ไม่ filter ตาม zone
+                el.style.display = (tid === 0 || cachedZoneTableIds.has(tid)) ? '' : 'none';
             });
         }
     window.applyOutOfStockEnabled = function(enabled) {
