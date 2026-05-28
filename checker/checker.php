@@ -2501,13 +2501,17 @@ function initSoundSettings() {
         function groupRowsByTable(rows) {
             const map = {};
             rows.forEach(function(row) {
-                const key = 'tbl_' + (row.TableID || '0');
+                // 1 bill = 1 ProcessID → ใช้เป็น key เพื่อให้แต่ละบิลได้การ์ดของตัวเอง
+                // (ถ้าใช้ TableID อย่างเดียว delivery/takeaway ทุกบิลจะกองในการ์ดเดียว)
+                const key = 'bill_' + (row.ProcessID || '0');
                 if (!map[key]) {
                     map[key] = {
-                        tableId:   Number(row.TableID || 0),
-                        tableName: row.DisplayTableName || String(row.TableID || '-'),
-                        rows:      [],
-                        earliest:  row.SubmitOrderDateTime || ''
+                        processId:    Number(row.ProcessID || 0),
+                        tableId:      Number(row.TableID || 0),
+                        tableName:    row.DisplayTableName || '',
+                        saleModeName: row.SaleModeName || '',
+                        rows:         [],
+                        earliest:     row.SubmitOrderDateTime || ''
                     };
                 }
                 map[key].rows.push(row);
@@ -2629,11 +2633,21 @@ function initSoundSettings() {
                 </div>`;
             }).join('');
 
-            return `<article class="card-table ${warnCls}" data-table-id="${tbl.tableId}">
+            // header: ถ้ามีชื่อโต๊ะแสดง "โต๊ะ X" ถ้าไม่มี (delivery/takeaway) แสดง SaleMode
+            const hasTable = tbl.tableName && tbl.tableName !== '0' && tbl.tableName !== '-';
+            const primaryLabel = hasTable
+                ? 'โต๊ะ ' + escapeHtml(tbl.tableName)
+                : escapeHtml(tbl.saleModeName || 'ออเดอร์');
+            const billNum = '#' + String(tbl.processId).padStart(6, '0');
+            const secondaryLabel = (hasTable && tbl.saleModeName)
+                ? escapeHtml(tbl.saleModeName) + ' · ' + billNum + ' · ' + subText
+                : billNum + ' · ' + subText;
+
+            return `<article class="card-table ${warnCls}" data-process-id="${tbl.processId}" data-table-id="${tbl.tableId}">
                 <div class="ct-head">
                     <div>
-                        <div class="ct-name">โต๊ะ ${escapeHtml(tbl.tableName)}</div>
-                        <div class="ct-sub">${escapeHtml(subText)}</div>
+                        <div class="ct-name">${primaryLabel}</div>
+                        <div class="ct-sub">${secondaryLabel}</div>
                     </div>
                     <div class="ct-badge">⏱️ ${timeLabel}</div>
                 </div>
