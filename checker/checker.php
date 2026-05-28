@@ -2528,7 +2528,6 @@ function initSoundSettings() {
                 return (a.earliest || '').localeCompare(b.earliest || '');
             });
         }
-        }
 
         function buildTableCard(tbl, productTotals) {
             const mins      = getMinutesDiff(tbl.earliest);
