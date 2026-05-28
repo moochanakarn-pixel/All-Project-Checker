@@ -2502,21 +2502,15 @@ function initSoundSettings() {
             const map = {};
             rows.forEach(function(row) {
                 const tableId   = Number(row.TableID   || 0);
-                const processId = Number(row.ProcessID || 0);
-                let key;
-                if (tableId > 0) {
-                    // Dine-in: รวมทุกบิลโต๊ะเดียวกัน → หลายรอบ = การ์ดเดียว
-                    key = 'tbl_' + tableId;
-                } else if (processId > 0) {
-                    // ไม่มีโต๊ะ + มีบิล (delivery/takeaway) → 1 บิล 1 การ์ด
-                    key = 'bill_' + processId;
-                } else {
-                    // Fallback: ไม่มีทั้งคู่ → แยกตาม ProductLevelID
-                    key = 'item_' + (Number(row.ProductLevelID || 0) || ('r' + Math.random()));
-                }
+                const saleModeId = Number(row.SaleModeID || 0);
+                // ใช้ logic เดียวกับ serve_display groupByTable:
+                // dine-in (tableId>0) → tblId_smId
+                // delivery (tableId=0) → DisplayTableName_smId (รวม Grab ทุกบิลในการ์ดเดียว)
+                const key = tableId > 0
+                    ? 'tbl_' + tableId + '_' + saleModeId
+                    : 'd_' + (row.DisplayTableName || '') + '_' + saleModeId;
                 if (!map[key]) {
                     map[key] = {
-                        processId:    processId,
                         tableId:      tableId,
                         tableName:    row.DisplayTableName || '',
                         saleModeName: row.SaleModeName || '',
@@ -2533,6 +2527,7 @@ function initSoundSettings() {
             return Object.values(map).sort(function(a, b) {
                 return (a.earliest || '').localeCompare(b.earliest || '');
             });
+        }
         }
 
         function buildTableCard(tbl, productTotals) {
@@ -2643,24 +2638,16 @@ function initSoundSettings() {
                 </div>`;
             }).join('');
 
-            // header: dine-in → "โต๊ะ X" / non-table → SaleMode name
+            // header: dine-in → "โต๊ะ X" / delivery → DisplayTableName (เหมือน serve_display)
             const isTableGroup = tbl.tableId > 0;
             const primaryLabel = isTableGroup
                 ? 'โต๊ะ ' + escapeHtml(tbl.tableName || String(tbl.tableId))
-                : escapeHtml(tbl.saleModeName || 'ออเดอร์');
-            let secondaryLabel;
-            if (isTableGroup) {
-                // dine-in: ไม่แสดงเลขบิล (อาจมีหลายบิลในการ์ดเดียว)
-                secondaryLabel = tbl.saleModeName
-                    ? escapeHtml(tbl.saleModeName) + ' · ' + subText
-                    : subText;
-            } else {
-                // non-table: แสดงเลขบิล
-                const billNum = tbl.processId > 0 ? '#' + String(tbl.processId).padStart(6, '0') + ' · ' : '';
-                secondaryLabel = billNum + subText;
-            }
+                : escapeHtml(tbl.tableName || tbl.saleModeName || 'ออเดอร์');
+            const secondaryLabel = tbl.saleModeName
+                ? escapeHtml(tbl.saleModeName) + ' · ' + subText
+                : subText;
 
-            return `<article class="card-table ${warnCls}" data-process-id="${tbl.processId}" data-table-id="${tbl.tableId}">
+            return `<article class="card-table ${warnCls}" data-table-id="${tbl.tableId}">
                 <div class="ct-head">
                     <div>
                         <div class="ct-name">${primaryLabel}</div>
