@@ -12,7 +12,7 @@
         html, body {
             height: 100%;
             font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-            background: #e8e8e8;
+            background: #111;
             overflow: hidden;
         }
 
@@ -21,10 +21,7 @@
             flex-direction: column;
             height: 100vh;
             width: 100%;
-            max-width: 520px;
-            margin: 0 auto;
             background: #fff;
-            box-shadow: 0 0 20px rgba(0,0,0,.15);
         }
 
         /* ── Section (READY / PREPARING) ── */
@@ -40,19 +37,19 @@
             background: #1a1a2e;
             color: #fff;
             text-align: center;
-            padding: 10px 16px 8px;
+            padding: clamp(10px, 2vh, 22px) 16px clamp(8px, 1.6vh, 18px);
             flex-shrink: 0;
         }
         .qs-head-title {
-            font-size: clamp(15px, 3.2vw, 20px);
+            font-size: clamp(22px, 5.5vw, 56px);
             font-weight: 800;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
         }
         .qs-head-sub {
-            font-size: clamp(11px, 2.2vw, 14px);
+            font-size: clamp(14px, 3vw, 32px);
             font-weight: 400;
-            opacity: .8;
-            letter-spacing: 1px;
+            opacity: .85;
+            letter-spacing: 2px;
         }
 
         .qs-grid {
@@ -60,26 +57,27 @@
             grid-template-columns: 1fr 1fr;
             overflow-y: auto;
             flex: 1;
-            padding: 6px 12px 8px;
+            padding: clamp(6px, 1.2vh, 16px) clamp(8px, 2vw, 24px) clamp(8px, 1.6vh, 20px);
             align-content: start;
+            gap: clamp(2px, 0.6vh, 8px) 0;
         }
-        .qs-grid::-webkit-scrollbar { width: 3px; }
+        .qs-grid::-webkit-scrollbar { width: 4px; }
         .qs-grid::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
 
         .q-num {
-            font-size: clamp(20px, 4.8vw, 34px);
+            font-size: clamp(40px, 10.5vw, 110px);
             font-weight: 700;
             color: #1a1a2e;
             text-align: center;
-            padding: 5px 4px;
-            line-height: 1.2;
+            padding: clamp(4px, 1vh, 12px) 4px;
+            line-height: 1.15;
         }
         .q-empty {
             grid-column: 1 / -1;
             text-align: center;
             color: #bbb;
-            font-size: 13px;
-            padding: 18px;
+            font-size: clamp(16px, 3.5vw, 36px);
+            padding: clamp(20px, 5vh, 60px);
         }
 
         /* ── Latest Ready Announce ── */
@@ -89,26 +87,26 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 6px 0 8px;
-            border-top: 1px solid #ececec;
-            border-bottom: 1px solid #ececec;
-            background: #fafafa;
-            min-height: 80px;
+            padding: clamp(8px, 2vh, 28px) 0 clamp(10px, 2.4vh, 32px);
+            border-top: 2px solid #e0e0e0;
+            border-bottom: 2px solid #e0e0e0;
+            background: #f5f5f5;
+            min-height: clamp(100px, 22vh, 260px);
         }
         .latest-label {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            color: #888;
+            font-size: clamp(13px, 3vw, 32px);
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #666;
             text-transform: uppercase;
-            margin-bottom: 2px;
+            margin-bottom: clamp(2px, 0.6vh, 8px);
         }
         #latestNum {
-            font-size: clamp(44px, 13vw, 88px);
+            font-size: clamp(110px, 30vw, 300px);
             font-weight: 900;
             color: #1a1a2e;
             line-height: 1;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             display: block;
             transition: color .2s;
         }
@@ -117,7 +115,7 @@
         }
         @keyframes flash-ready {
             0%,100% { color: #1a1a2e; transform: scale(1);    }
-            50%     { color: #2563eb; transform: scale(1.1);   }
+            50%     { color: #2563eb; transform: scale(1.08);  }
         }
     </style>
 </head>
