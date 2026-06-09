@@ -191,6 +191,7 @@
 </head>
 <body>
 <div id="settingsTrigger" style="position:fixed;top:0;left:0;width:70px;height:70px;z-index:1000;cursor:default;"></div>
+<div id="compBadge" style="position:fixed;top:0;right:0;background:rgba(0,0,0,0.45);color:rgba(255,255,255,0.85);font-size:clamp(11px,1.4vw,16px);padding:5px 14px 5px 12px;z-index:990;border-radius:0 0 0 10px;display:none;pointer-events:none;"></div>
 <div id="setupError"></div>
 <div id="app">
 
@@ -271,6 +272,12 @@
                     return;
                 }
                 hideSetupError();
+
+                var badge = document.getElementById('compBadge');
+                if (d.computer_name) {
+                    badge.textContent = d.computer_name;
+                    badge.style.display = 'block';
+                }
 
                 renderGrid(document.getElementById('readyGrid'),     d.ready     || []);
                 renderGrid(document.getElementById('preparingGrid'), d.preparing || []);

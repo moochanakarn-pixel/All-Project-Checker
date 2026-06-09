@@ -28,6 +28,37 @@ $isErr = false;
 // ── handle POST ───────────────────────────────────────────────────────────────
 $action = isset($_POST['action']) ? (string)$_POST['action'] : '';
 
+// List computers where ComputerType=4 (AJAX — returns JSON)
+if ($action === 'list_computers') {
+    while (ob_get_level()) ob_end_clean();
+    header('Content-Type: application/json; charset=utf-8');
+    try {
+        $h = trim((string)($_POST['db_host'] ?? ''));
+        $p = max(1, (int)($_POST['db_port'] ?? 3307));
+        $n = trim((string)($_POST['db_name'] ?? ''));
+        $u = trim((string)($_POST['db_user'] ?? ''));
+        $w = (string)($_POST['db_pass'] ?? '');
+        if ($h === '' || $n === '' || $u === '') throw new Exception('กรุณากรอก Host / DB Name / User ก่อน');
+        $conn = new mysqli($h, $u, $w, $n, $p);
+        if ($conn->connect_error) throw new Exception($conn->connect_error);
+        $conn->set_charset('utf8');
+        $res = $conn->query(
+            "SELECT ComputerID, ComputerName FROM computername WHERE ComputerType = 4 ORDER BY ComputerName"
+        );
+        $list = array();
+        if ($res) {
+            while ($row = $res->fetch_assoc()) {
+                $list[] = array('id' => (int)$row['ComputerID'], 'name' => (string)$row['ComputerName']);
+            }
+        }
+        $conn->close();
+        echo json_encode(array('success' => true, 'computers' => $list));
+    } catch (Exception $e) {
+        echo json_encode(array('success' => false, 'message' => $e->getMessage()));
+    }
+    exit;
+}
+
 // Test DB connection (AJAX — returns JSON)
 if ($action === 'test_db') {
     while (ob_get_level()) ob_end_clean();
@@ -84,6 +115,7 @@ if ($action === 'save' && !empty($_SESSION['qdisplay_auth'])) {
             'db_user'               => trim((string)($_POST['db_user']               ?? '')),
             'db_pass'               => (string)($_POST['db_pass']                    ?? ''),
             'settings_pin'          => $newPin,
+            'computer_id'           => max(0, (int)($_POST['computer_id']            ?? 0)),
             'queue_refresh_ms'      => max(1000, (int)($_POST['queue_refresh_ms']    ?? 5000)),
             'ready_limit'           => max(1, (int)($_POST['ready_limit']            ?? 30)),
             'preparing_limit'       => max(1, (int)($_POST['preparing_limit']        ?? 30)),
@@ -271,6 +303,27 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
             <div class="test-result" id="testResult"></div>
         </div>
 
+        <!-- Computer -->
+        <div class="section">
+            <div class="section-title">คอมพิวเตอร์จอแสดงคิว</div>
+            <div class="field">
+                <label>เลือก Computer (ComputerType = 4)</label>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                    <select name="computer_id" id="computerSel" style="flex:1;min-width:180px;background:#0f172a;border:1px solid #334155;color:#f1f5f9;padding:10px 12px;border-radius:8px;font-size:15px;outline:none">
+                        <option value="0">(ยังไม่เลือก)</option>
+                        <?php
+                        $curCid = (int)sv($local, 'computer_id', 0);
+                        if ($curCid > 0):
+                        ?>
+                        <option value="<?= h($curCid) ?>" selected>ComputerID <?= h($curCid) ?></option>
+                        <?php endif; ?>
+                    </select>
+                    <button type="button" class="btn-test" id="btnLoadComputers">โหลดรายการ</button>
+                </div>
+                <div class="test-result" id="computerLoadResult"></div>
+            </div>
+        </div>
+
         <!-- Queue Behavior -->
         <div class="section">
             <div class="section-title">การแสดงผล Queue</div>
@@ -359,6 +412,47 @@ function syncColor(txtEl, colorId) {
         document.getElementById(colorId).value = v;
     }
 }
+
+document.getElementById('btnLoadComputers').addEventListener('click', function() {
+    var form = this.closest('form');
+    var data = new FormData();
+    data.append('action',  'list_computers');
+    data.append('db_host', form.querySelector('[name=db_host]').value);
+    data.append('db_port', form.querySelector('[name=db_port]').value);
+    data.append('db_name', form.querySelector('[name=db_name]').value);
+    data.append('db_user', form.querySelector('[name=db_user]').value);
+    data.append('db_pass', form.querySelector('[name=db_pass]').value);
+    var el  = document.getElementById('computerLoadResult');
+    var sel = document.getElementById('computerSel');
+    el.textContent = 'กำลังโหลด...';
+    el.className = 'test-result';
+    fetch('settings.php', { method: 'POST', body: data })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (!d.success) {
+                el.textContent = d.message || 'โหลดไม่ได้';
+                el.className = 'test-result err';
+                return;
+            }
+            var curVal = sel.value;
+            sel.innerHTML = '<option value="0">(ยังไม่เลือก)</option>';
+            d.computers.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = String(c.id);
+                opt.textContent = c.name + ' (ID: ' + c.id + ')';
+                if (String(c.id) === curVal) opt.selected = true;
+                sel.appendChild(opt);
+            });
+            if (d.computers.length === 0) {
+                el.textContent = 'ไม่พบ Computer ที่มี ComputerType = 4';
+                el.className = 'test-result err';
+            } else {
+                el.textContent = 'พบ ' + d.computers.length + ' เครื่อง';
+                el.className = 'test-result ok';
+            }
+        })
+        .catch(function() { el.textContent = 'เกิดข้อผิดพลาด'; el.className = 'test-result err'; });
+});
 
 document.getElementById('btnTest').addEventListener('click', function() {
     var form = this.closest('form');

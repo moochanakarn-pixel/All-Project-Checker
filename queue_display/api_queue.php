@@ -68,7 +68,34 @@ try {
         ));
     }
 
-    // ── 3. ดึงข้อมูล queue ────────────────────────────────────────────────────
+    // ── 3. ตรวจ Computer ID ─────────────────────────────────────────────────────
+    $computerId = defined('QUEUE_COMPUTER_ID') ? (int)QUEUE_COMPUTER_ID : 0;
+    if ($computerId <= 0) {
+        $conn->close();
+        jsonResponse(array(
+            'success'        => false,
+            'setup_required' => true,
+            'error'          => 'ยังไม่ได้ตั้งค่า Computer ID',
+            'detail'         => 'กรุณาเลือก Computer ที่เป็นจอแสดงคิวจากหน้าตั้งค่า',
+            'steps'          => array(
+                'กดมุมบนซ้ายของหน้าจอ 3 ครั้งเพื่อเข้าหน้าตั้งค่า',
+                'ไปที่หัวข้อ "คอมพิวเตอร์จอแสดงคิว"',
+                'กด "โหลดรายการ" แล้วเลือก Computer ที่ตรงกับจอนี้',
+                'กด "บันทึกการตั้งค่า"',
+            ),
+        ));
+    }
+
+    // ── 4. ดึงชื่อ computer จาก computername ───────────────────────────────────
+    $computerName = '';
+    $cnResult = $conn->query(
+        "SELECT ComputerName FROM computername WHERE ComputerID = {$computerId} LIMIT 1"
+    );
+    if ($cnResult && $cnResult->num_rows > 0) {
+        $computerName = trim((string)$cnResult->fetch_assoc()['ComputerName']);
+    }
+
+    // ── 5. ดึงข้อมูล queue ────────────────────────────────────────────────────
     $readyMins = defined('READY_DISPLAY_MINUTES') ? (int)READY_DISPLAY_MINUTES : 40;
     // กรอง READY ที่เสร็จเกิน N นาทีออก (0 = แสดงทั้งวัน)
     // FinishTime IS NULL ต้องผ่านด้วย (READY แต่ยังไม่มีเวลาบันทึก)
@@ -91,6 +118,7 @@ try {
             AND tr.ComputerID    = dsq.ComputerID
         WHERE dsq.OrderDate = CURDATE()
           AND dsq.ProcessStatus IN (0, 1)
+          AND dsq.ComputerID = {$computerId}
           {$readyTimeFilter}
         ORDER BY dsq.SubmitOrderDateTime ASC
     ";
@@ -136,6 +164,7 @@ try {
 
     jsonResponse(array(
         'success'         => true,
+        'computer_name'   => $computerName,
         'ready'           => array_column($ready,     'q'),
         'preparing'       => array_column($preparing, 'q'),
         'latest_ready'    => !empty($ready) ? $ready[0]['q'] : '',

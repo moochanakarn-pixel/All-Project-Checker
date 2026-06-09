@@ -9,6 +9,9 @@
     // ── Security ────────────────────────────────────────────────────────────
     'settings_pin'          => '1234',
 
+    // ── Computer ────────────────────────────────────────────────────────────
+    'computer_id'           => 0,        // ComputerID จาก computername WHERE ComputerType = 4
+
     // ── Queue Behavior ──────────────────────────────────────────────────────
     'queue_refresh_ms'      => 5000,
     'ready_limit'           => 30,
