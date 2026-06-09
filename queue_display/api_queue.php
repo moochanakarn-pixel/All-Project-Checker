@@ -9,8 +9,13 @@ set_exception_handler(function ($e) {
 try {
     $conn = getDbConnection();
 
-    // ── 1. ตรวจตารางมีอยู่มั้ย ──────────────────────────────────────────────
-    $tableCheck = $conn->query("SHOW TABLES LIKE 'OrderProcessDetail_DisplayStatusInQueue'");
+    // ── 1. ตรวจตารางมีอยู่มั้ย (case-insensitive ใช้ information_schema) ─────
+    $tableCheck = $conn->query(
+        "SELECT TABLE_NAME FROM information_schema.TABLES
+          WHERE TABLE_SCHEMA = DATABASE()
+            AND LOWER(TABLE_NAME) = 'orderprocessdetail_displaystatusinqueue'
+          LIMIT 1"
+    );
     if (!$tableCheck || $tableCheck->num_rows === 0) {
         $conn->close();
         jsonResponse(array(
@@ -27,17 +32,33 @@ try {
         ));
     }
 
-    // ── 2. ตรวจ feature property 172 เปิดอยู่มั้ย ──────────────────────────
+    // ── 2. ตรวจ feature property 172 ── แยก "ไม่มีแถว" vs "ปิดอยู่" ────────
     $propResult = $conn->query(
-        "SELECT PropertyValue FROM programpropertyvalue WHERE PropertyID = 172 AND PropertyValue = 1 LIMIT 1"
+        "SELECT PropertyValue FROM programpropertyvalue WHERE PropertyID = 172 LIMIT 1"
     );
     if (!$propResult || $propResult->num_rows === 0) {
         $conn->close();
         jsonResponse(array(
             'success'        => false,
             'setup_required' => true,
-            'error'          => 'ยังไม่ได้เปิดใช้งาน Queue Display feature',
-            'detail'         => 'ต้องเปิดการส่งข้อมูลสถานะออเดอร์ไปยังตาราง Queue Display ก่อน',
+            'error'          => 'ไม่พบ PropertyID 172 ในฐานข้อมูล',
+            'detail'         => 'ยังไม่ได้รัน SQL script สำหรับ Queue Display feature',
+            'steps'          => array(
+                'รัน SQL: INSERT INTO ProgramProperty ตามสคริปต์ที่ได้รับ',
+                'รัน SQL: INSERT INTO ProgramPropertyValue ตามสคริปต์ที่ได้รับ',
+                'รัน SQL: UPDATE programpropertyvalue SET propertyvalue = 1 WHERE propertyid = 172',
+                'Restart service POS หรือ reload หน้าจอแสดงผล',
+            ),
+        ));
+    }
+    $propValue = (int)$propResult->fetch_assoc()['PropertyValue'];
+    if ($propValue !== 1) {
+        $conn->close();
+        jsonResponse(array(
+            'success'        => false,
+            'setup_required' => true,
+            'error'          => 'Queue Display feature ยังไม่ได้เปิดใช้งาน (PropertyValue = ' . $propValue . ')',
+            'detail'         => 'PropertyID 172 มีอยู่แล้วแต่ค่าเป็น ' . $propValue . ' ต้องตั้งเป็น 1',
             'steps'          => array(
                 'เปิด Back Office → ระบบจัดการ → ตั้งค่าคอมพิวเตอร์',
                 'เลือก Computer ที่เป็น KDS/Checker แล้วตั้ง Computer Type = Queue Terminal',
@@ -50,8 +71,9 @@ try {
     // ── 3. ดึงข้อมูล queue ────────────────────────────────────────────────────
     $readyMins = defined('READY_DISPLAY_MINUTES') ? (int)READY_DISPLAY_MINUTES : 40;
     // กรอง READY ที่เสร็จเกิน N นาทีออก (0 = แสดงทั้งวัน)
+    // FinishTime IS NULL ต้องผ่านด้วย (READY แต่ยังไม่มีเวลาบันทึก)
     $readyTimeFilter = $readyMins > 0
-        ? "AND (dsq.ProcessStatus = 0 OR dsq.FinishTime >= DATE_SUB(NOW(), INTERVAL {$readyMins} MINUTE))"
+        ? "AND (dsq.ProcessStatus = 0 OR dsq.FinishTime IS NULL OR dsq.FinishTime >= DATE_SUB(NOW(), INTERVAL {$readyMins} MINUTE))"
         : '';
 
     $sql = "

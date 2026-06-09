@@ -173,8 +173,12 @@
         --grid-cols:     <?php echo (int)GRID_COLUMNS; ?>;
     }
     <?php if (BG_IMAGE !== ''): ?>
+    <?php
+        // ใช้ rawurlencode แต่ละส่วนของ path เพื่อรองรับชื่อไฟล์ที่มีช่องว่างหรือวงเล็บ
+        $__bgUrl = implode('/', array_map('rawurlencode', preg_split('#[/\\\\]#', BG_IMAGE)));
+    ?>
     #app {
-        background-image: url('<?php echo h(BG_IMAGE); ?>');
+        background-image: url('<?php echo h($__bgUrl); ?>');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;

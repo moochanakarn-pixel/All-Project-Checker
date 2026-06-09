@@ -13,6 +13,19 @@ function localSetting(array $settings, $key, $default)
     return array_key_exists($key, $settings) ? $settings[$key] : $default;
 }
 
+// อนุญาตเฉพาะค่าสีที่ปลอดภัยใน CSS เพื่อป้องกัน CSS injection ผ่าน settings.local.php
+function validateCssColor($value, $default)
+{
+    $v = trim((string)$value);
+    // #RGB, #RRGGBB, #RRGGBBAA
+    if (preg_match('/^#[0-9a-fA-F]{3,8}$/', $v)) return $v;
+    // named colors (letters only, max 30 chars)
+    if (preg_match('/^[a-zA-Z]{1,30}$/', $v)) return $v;
+    // rgb() / rgba() / hsl() / hsla() — digits, commas, spaces, %, dots only inside
+    if (preg_match('/^(rgb|rgba|hsl|hsla)\([\d,.\s%]+\)$/i', $v)) return $v;
+    return $default;
+}
+
 $__localSettings = loadLocalSettings();
 
 define('APP_TITLE',        'Queue Display');
@@ -23,10 +36,10 @@ define('PREPARING_LIMIT',        (int)localSetting($__localSettings, 'preparing_
 define('GRID_COLUMNS',           (int)localSetting($__localSettings, 'grid_columns',           2));
 define('READY_DISPLAY_MINUTES',  (int)localSetting($__localSettings, 'ready_display_minutes',  40));
 define('BG_IMAGE',            (string)localSetting($__localSettings, 'bg_image',              ''));
-define('COLOR_HEADER_BG',     (string)localSetting($__localSettings, 'color_header_bg',   '#1a1a2e'));
-define('COLOR_HEADER_TEXT',   (string)localSetting($__localSettings, 'color_header_text', '#ffffff'));
-define('COLOR_QUEUE_TEXT',    (string)localSetting($__localSettings, 'color_queue_text',  '#1a1a2e'));
-define('COLOR_APP_BG',        (string)localSetting($__localSettings, 'color_app_bg',      '#ffffff'));
+define('COLOR_HEADER_BG',     validateCssColor(localSetting($__localSettings, 'color_header_bg',   '#1a1a2e'), '#1a1a2e'));
+define('COLOR_HEADER_TEXT',   validateCssColor(localSetting($__localSettings, 'color_header_text', '#ffffff'), '#ffffff'));
+define('COLOR_QUEUE_TEXT',    validateCssColor(localSetting($__localSettings, 'color_queue_text',  '#1a1a2e'), '#1a1a2e'));
+define('COLOR_APP_BG',        validateCssColor(localSetting($__localSettings, 'color_app_bg',      '#ffffff'), '#ffffff'));
 
 define('KDS_ENV_DB_HOST', 'KDS_DB_HOST');
 define('KDS_ENV_DB_PORT', 'KDS_DB_PORT');
