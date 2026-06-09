@@ -21,7 +21,7 @@
             flex-direction: column;
             height: 100vh;
             width: 100%;
-            background: #fff;
+            background: var(--c-app-bg);
         }
 
         /* ── Section (READY / PREPARING) ── */
@@ -34,8 +34,8 @@
         }
 
         .qs-head {
-            background: #1a1a2e;
-            color: #fff;
+            background: var(--c-header-bg);
+            color: var(--c-header-text);
             text-align: center;
             padding: clamp(10px, 2vh, 22px) 16px clamp(8px, 1.6vh, 18px);
             flex-shrink: 0;
@@ -54,7 +54,7 @@
 
         .qs-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(var(--grid-cols), 1fr);
             overflow-y: auto;
             flex: 1;
             padding: clamp(6px, 1.2vh, 16px) clamp(8px, 2vw, 24px) clamp(8px, 1.6vh, 20px);
@@ -67,7 +67,7 @@
         .q-num {
             font-size: clamp(40px, 10.5vw, 110px);
             font-weight: 700;
-            color: #1a1a2e;
+            color: var(--c-queue-text);
             text-align: center;
             padding: clamp(4px, 1vh, 12px) 4px;
             line-height: 1.15;
@@ -104,7 +104,7 @@
         #latestNum {
             font-size: clamp(110px, 30vw, 300px);
             font-weight: 900;
-            color: #1a1a2e;
+            color: var(--c-queue-text);
             line-height: 1;
             letter-spacing: 4px;
             display: block;
@@ -114,8 +114,8 @@
             animation: flash-ready .55s ease-in-out 4;
         }
         @keyframes flash-ready {
-            0%,100% { color: #1a1a2e; transform: scale(1);    }
-            50%     { color: #2563eb; transform: scale(1.08);  }
+            0%,100% { color: var(--c-queue-text); transform: scale(1);   }
+            50%     { color: #2563eb;              transform: scale(1.08); }
         }
 
         /* ── Setup Error Overlay ── */
@@ -164,6 +164,26 @@
             opacity: .55;
         }
     </style>
+<style>
+    :root {
+        --c-header-bg:   <?php echo h(COLOR_HEADER_BG); ?>;
+        --c-header-text: <?php echo h(COLOR_HEADER_TEXT); ?>;
+        --c-queue-text:  <?php echo h(COLOR_QUEUE_TEXT); ?>;
+        --c-app-bg:      <?php echo h(COLOR_APP_BG); ?>;
+        --grid-cols:     <?php echo (int)GRID_COLUMNS; ?>;
+    }
+    <?php if (BG_IMAGE !== ''): ?>
+    #app {
+        background-image: url('<?php echo h(BG_IMAGE); ?>');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .qs { background: transparent; }
+    .qs-grid { background: transparent; }
+    .latest-wrap { background: rgba(255,255,255,0.88); }
+    <?php endif; ?>
+</style>
 </head>
 <body>
 <div id="setupError"></div>

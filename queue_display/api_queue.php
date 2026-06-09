@@ -48,6 +48,12 @@ try {
     }
 
     // ── 3. ดึงข้อมูล queue ────────────────────────────────────────────────────
+    $readyMins = defined('READY_DISPLAY_MINUTES') ? (int)READY_DISPLAY_MINUTES : 40;
+    // กรอง READY ที่เสร็จเกิน N นาทีออก (0 = แสดงทั้งวัน)
+    $readyTimeFilter = $readyMins > 0
+        ? "AND (dsq.ProcessStatus = 0 OR dsq.FinishTime >= DATE_SUB(NOW(), INTERVAL {$readyMins} MINUTE))"
+        : '';
+
     $sql = "
         SELECT
             dsq.TransactionID,
@@ -63,6 +69,7 @@ try {
             AND tr.ComputerID    = dsq.ComputerID
         WHERE dsq.OrderDate = CURDATE()
           AND dsq.ProcessStatus IN (0, 1)
+          {$readyTimeFilter}
         ORDER BY dsq.SubmitOrderDateTime ASC
     ";
 

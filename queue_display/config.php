@@ -17,9 +17,16 @@ $__localSettings = loadLocalSettings();
 
 define('APP_TITLE',        'Queue Display');
 define('APP_TIMEZONE',     'Asia/Bangkok');
-define('QUEUE_REFRESH_MS', (int)localSetting($__localSettings, 'queue_refresh_ms', 5000));
-define('READY_LIMIT',      (int)localSetting($__localSettings, 'ready_limit',      30));
-define('PREPARING_LIMIT',  (int)localSetting($__localSettings, 'preparing_limit',  30));
+define('QUEUE_REFRESH_MS',       (int)localSetting($__localSettings, 'queue_refresh_ms',       5000));
+define('READY_LIMIT',            (int)localSetting($__localSettings, 'ready_limit',            30));
+define('PREPARING_LIMIT',        (int)localSetting($__localSettings, 'preparing_limit',        30));
+define('GRID_COLUMNS',           (int)localSetting($__localSettings, 'grid_columns',           2));
+define('READY_DISPLAY_MINUTES',  (int)localSetting($__localSettings, 'ready_display_minutes',  40));
+define('BG_IMAGE',            (string)localSetting($__localSettings, 'bg_image',              ''));
+define('COLOR_HEADER_BG',     (string)localSetting($__localSettings, 'color_header_bg',   '#1a1a2e'));
+define('COLOR_HEADER_TEXT',   (string)localSetting($__localSettings, 'color_header_text', '#ffffff'));
+define('COLOR_QUEUE_TEXT',    (string)localSetting($__localSettings, 'color_queue_text',  '#1a1a2e'));
+define('COLOR_APP_BG',        (string)localSetting($__localSettings, 'color_app_bg',      '#ffffff'));
 
 define('KDS_ENV_DB_HOST', 'KDS_DB_HOST');
 define('KDS_ENV_DB_PORT', 'KDS_DB_PORT');
