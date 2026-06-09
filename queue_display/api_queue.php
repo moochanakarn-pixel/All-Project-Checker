@@ -86,13 +86,21 @@ try {
         ));
     }
 
-    // ── 4. ดึงชื่อ computer จาก computername ───────────────────────────────────
+    // ── 4. ดึงชื่อ computer และชื่อร้าน ────────────────────────────────────────
     $computerName = '';
     $cnResult = $conn->query(
         "SELECT ComputerName FROM computername WHERE ComputerID = {$computerId} LIMIT 1"
     );
     if ($cnResult && $cnResult->num_rows > 0) {
         $computerName = trim((string)$cnResult->fetch_assoc()['ComputerName']);
+    }
+
+    $shopName = '';
+    $snResult = $conn->query(
+        "SELECT ProductLevelName FROM productlevel LIMIT 1"
+    );
+    if ($snResult && $snResult->num_rows > 0) {
+        $shopName = trim((string)$snResult->fetch_assoc()['ProductLevelName']);
     }
 
     // ── 5. ดึงข้อมูล queue ────────────────────────────────────────────────────
@@ -164,6 +172,7 @@ try {
     jsonResponse(array(
         'success'         => true,
         'computer_name'   => $computerName,
+        'shop_name'       => $shopName,
         'ready'           => array_column($ready,     'q'),
         'preparing'       => array_column($preparing, 'q'),
         'latest_ready'    => !empty($ready) ? $ready[0]['q'] : '',

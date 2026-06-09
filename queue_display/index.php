@@ -236,9 +236,7 @@
         </div>
     </section>
 
-    <?php if (defined('SHOP_NAME') && SHOP_NAME !== ''): ?>
-    <div class="shop-name"><?php echo h(SHOP_NAME); ?></div>
-    <?php endif; ?>
+    <div class="shop-name" id="shopName"></div>
 
 </div>
 <script>
@@ -297,6 +295,10 @@
                 if (d.computer_name) {
                     badge.textContent = d.computer_name;
                     badge.style.display = 'block';
+                }
+
+                if (d.shop_name) {
+                    document.getElementById('shopName').textContent = d.shop_name;
                 }
 
                 renderGrid(document.getElementById('readyGrid'),     d.ready     || []);
