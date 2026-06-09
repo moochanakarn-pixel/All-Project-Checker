@@ -1,0 +1,8 @@
+# Local config files (contain credentials — never commit)
+queue_display/settings.local.php
+checker/settings.local.php
+
+# PHP error logs
+*.log
+checker/logs/
+queue_display/php_errors.log
