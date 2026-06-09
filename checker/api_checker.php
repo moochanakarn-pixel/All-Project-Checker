@@ -2565,7 +2565,7 @@ function applyCheckoutSplit($conn, $row, $qtyToFinish, $finishStaffId, $now)
         );
     } else {
         $stmt->bind_param(
-            'iiiiiiissiisissiiisiii',
+            'iiiiiiissiisisiisisiii',
             $insertProductLevelId, $insertProcessId, $insertSubProcessId,
             $insertTransactionId, $insertComputerId, $insertOrderDetailId,
             $insertProductId, $insertProductName, $insertProductAmount,
