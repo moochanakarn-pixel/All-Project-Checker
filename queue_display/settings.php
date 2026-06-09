@@ -116,6 +116,7 @@ if ($action === 'save' && !empty($_SESSION['qdisplay_auth'])) {
             'db_pass'               => (string)($_POST['db_pass']                    ?? ''),
             'settings_pin'          => $newPin,
             'computer_id'           => max(0, (int)($_POST['computer_id']            ?? 0)),
+            'product_level_id'      => max(0, (int)($_POST['product_level_id']       ?? 0)),
             'queue_refresh_ms'      => max(1000, (int)($_POST['queue_refresh_ms']    ?? 5000)),
             'ready_limit'           => max(1, (int)($_POST['ready_limit']            ?? 30)),
             'preparing_limit'       => max(1, (int)($_POST['preparing_limit']        ?? 30)),
@@ -322,6 +323,11 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
                     <button type="button" class="btn-test" id="btnLoadComputers">โหลดรายการ</button>
                 </div>
                 <div class="test-result" id="computerLoadResult"></div>
+            </div>
+            <div class="field">
+                <label>Product Level ID (ชื่อร้าน)</label>
+                <input type="number" name="product_level_id" value="<?= h(sv($local,'product_level_id',0)) ?>" min="0" style="width:140px">
+                <div style="font-size:12px;color:#64748b;margin-top:4px">ใส่ ProductLevelID ที่ต้องการแสดงเป็นชื่อร้าน (0 = ไม่แสดง)</div>
             </div>
         </div>
 

@@ -41,7 +41,7 @@ define('COLOR_HEADER_TEXT',   validateCssColor(localSetting($__localSettings, 'c
 define('COLOR_QUEUE_TEXT',    validateCssColor(localSetting($__localSettings, 'color_queue_text',  '#1a1a2e'), '#1a1a2e'));
 define('COLOR_APP_BG',        validateCssColor(localSetting($__localSettings, 'color_app_bg',      '#ffffff'), '#ffffff'));
 define('QUEUE_COMPUTER_ID',      (int)localSetting($__localSettings, 'computer_id',           0));
-define('SHOP_NAME',           (string)localSetting($__localSettings, 'shop_name',             ''));
+define('SHOP_PRODUCT_LEVEL_ID',  (int)localSetting($__localSettings, 'product_level_id',       0));
 
 define('KDS_ENV_DB_HOST', 'KDS_DB_HOST');
 define('KDS_ENV_DB_PORT', 'KDS_DB_PORT');

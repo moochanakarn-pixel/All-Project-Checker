@@ -95,12 +95,15 @@ try {
         $computerName = trim((string)$cnResult->fetch_assoc()['ComputerName']);
     }
 
-    $shopName = '';
-    $snResult = $conn->query(
-        "SELECT ProductLevelName FROM productlevel ORDER BY ProductLevelID DESC LIMIT 1"
-    );
-    if ($snResult && $snResult->num_rows > 0) {
-        $shopName = trim((string)$snResult->fetch_assoc()['ProductLevelName']);
+    $shopName       = '';
+    $productLevelId = defined('SHOP_PRODUCT_LEVEL_ID') ? (int)SHOP_PRODUCT_LEVEL_ID : 0;
+    if ($productLevelId > 0) {
+        $snResult = $conn->query(
+            "SELECT ProductLevelName FROM productlevel WHERE ProductLevelID = {$productLevelId} LIMIT 1"
+        );
+        if ($snResult && $snResult->num_rows > 0) {
+            $shopName = trim((string)$snResult->fetch_assoc()['ProductLevelName']);
+        }
     }
 
     // ── 5. ดึงข้อมูล queue ────────────────────────────────────────────────────
