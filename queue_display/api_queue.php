@@ -118,7 +118,6 @@ try {
             AND tr.ComputerID    = dsq.ComputerID
         WHERE dsq.OrderDate = CURDATE()
           AND dsq.ProcessStatus IN (0, 1)
-          AND dsq.ComputerID = {$computerId}
           {$readyTimeFilter}
         ORDER BY dsq.SubmitOrderDateTime ASC
     ";
