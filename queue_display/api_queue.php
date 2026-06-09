@@ -97,7 +97,7 @@ try {
 
     $shopName = '';
     $snResult = $conn->query(
-        "SELECT ProductLevelName FROM productlevel LIMIT 1"
+        "SELECT ProductLevelName FROM productlevel ORDER BY ProductLevelID DESC LIMIT 1"
     );
     if ($snResult && $snResult->num_rows > 0) {
         $shopName = trim((string)$snResult->fetch_assoc()['ProductLevelName']);
@@ -109,8 +109,9 @@ try {
     // เพราะ checker อัปเดต orderprocessdetailfront โดยตรง ส่วน ProcessStatus
     // ใน DisplayStatusInQueue อาจยังไม่ถูก update โดย POS
     $readyMins = defined('READY_DISPLAY_MINUTES') ? (int)READY_DISPLAY_MINUTES : 40;
+    // กรองเฉพาะ READY ที่เสร็จเกิน N นาที (pending > 0 = PREPARING ผ่านเสมอ)
     $readyTimeFilter = $readyMins > 0
-        ? "AND (opd_stat.pending_count = 0 OR opd_stat.last_finish IS NULL OR opd_stat.last_finish >= DATE_SUB(NOW(), INTERVAL {$readyMins} MINUTE))"
+        ? "AND (opd_stat.pending_count > 0 OR opd_stat.last_finish IS NULL OR opd_stat.last_finish >= DATE_SUB(NOW(), INTERVAL {$readyMins} MINUTE))"
         : '';
 
     $sql = "
@@ -149,9 +150,8 @@ try {
     $result = $conn->query($sql);
     if (!$result) throw new Exception('Query error: ' . $conn->error);
 
-    $preparing   = array();
-    $ready       = array();
-    $hasNewReady = false;
+    $preparing = array();
+    $ready     = array();
 
     while ($row = $result->fetch_assoc()) {
         $q = trim((string)$row['QueueName']);
