@@ -36,17 +36,20 @@
         .qs-head {
             background: var(--c-header-bg);
             color: var(--c-header-text);
-            text-align: center;
-            padding: clamp(10px, 2vh, 22px) 16px clamp(8px, 1.6vh, 18px);
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: clamp(6px, 1.2vw, 16px);
+            padding: clamp(8px, 1.8vh, 20px) 16px;
             flex-shrink: 0;
         }
         .qs-head-title {
-            font-size: clamp(22px, 5.5vw, 56px);
+            font-size: clamp(20px, 4.5vw, 48px);
             font-weight: 800;
             letter-spacing: 4px;
         }
         .qs-head-sub {
-            font-size: clamp(14px, 3vw, 32px);
+            font-size: clamp(13px, 2.5vw, 28px);
             font-weight: 400;
             opacity: .85;
             letter-spacing: 2px;
@@ -65,11 +68,11 @@
         .qs-grid::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
 
         .q-num {
-            font-size: clamp(40px, 10.5vw, 110px);
+            font-size: clamp(28px, 7.5vw, 80px);
             font-weight: 700;
             color: var(--c-queue-text);
             text-align: center;
-            padding: clamp(4px, 1vh, 12px) 4px;
+            padding: clamp(2px, 0.6vh, 8px) 4px;
             line-height: 1.15;
         }
         .q-empty {
@@ -102,13 +105,26 @@
             margin-bottom: clamp(2px, 0.6vh, 8px);
         }
         #latestNum {
-            font-size: clamp(110px, 30vw, 300px);
+            font-size: clamp(90px, 25vw, 260px);
             font-weight: 900;
             color: var(--c-queue-text);
             line-height: 1;
             letter-spacing: 4px;
             display: block;
-            transition: color .2s;
+            transition: color .2s, opacity .3s;
+        }
+
+        /* ── Shop name ── */
+        .shop-name {
+            flex-shrink: 0;
+            text-align: center;
+            padding: clamp(5px, 1vh, 12px) 16px;
+            font-size: clamp(10px, 1.6vw, 18px);
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(0,0,0,0.22);
+            background: var(--c-app-bg);
         }
         #latestNum.flash {
             animation: flash-ready .55s ease-in-out 4;
@@ -220,6 +236,10 @@
         </div>
     </section>
 
+    <?php if (defined('SHOP_NAME') && SHOP_NAME !== ''): ?>
+    <div class="shop-name"><?php echo h(SHOP_NAME); ?></div>
+    <?php endif; ?>
+
 </div>
 <script>
 (function () {
@@ -283,16 +303,17 @@
                 renderGrid(document.getElementById('preparingGrid'), d.preparing || []);
 
                 var latestEl = document.getElementById('latestNum');
-                var latest   = d.latest_ready || '-';
-                latestEl.textContent = latest;
+                var latest   = d.latest_ready || '';
+                latestEl.textContent  = latest || '-';
+                latestEl.style.opacity = latest ? '1' : '0';
 
-                if (latest !== '-' && prevLatest !== null && latest !== prevLatest) {
+                if (latest && prevLatest !== null && latest !== prevLatest) {
                     latestEl.classList.remove('flash');
                     void latestEl.offsetWidth;
                     latestEl.classList.add('flash');
                     setTimeout(function () { latestEl.classList.remove('flash'); }, 2400);
                 }
-                prevLatest = latest;
+                prevLatest = latest || '-';
             })
             .catch(function (e) { console.warn('queue fetch error', e); });
     }

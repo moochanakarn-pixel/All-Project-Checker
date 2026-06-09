@@ -19,6 +19,7 @@
     'ready_display_minutes' => 40,
 
     // ── Appearance ──────────────────────────────────────────────────────────
+    'shop_name'             => '',        // ชื่อร้านแสดงด้านล่างหน้าจอ
     'grid_columns'          => 2,
     'bg_image'              => '',
     'color_header_bg'       => '#1a1a2e',
