@@ -104,28 +104,44 @@ try {
     }
 
     // ── 5. ดึงข้อมูล queue ────────────────────────────────────────────────────
+    // Hybrid: ใช้ OrderProcessDetail_DisplayStatusInQueue เพื่อรู้ว่ามีออเดอร์อะไร
+    // แต่คำนวณสถานะ READY/PREPARING จาก orderprocessdetailfront จริง
+    // เพราะ checker อัปเดต orderprocessdetailfront โดยตรง ส่วน ProcessStatus
+    // ใน DisplayStatusInQueue อาจยังไม่ถูก update โดย POS
     $readyMins = defined('READY_DISPLAY_MINUTES') ? (int)READY_DISPLAY_MINUTES : 40;
-    // กรอง READY ที่เสร็จเกิน N นาทีออก (0 = แสดงทั้งวัน)
-    // FinishTime IS NULL ต้องผ่านด้วย (READY แต่ยังไม่มีเวลาบันทึก)
     $readyTimeFilter = $readyMins > 0
-        ? "AND (dsq.ProcessStatus = 0 OR dsq.FinishTime IS NULL OR dsq.FinishTime >= DATE_SUB(NOW(), INTERVAL {$readyMins} MINUTE))"
+        ? "AND (opd_stat.pending_count = 0 OR opd_stat.last_finish IS NULL OR opd_stat.last_finish >= DATE_SUB(NOW(), INTERVAL {$readyMins} MINUTE))"
         : '';
 
     $sql = "
         SELECT
             dsq.TransactionID,
             dsq.ComputerID,
-            dsq.ProcessStatus,
-            dsq.IsNewStatus,
             dsq.SubmitOrderDateTime,
-            dsq.FinishTime,
-            TRIM(COALESCE(tr.QueueName, '')) AS QueueName
+            TRIM(COALESCE(tr.QueueName, '')) AS QueueName,
+            COALESCE(opd_stat.pending_count, 0) AS pending_count,
+            COALESCE(opd_stat.done_count,    0) AS done_count,
+            opd_stat.last_finish
         FROM OrderProcessDetail_DisplayStatusInQueue dsq
         LEFT JOIN ordertransactionfront tr
             ON  tr.TransactionID = dsq.TransactionID
             AND tr.ComputerID    = dsq.ComputerID
+        LEFT JOIN (
+            SELECT
+                TransactionID,
+                ComputerID,
+                SUM(CASE WHEN ProcessStatus IN (0,2) THEN 1 ELSE 0 END) AS pending_count,
+                SUM(CASE WHEN ProcessStatus = 1      THEN 1 ELSE 0 END) AS done_count,
+                MAX(FinishDateTime) AS last_finish
+            FROM orderprocessdetailfront
+            WHERE SubmitOrderDateTime >= CURDATE()
+              AND ProductSetType >= 0
+            GROUP BY TransactionID, ComputerID
+        ) opd_stat
+            ON  opd_stat.TransactionID = dsq.TransactionID
+            AND opd_stat.ComputerID    = dsq.ComputerID
         WHERE dsq.OrderDate = CURDATE()
-          AND dsq.ProcessStatus IN (0, 1)
+          AND (opd_stat.pending_count IS NOT NULL OR opd_stat.done_count IS NOT NULL)
           {$readyTimeFilter}
         ORDER BY dsq.SubmitOrderDateTime ASC
     ";
@@ -143,14 +159,17 @@ try {
             $q = str_pad((int)$row['TransactionID'], 4, '0', STR_PAD_LEFT);
         }
 
-        if ((int)$row['ProcessStatus'] === 1) {
-            if ((int)$row['IsNewStatus'] === 1) $hasNewReady = true;
+        $pendingCount = (int)$row['pending_count'];
+        $doneCount    = (int)$row['done_count'];
+
+        if ($pendingCount === 0 && $doneCount > 0) {
+            // ออกจาก checker ครบทุก item → READY
             $ready[] = array(
                 'q' => $q,
-                't' => (string)($row['FinishTime'] ?: $row['SubmitOrderDateTime']),
+                't' => (string)($row['last_finish'] ?: $row['SubmitOrderDateTime']),
             );
-        } else {
-            // ProcessStatus = 0 → PREPARING
+        } elseif ($pendingCount > 0) {
+            // ยังมี item ค้างใน checker → PREPARING
             $preparing[] = array(
                 'q' => $q,
                 't' => (string)$row['SubmitOrderDateTime'],
@@ -177,7 +196,6 @@ try {
         'preparing'       => array_column($preparing, 'q'),
         'latest_ready'    => !empty($ready) ? $ready[0]['q'] : '',
         'latest_ready_at' => !empty($ready) ? $ready[0]['t'] : '',
-        'has_new_ready'   => $hasNewReady,
     ));
 
 } catch (Exception $e) {
