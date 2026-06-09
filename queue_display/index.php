@@ -117,9 +117,56 @@
             0%,100% { color: #1a1a2e; transform: scale(1);    }
             50%     { color: #2563eb; transform: scale(1.08);  }
         }
+
+        /* ── Setup Error Overlay ── */
+        #setupError {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #1a1a2e;
+            color: #fff;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 24px;
+            z-index: 999;
+            text-align: center;
+        }
+        .se-icon  { font-size: 56px; margin-bottom: 16px; }
+        .se-title { font-size: clamp(20px, 4vw, 36px); font-weight: 800; color: #f59e0b; margin-bottom: 12px; }
+        .se-error { font-size: clamp(16px, 3vw, 26px); font-weight: 600; margin-bottom: 8px; }
+        .se-detail{ font-size: clamp(13px, 2.2vw, 20px); opacity: .75; margin-bottom: 24px; }
+        .se-steps {
+            list-style: none;
+            text-align: left;
+            background: rgba(255,255,255,.08);
+            border-radius: 10px;
+            padding: 20px 28px;
+            max-width: 640px;
+            width: 100%;
+        }
+        .se-steps li {
+            font-size: clamp(13px, 2.2vw, 20px);
+            padding: 7px 0;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+            counter-increment: step;
+        }
+        .se-steps li:last-child { border-bottom: none; }
+        .se-steps li::before {
+            content: counter(step) ". ";
+            font-weight: 700;
+            color: #f59e0b;
+        }
+        .se-steps { counter-reset: step; }
+        .se-retry {
+            margin-top: 24px;
+            font-size: clamp(12px, 2vw, 18px);
+            opacity: .55;
+        }
     </style>
 </head>
 <body>
+<div id="setupError"></div>
 <div id="app">
 
     <section class="qs">
@@ -169,11 +216,36 @@
         }).join('');
     }
 
+    function showSetupError(d) {
+        var steps = (d.steps || []).map(function (s) {
+            return '<li>' + esc(s) + '</li>';
+        }).join('');
+        var el = document.getElementById('setupError');
+        el.innerHTML =
+            '<div class="se-icon">&#9888;</div>' +
+            '<div class="se-title">ต้องตั้งค่าระบบก่อนใช้งาน</div>' +
+            '<div class="se-error">' + esc(d.error || '') + '</div>' +
+            (d.detail ? '<div class="se-detail">' + esc(d.detail) + '</div>' : '') +
+            (steps ? '<ol class="se-steps">' + steps + '</ol>' : '') +
+            '<div class="se-retry">ระบบจะตรวจสอบซ้ำอัตโนมัติทุก ' + Math.round(REFRESH_MS / 1000) + ' วินาที</div>';
+        el.style.display = 'flex';
+        document.getElementById('app').style.display = 'none';
+    }
+
+    function hideSetupError() {
+        document.getElementById('setupError').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+    }
+
     function fetchQueue() {
-        fetch('api_queue.php?action=status&_=' + Date.now())
+        fetch('api_queue.php?_=' + Date.now())
             .then(function (r) { return r.json(); })
             .then(function (d) {
-                if (!d.success) return;
+                if (!d.success) {
+                    if (d.setup_required) showSetupError(d);
+                    return;
+                }
+                hideSetupError();
 
                 renderGrid(document.getElementById('readyGrid'),     d.ready     || []);
                 renderGrid(document.getElementById('preparingGrid'), d.preparing || []);
@@ -184,7 +256,7 @@
 
                 if (latest !== '-' && prevLatest !== null && latest !== prevLatest) {
                     latestEl.classList.remove('flash');
-                    void latestEl.offsetWidth; // reflow
+                    void latestEl.offsetWidth;
                     latestEl.classList.add('flash');
                     setTimeout(function () { latestEl.classList.remove('flash'); }, 2400);
                 }
