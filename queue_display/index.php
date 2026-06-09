@@ -190,6 +190,7 @@
 </style>
 </head>
 <body>
+<div id="settingsTrigger" style="position:fixed;top:0;left:0;width:70px;height:70px;z-index:1000;cursor:default;"></div>
 <div id="setupError"></div>
 <div id="app">
 
@@ -291,6 +292,16 @@
 
     fetchQueue();
     setInterval(fetchQueue, REFRESH_MS);
+}());
+
+(function () {
+    var clicks = [];
+    document.getElementById('settingsTrigger').addEventListener('click', function () {
+        var now = Date.now();
+        clicks = clicks.filter(function (t) { return now - t < 1500; });
+        clicks.push(now);
+        if (clicks.length >= 3) { clicks = []; window.location.href = 'settings.php'; }
+    });
 }());
 </script>
 </body>
