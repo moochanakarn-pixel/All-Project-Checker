@@ -195,6 +195,53 @@
             font-size: clamp(12px, 2vw, 18px);
             opacity: .55;
         }
+
+        /* ── Fullscreen Overlay ── */
+        #fsOverlay {
+            display: flex;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.78);
+            z-index: 997;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: opacity .4s;
+        }
+        #fsOverlay.fs-hidden { opacity: 0; pointer-events: none; }
+        .fso-inner { text-align: center; color: #fff; user-select: none; }
+        .fso-icon  {
+            width: clamp(64px, 12vw, 100px);
+            height: clamp(64px, 12vw, 100px);
+            margin: 0 auto clamp(12px, 2vh, 20px);
+            opacity: .9;
+        }
+        .fso-text  { font-size: clamp(18px, 3.5vw, 36px); font-weight: 700; margin-bottom: 8px; }
+        .fso-sub   { font-size: clamp(12px, 2vw, 20px); opacity: .6; }
+
+        /* ── Fullscreen Toggle Button ── */
+        #fsBtn {
+            position: fixed;
+            bottom: 14px;
+            right: 14px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.45);
+            color: rgba(255,255,255,0.85);
+            cursor: pointer;
+            z-index: 991;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        #fsBtn.fs-visible { opacity: 1; pointer-events: auto; }
+        #fsBtn:hover { background: rgba(0,0,0,0.65); }
     </style>
 <style>
     :root {
@@ -226,6 +273,17 @@
 <div id="settingsTrigger" style="position:fixed;top:0;left:0;width:70px;height:70px;z-index:1000;cursor:default;"></div>
 <div id="compBadge" style="position:fixed;top:0;right:0;background:rgba(0,0,0,0.45);color:rgba(255,255,255,0.85);font-size:clamp(11px,1.4vw,16px);padding:5px 14px 5px 12px;z-index:990;border-radius:0 0 0 10px;display:none;pointer-events:none;"></div>
 <div id="setupError"></div>
+<div id="fsOverlay">
+    <div class="fso-inner">
+        <svg class="fso-icon" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+            <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+        <div class="fso-text">แตะหน้าจอเพื่อแสดงผลเต็มจอ</div>
+        <div class="fso-sub">หายไปอัตโนมัติใน <span id="fsCountdown">8</span> วินาที</div>
+    </div>
+</div>
+<button id="fsBtn"></button>
 <div id="app">
 
     <section class="qs">
@@ -368,6 +426,65 @@
         clicks.push(now);
         if (clicks.length >= 3) { clicks = []; window.location.href = 'settings.php'; }
     });
+}());
+
+(function () {
+    var overlay  = document.getElementById('fsOverlay');
+    var btn      = document.getElementById('fsBtn');
+    var cntEl    = document.getElementById('fsCountdown');
+    var hideTimer = null;
+    var cntTimer  = null;
+    var cntVal    = 8;
+
+    var SVG_EXPAND   = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+    var SVG_COMPRESS = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/></svg>';
+
+    function isFs() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+
+    function enterFs() {
+        var el = document.documentElement;
+        if (el.requestFullscreen)            el.requestFullscreen();
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    }
+
+    function exitFs() {
+        if (document.exitFullscreen)              document.exitFullscreen();
+        else if (document.webkitExitFullscreen)   document.webkitExitFullscreen();
+    }
+
+    function dismissOverlay() {
+        clearInterval(cntTimer);
+        overlay.classList.add('fs-hidden');
+    }
+
+    function updateBtn() {
+        btn.innerHTML = isFs() ? SVG_COMPRESS : SVG_EXPAND;
+        btn.title     = isFs() ? 'ออกจากเต็มจอ' : 'แสดงผลเต็มจอ';
+    }
+
+    if (isFs()) {
+        overlay.style.display = 'none';
+    } else {
+        cntTimer = setInterval(function () {
+            cntVal--;
+            if (cntEl) cntEl.textContent = cntVal;
+            if (cntVal <= 0) dismissOverlay();
+        }, 1000);
+    }
+
+    overlay.addEventListener('click', function () { enterFs(); dismissOverlay(); });
+    btn.addEventListener('click', function (e) { e.stopPropagation(); if (isFs()) exitFs(); else enterFs(); });
+
+    document.addEventListener('mousemove', function () {
+        btn.classList.add('fs-visible');
+        clearTimeout(hideTimer);
+        hideTimer = setTimeout(function () { btn.classList.remove('fs-visible'); }, 3000);
+    });
+
+    document.addEventListener('fullscreenchange', updateBtn);
+    document.addEventListener('webkitfullscreenchange', updateBtn);
+
+    updateBtn();
 }());
 </script>
 </body>
