@@ -122,7 +122,6 @@ if ($action === 'save' && !empty($_SESSION['qdisplay_auth'])) {
             'preparing_limit'       => max(1, (int)($_POST['preparing_limit']        ?? 30)),
             'ready_display_minutes' => max(0, (int)($_POST['ready_display_minutes']  ?? 40)),
             'grid_columns'          => max(1, min(8, (int)($_POST['grid_columns']    ?? 2))),
-            'shop_name'             => trim((string)($_POST['shop_name']              ?? '')),
             'bg_image'              => trim((string)($_POST['bg_image']              ?? '')),
             'color_header_bg'       => safeColor($_POST['color_header_bg']   ?? '#1a1a2e', '#1a1a2e'),
             'color_header_text'     => safeColor($_POST['color_header_text'] ?? '#ffffff', '#ffffff'),
@@ -390,10 +389,6 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
                     <input type="color" id="cp_abg" value="<?= h(sv($local,'color_app_bg','#ffffff')) ?>" oninput="document.getElementById('t_abg').value=this.value">
                     <input type="text" name="color_app_bg" id="t_abg" value="<?= h(sv($local,'color_app_bg','#ffffff')) ?>" oninput="syncColor(this,'cp_abg')">
                 </div>
-            </div>
-            <div class="field">
-                <label>ชื่อร้าน (แสดงด้านล่างหน้าจอ)</label>
-                <input type="text" name="shop_name" value="<?= h(sv($local,'shop_name','')) ?>" placeholder="ONE TO TWO COFFEE COMPANY">
             </div>
             <div class="field">
                 <label>ภาพพื้นหลัง (ชื่อไฟล์ในโฟลเดอร์ queue_display)</label>

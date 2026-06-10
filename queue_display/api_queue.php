@@ -145,7 +145,6 @@ try {
             ON  opd_stat.TransactionID = dsq.TransactionID
             AND opd_stat.ComputerID    = dsq.ComputerID
         WHERE dsq.OrderDate = CURDATE()
-          AND (opd_stat.pending_count IS NOT NULL OR opd_stat.done_count IS NOT NULL)
           {$readyTimeFilter}
         ORDER BY dsq.SubmitOrderDateTime ASC
     ";
@@ -171,8 +170,8 @@ try {
                 'q' => $q,
                 't' => (string)($row['last_finish'] ?: $row['SubmitOrderDateTime']),
             );
-        } elseif ($pendingCount > 0) {
-            // ยังมี item ค้างใน checker → PREPARING
+        } else {
+            // pending > 0 = ยังอยู่ในครัว, หรือ 0/0 = ยังไม่มีข้อมูลครัว → PREPARING
             $preparing[] = array(
                 'q' => $q,
                 't' => (string)$row['SubmitOrderDateTime'],

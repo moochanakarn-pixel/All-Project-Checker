@@ -91,10 +91,26 @@
             align-items: center;
             justify-content: center;
             padding: clamp(8px, 2vh, 28px) 0 clamp(10px, 2.4vh, 32px);
-            border-top: 2px solid #e0e0e0;
-            border-bottom: 2px solid #e0e0e0;
-            background: #f5f5f5;
+            border-top: 2px solid rgba(128,128,128,0.2);
+            border-bottom: 2px solid rgba(128,128,128,0.2);
+            background: var(--c-app-bg);
             min-height: clamp(100px, 22vh, 260px);
+        }
+
+        /* ── Fetch error badge ── */
+        #fetchError {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(220,38,38,0.92);
+            color: #fff;
+            font-size: clamp(12px, 1.8vw, 16px);
+            font-weight: 600;
+            text-align: center;
+            padding: 8px 16px;
+            z-index: 995;
         }
         .latest-label {
             font-size: clamp(13px, 3vw, 32px);
@@ -206,6 +222,7 @@
 </style>
 </head>
 <body>
+<div id="fetchError"></div>
 <div id="settingsTrigger" style="position:fixed;top:0;left:0;width:70px;height:70px;z-index:1000;cursor:default;"></div>
 <div id="compBadge" style="position:fixed;top:0;right:0;background:rgba(0,0,0,0.45);color:rgba(255,255,255,0.85);font-size:clamp(11px,1.4vw,16px);padding:5px 14px 5px 12px;z-index:990;border-radius:0 0 0 10px;display:none;pointer-events:none;"></div>
 <div id="setupError"></div>
@@ -260,6 +277,15 @@
         }).join('');
     }
 
+    function showFetchError(msg) {
+        var el = document.getElementById('fetchError');
+        el.textContent = msg;
+        el.style.display = 'block';
+    }
+    function hideFetchError() {
+        document.getElementById('fetchError').style.display = 'none';
+    }
+
     function showSetupError(d) {
         var steps = (d.steps || []).map(function (s) {
             return '<li>' + esc(s) + '</li>';
@@ -286,10 +312,12 @@
             .then(function (r) { return r.json(); })
             .then(function (d) {
                 if (!d.success) {
-                    if (d.setup_required) showSetupError(d);
+                    if (d.setup_required) { showSetupError(d); return; }
+                    showFetchError('ข้อผิดพลาด: ' + (d.error || 'ไม่สามารถดึงข้อมูลได้'));
                     return;
                 }
                 hideSetupError();
+                hideFetchError();
 
                 var badge = document.getElementById('compBadge');
                 if (d.computer_name) {
@@ -304,10 +332,15 @@
                 renderGrid(document.getElementById('readyGrid'),     d.ready     || []);
                 renderGrid(document.getElementById('preparingGrid'), d.preparing || []);
 
-                var latestEl = document.getElementById('latestNum');
-                var latest   = d.latest_ready || '';
-                latestEl.textContent  = latest || '-';
-                latestEl.style.opacity = latest ? '1' : '0';
+                var latestWrap = document.querySelector('.latest-wrap');
+                var latestEl   = document.getElementById('latestNum');
+                var latest     = d.latest_ready || '';
+                if (latest) {
+                    latestWrap.style.display = 'flex';
+                    latestEl.textContent = latest;
+                } else {
+                    latestWrap.style.display = 'none';
+                }
 
                 if (latest && prevLatest !== null && latest !== prevLatest) {
                     latestEl.classList.remove('flash');
@@ -315,9 +348,12 @@
                     latestEl.classList.add('flash');
                     setTimeout(function () { latestEl.classList.remove('flash'); }, 2400);
                 }
-                prevLatest = latest || '-';
+                prevLatest = latest;
             })
-            .catch(function (e) { console.warn('queue fetch error', e); });
+            .catch(function (e) {
+                console.warn('queue fetch error', e);
+                showFetchError('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
+            });
     }
 
     fetchQueue();
