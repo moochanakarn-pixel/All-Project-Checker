@@ -186,7 +186,7 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
 
 /* ── Fields ── */
 .field{margin-bottom:14px}
-.field label{display:block;font-size:13px;font-weight:600;color:#94a3b8;margin-bottom:5px}
+.field label:not(.toggle-wrap){display:block;font-size:13px;font-weight:600;color:#94a3b8;margin-bottom:5px}
 .field input[type=text],
 .field input[type=password],
 .field input[type=number]{width:100%;background:#0f172a;border:1px solid #334155;color:#f1f5f9;padding:10px 12px;border-radius:8px;font-size:15px;outline:none;transition:.15s}
@@ -331,8 +331,18 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
                         <?php
                         $curCid = (int)sv($local, 'computer_id', 0);
                         if ($curCid > 0):
+                            $curCidLabel = 'ComputerID ' . $curCid;
+                            try {
+                                $tmpConn = getDbConnection();
+                                $tmpRes  = $tmpConn->query("SELECT ComputerName FROM computername WHERE ComputerID = {$curCid} LIMIT 1");
+                                if ($tmpRes && $tmpRes->num_rows > 0) {
+                                    $n = trim((string)$tmpRes->fetch_assoc()['ComputerName']);
+                                    if ($n !== '') $curCidLabel = $n . ' (ID: ' . $curCid . ')';
+                                }
+                                $tmpConn->close();
+                            } catch (Exception $ignored) {}
                         ?>
-                        <option value="<?= h($curCid) ?>" selected>ComputerID <?= h($curCid) ?></option>
+                        <option value="<?= h($curCid) ?>" selected><?= h($curCidLabel) ?></option>
                         <?php endif; ?>
                     </select>
                     <button type="button" class="btn-test" id="btnLoadComputers">โหลดรายการ</button>
