@@ -7,7 +7,26 @@ set_exception_handler(function ($e) {
 });
 
 try {
-    $conn = getDbConnection();
+    // ── 0. ตรวจ DB config ก่อน connect ────────────────────────────────────────
+    try {
+        $conn = getDbConnection();
+    } catch (Exception $e) {
+        if (strpos($e->getMessage(), 'DB config incomplete') !== false) {
+            jsonResponse(array(
+                'success'        => false,
+                'setup_required' => true,
+                'error'          => 'ยังไม่ได้ตั้งค่าการเชื่อมต่อฐานข้อมูล',
+                'detail'         => 'กรุณากรอก Host, Database Name, User ในหน้าตั้งค่า',
+                'steps'          => array(
+                    'กดมุมบนซ้ายของหน้าจอ 3 ครั้งเพื่อเข้าหน้าตั้งค่า',
+                    'กรอกข้อมูลฐานข้อมูล (Host, Port, DB Name, User, Password)',
+                    'กด "ทดสอบการเชื่อมต่อ" เพื่อตรวจสอบ',
+                    'กด "บันทึกการตั้งค่า"',
+                ),
+            ));
+        }
+        throw $e;
+    }
 
     // ── 1. ตรวจตารางมีอยู่มั้ย (case-insensitive ใช้ information_schema) ─────
     $tableCheck = $conn->query(

@@ -242,7 +242,7 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
         <form method="post" id="pinForm">
             <input type="hidden" name="action" value="pin">
             <input type="password" name="pin" id="pinInput" class="pin-input"
-                   maxlength="4" inputmode="numeric" pattern="[0-9]*"
+                   maxlength="8" inputmode="numeric" pattern="[0-9]*"
                    autocomplete="off" autofocus placeholder="••••">
             <br><br>
             <button type="submit" class="btn-pin">ยืนยัน</button>
@@ -251,14 +251,17 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
 </div>
 <script>
 (function(){
-    var inp = document.getElementById('pinInput');
+    var inp     = document.getElementById('pinInput');
+    var pinLen  = <?php echo (int)min(8, max(4, strlen($configuredPin))); ?>;
+    inp.setAttribute('maxlength', pinLen);
     inp.addEventListener('input', function(){
-        var v = this.value.replace(/\D/g,'').slice(0,4);
+        var v = this.value.replace(/\D/g,'').slice(0, pinLen);
         this.value = v;
         for(var i=0;i<4;i++){
-            document.getElementById('d'+i).classList.toggle('filled', i < v.length);
+            var frac = Math.round((i + 1) / 4 * pinLen);
+            document.getElementById('d'+i).classList.toggle('filled', v.length >= frac);
         }
-        if(v.length === 4){ document.getElementById('pinForm').submit(); }
+        if(v.length === pinLen){ document.getElementById('pinForm').submit(); }
     });
 }());
 </script>
@@ -401,7 +404,8 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
             <div class="section-title">ความปลอดภัย</div>
             <div class="field">
                 <label>PIN สำหรับเข้าหน้าตั้งค่า</label>
-                <input type="text" name="settings_pin" value="<?= h(sv($local,'settings_pin','1234')) ?>" maxlength="16" inputmode="numeric" style="width:200px">
+                <input type="text" name="settings_pin" value="<?= h(sv($local,'settings_pin','1234')) ?>" maxlength="8" inputmode="numeric" style="width:200px">
+                <div style="font-size:12px;color:#64748b;margin-top:4px">ตัวเลข 4–8 หลัก (ค่าเริ่มต้น 1234)</div>
             </div>
         </div>
 

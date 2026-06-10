@@ -311,9 +311,9 @@
         </div>
     </section>
 
-    <div class="latest-wrap">
+    <div class="latest-wrap" style="display:none">
         <div class="latest-label">ล่าสุด</div>
-        <span id="latestNum">-</span>
+        <span id="latestNum"></span>
     </div>
 
     <section class="qs">
