@@ -334,7 +334,10 @@
 </div>
 <script>
 (function () {
-    var REFRESH_MS = <?php echo (int)QUEUE_REFRESH_MS; ?>;
+    var REFRESH_MS    = <?php echo (int)QUEUE_REFRESH_MS; ?>;
+    var SOUND_ENABLED = <?php echo SOUND_ENABLED ? 'true' : 'false'; ?>;
+    var SOUND_VOLUME  = <?php echo (int)SOUND_VOLUME; ?> / 100;
+    var SHOW_COMPUTER = <?php echo SHOW_COMPUTER_NAME ? 'true' : 'false'; ?>;
     var prevLatest = null;
     var failCount  = 0;
     var MAX_FAILS  = 10;
@@ -349,14 +352,14 @@
     }
 
     function playBeep() {
-        if (!audioCtx || audioCtx.state !== 'running') return;
+        if (!SOUND_ENABLED || !audioCtx || audioCtx.state !== 'running') return;
         try {
             var o = audioCtx.createOscillator();
             var g = audioCtx.createGain();
             o.connect(g); g.connect(audioCtx.destination);
             o.frequency.setValueAtTime(880, audioCtx.currentTime);
             o.frequency.setValueAtTime(660, audioCtx.currentTime + 0.12);
-            g.gain.setValueAtTime(0.35, audioCtx.currentTime);
+            g.gain.setValueAtTime(0.5 * SOUND_VOLUME, audioCtx.currentTime);
             g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.45);
             o.start(audioCtx.currentTime);
             o.stop(audioCtx.currentTime + 0.45);
@@ -426,7 +429,7 @@
                 failCount = 0;
 
                 var badge = document.getElementById('compBadge');
-                if (d.computer_name) {
+                if (SHOW_COMPUTER && d.computer_name) {
                     badge.textContent = d.computer_name;
                     badge.style.display = 'block';
                 }

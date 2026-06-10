@@ -42,6 +42,9 @@ define('COLOR_QUEUE_TEXT',    validateCssColor(localSetting($__localSettings, 'c
 define('COLOR_APP_BG',        validateCssColor(localSetting($__localSettings, 'color_app_bg',      '#ffffff'), '#ffffff'));
 define('QUEUE_COMPUTER_ID',      (int)localSetting($__localSettings, 'computer_id',           0));
 define('SHOP_PRODUCT_LEVEL_ID',  (int)localSetting($__localSettings, 'product_level_id',       0));
+define('SOUND_ENABLED',          (bool)(int)localSetting($__localSettings, 'sound_enabled',     1));
+define('SOUND_VOLUME',           max(0, min(100, (int)localSetting($__localSettings, 'sound_volume',  70))));
+define('SHOW_COMPUTER_NAME',     (bool)(int)localSetting($__localSettings, 'show_computer_name', 1));
 
 define('KDS_ENV_DB_HOST', 'KDS_DB_HOST');
 define('KDS_ENV_DB_PORT', 'KDS_DB_PORT');

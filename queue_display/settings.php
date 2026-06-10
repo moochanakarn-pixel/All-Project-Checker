@@ -127,6 +127,9 @@ if ($action === 'save' && !empty($_SESSION['qdisplay_auth'])) {
             'color_header_text'     => safeColor($_POST['color_header_text'] ?? '#ffffff', '#ffffff'),
             'color_queue_text'      => safeColor($_POST['color_queue_text']  ?? '#1a1a2e', '#1a1a2e'),
             'color_app_bg'          => safeColor($_POST['color_app_bg']      ?? '#ffffff', '#ffffff'),
+            'sound_enabled'         => isset($_POST['sound_enabled'])         ? 1 : 0,
+            'sound_volume'          => max(0, min(100, (int)($_POST['sound_volume']  ?? 70))),
+            'show_computer_name'    => isset($_POST['show_computer_name'])    ? 1 : 0,
         ];
         $content = "<?php return " . var_export($new, true) . ";\n";
         if (file_put_contents(settingsFilePath(), $content) !== false) {
@@ -207,6 +210,16 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
 .test-result{margin-top:8px;font-size:13px;font-weight:600}
 .test-result.ok {color:#4ade80}
 .test-result.err{color:#f87171}
+
+/* ── Toggle switch ── */
+.toggle-wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;user-select:none}
+.toggle-text{font-size:14px;color:#e2e8f0;flex:1}
+.toggle-switch{position:relative;width:46px;height:26px;flex-shrink:0}
+.toggle-switch input{display:none}
+.toggle-slider{position:absolute;inset:0;background:#334155;border-radius:13px;transition:.2s}
+.toggle-slider::before{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#94a3b8;left:3px;top:3px;transition:.2s}
+.toggle-switch input:checked+.toggle-slider{background:#3b82f6}
+.toggle-switch input:checked+.toggle-slider::before{transform:translateX(20px);background:#fff}
 </style>
 </head>
 <body>
@@ -399,6 +412,44 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
             </div>
         </div>
 
+        <!-- Sound -->
+        <div class="section">
+            <div class="section-title">เสียงแจ้งเตือน</div>
+            <div class="field">
+                <label class="toggle-wrap">
+                    <span class="toggle-text">เปิดเสียงเมื่อมีคิว READY ใหม่</span>
+                    <div class="toggle-switch">
+                        <input type="checkbox" name="sound_enabled" value="1" id="soundEnabled" <?= sv($local,'sound_enabled',1) ? 'checked' : '' ?>>
+                        <span class="toggle-slider"></span>
+                    </div>
+                </label>
+            </div>
+            <div class="field" id="volumeWrap">
+                <label>ระดับเสียง — <span id="volPct"><?= (int)sv($local,'sound_volume',70) ?></span>%</label>
+                <input type="range" name="sound_volume" id="volRange" min="0" max="100" step="5"
+                       value="<?= (int)sv($local,'sound_volume',70) ?>"
+                       style="width:100%;margin-top:8px;accent-color:#3b82f6;cursor:pointer;height:6px">
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
+                <button type="button" class="btn-test" id="btnTestSound">▶ ทดสอบเสียง</button>
+                <span id="testSoundResult" style="font-size:13px;font-weight:600"></span>
+            </div>
+        </div>
+
+        <!-- Display Options -->
+        <div class="section">
+            <div class="section-title">ตัวเลือกการแสดงผล</div>
+            <div class="field">
+                <label class="toggle-wrap">
+                    <span class="toggle-text">แสดงชื่อคอมพิวเตอร์ที่มุมบนขวา</span>
+                    <div class="toggle-switch">
+                        <input type="checkbox" name="show_computer_name" value="1" <?= sv($local,'show_computer_name',1) ? 'checked' : '' ?>>
+                        <span class="toggle-slider"></span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
         <!-- Security -->
         <div class="section">
             <div class="section-title">ความปลอดภัย</div>
@@ -462,6 +513,45 @@ document.getElementById('btnLoadComputers').addEventListener('click', function()
             }
         })
         .catch(function() { el.textContent = 'เกิดข้อผิดพลาด'; el.className = 'test-result err'; });
+});
+
+// ── Sound section ────────────────────────────────────────────────────────
+var volRange     = document.getElementById('volRange');
+var volPct       = document.getElementById('volPct');
+var soundEnabled = document.getElementById('soundEnabled');
+var volumeWrap   = document.getElementById('volumeWrap');
+
+volRange.addEventListener('input', function () { volPct.textContent = this.value; });
+
+function applyVolumeToggle() {
+    volumeWrap.style.opacity       = soundEnabled.checked ? '1'    : '0.4';
+    volumeWrap.style.pointerEvents = soundEnabled.checked ? ''     : 'none';
+}
+soundEnabled.addEventListener('change', applyVolumeToggle);
+applyVolumeToggle();
+
+document.getElementById('btnTestSound').addEventListener('click', function () {
+    var resultEl = document.getElementById('testSoundResult');
+    try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var vol = parseInt(volRange.value, 10) / 100;
+        var o   = ctx.createOscillator();
+        var g   = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.setValueAtTime(880, ctx.currentTime);
+        o.frequency.setValueAtTime(660, ctx.currentTime + 0.12);
+        g.gain.setValueAtTime(0.5 * vol, ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+        o.start(ctx.currentTime);
+        o.stop(ctx.currentTime + 0.45);
+        o.onended = function () { ctx.close(); };
+        resultEl.textContent = '✓ เล่นเสียงแล้ว';
+        resultEl.style.color = '#4ade80';
+    } catch (e) {
+        resultEl.textContent = '✗ ' + e.message;
+        resultEl.style.color = '#f87171';
+    }
+    setTimeout(function () { resultEl.textContent = ''; }, 3000);
 });
 
 document.getElementById('btnTest').addEventListener('click', function() {
