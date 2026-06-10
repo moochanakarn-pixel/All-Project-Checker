@@ -130,17 +130,32 @@
             transition: color .2s, opacity .3s;
         }
 
-        /* ── Shop name ── */
-        .shop-name {
+        /* ── Shop bar (bottom strip: shop name + clock) ── */
+        .shop-bar {
             flex-shrink: 0;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: clamp(5px, 1vh, 12px) 16px;
+            background: var(--c-app-bg);
+            position: relative;
+        }
+        .shop-name {
             font-size: clamp(10px, 1.6vw, 18px);
             font-weight: 600;
             letter-spacing: 3px;
             text-transform: uppercase;
             color: rgba(0,0,0,0.22);
-            background: var(--c-app-bg);
+            text-align: center;
+        }
+        #shopClock {
+            position: absolute;
+            right: 16px;
+            font-size: clamp(11px, 1.5vw, 17px);
+            font-weight: 600;
+            color: rgba(0,0,0,0.22);
+            letter-spacing: 1px;
+            font-variant-numeric: tabular-nums;
         }
         #latestNum.flash {
             animation: flash-ready .55s ease-in-out 4;
@@ -311,13 +326,45 @@
         </div>
     </section>
 
-    <div class="shop-name" id="shopName"></div>
+    <div class="shop-bar">
+        <div class="shop-name" id="shopName"></div>
+        <div id="shopClock"></div>
+    </div>
 
 </div>
 <script>
 (function () {
     var REFRESH_MS = <?php echo (int)QUEUE_REFRESH_MS; ?>;
     var prevLatest = null;
+    var failCount  = 0;
+    var MAX_FAILS  = 10;
+    var audioCtx   = null;
+
+    function initAudio() {
+        if (!audioCtx) {
+            try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+        } else if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    function playBeep() {
+        if (!audioCtx || audioCtx.state !== 'running') return;
+        try {
+            var o = audioCtx.createOscillator();
+            var g = audioCtx.createGain();
+            o.connect(g); g.connect(audioCtx.destination);
+            o.frequency.setValueAtTime(880, audioCtx.currentTime);
+            o.frequency.setValueAtTime(660, audioCtx.currentTime + 0.12);
+            g.gain.setValueAtTime(0.35, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.45);
+            o.start(audioCtx.currentTime);
+            o.stop(audioCtx.currentTime + 0.45);
+        } catch (e) {}
+    }
+
+    document.addEventListener('click',      initAudio);
+    document.addEventListener('touchstart', initAudio);
 
     function esc(s) {
         return String(s || '').replace(/[&<>"']/g, function (c) {
@@ -376,6 +423,7 @@
                 }
                 hideSetupError();
                 hideFetchError();
+                failCount = 0;
 
                 var badge = document.getElementById('compBadge');
                 if (d.computer_name) {
@@ -405,12 +453,17 @@
                     void latestEl.offsetWidth;
                     latestEl.classList.add('flash');
                     setTimeout(function () { latestEl.classList.remove('flash'); }, 2400);
+                    playBeep();
                 }
                 prevLatest = latest;
             })
             .catch(function (e) {
                 console.warn('queue fetch error', e);
                 showFetchError('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
+                failCount++;
+                if (failCount >= MAX_FAILS) {
+                    setTimeout(function () { location.reload(); }, 1000);
+                }
             });
     }
 
@@ -485,6 +538,42 @@
     document.addEventListener('webkitfullscreenchange', updateBtn);
 
     updateBtn();
+}());
+
+/* ── Wake Lock: ป้องกันหน้าจอดับ ── */
+(function () {
+    var wl = null;
+    function acquire() {
+        if (!navigator.wakeLock) return;
+        navigator.wakeLock.request('screen')
+            .then(function (lock) { wl = lock; })
+            .catch(function () {});
+    }
+    acquire();
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') acquire();
+    });
+}());
+
+/* ── Reload อัตโนมัติ: ตอนตี 0 วันใหม่ ── */
+(function () {
+    var now  = new Date();
+    var next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 10);
+    setTimeout(function () { location.reload(); }, next - now);
+}());
+
+/* ── นาฬิกาปัจจุบัน (มุมขวาล่าง) ── */
+(function () {
+    var el = document.getElementById('shopClock');
+    function tick() {
+        var d = new Date();
+        var h = ('0' + d.getHours()).slice(-2);
+        var m = ('0' + d.getMinutes()).slice(-2);
+        var s = ('0' + d.getSeconds()).slice(-2);
+        el.textContent = h + ':' + m + ':' + s;
+    }
+    tick();
+    setInterval(tick, 1000);
 }());
 </script>
 </body>
