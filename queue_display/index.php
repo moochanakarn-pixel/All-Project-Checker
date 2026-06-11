@@ -90,11 +90,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: clamp(8px, 2vh, 28px) 0 clamp(10px, 2.4vh, 32px);
+            padding: clamp(4px, 0.8vh, 12px) 0;
             border-top: 2px solid rgba(128,128,128,0.2);
             border-bottom: 2px solid rgba(128,128,128,0.2);
             background: var(--c-app-bg);
-            min-height: clamp(100px, 22vh, 260px);
+            min-height: clamp(60px, 12vh, 140px);
         }
 
         /* ── Fetch error badge ── */
@@ -113,15 +113,15 @@
             z-index: 995;
         }
         .latest-label {
-            font-size: clamp(13px, 3vw, 32px);
+            font-size: clamp(11px, 2vw, 20px);
             font-weight: 700;
             letter-spacing: 3px;
             color: #666;
             text-transform: uppercase;
-            margin-bottom: clamp(2px, 0.6vh, 8px);
+            margin-bottom: clamp(1px, 0.3vh, 4px);
         }
         #latestNum {
-            font-size: clamp(90px, 25vw, 260px);
+            font-size: clamp(50px, 13vw, 140px);
             font-weight: 900;
             color: var(--c-queue-text);
             line-height: 1;
