@@ -30,7 +30,7 @@ $__localSettings = loadLocalSettings();
 
 define('APP_TITLE',        'Queue Display');
 define('APP_TIMEZONE',     'Asia/Bangkok');
-define('QUEUE_REFRESH_MS',       (int)localSetting($__localSettings, 'queue_refresh_ms',       5000));
+define('QUEUE_REFRESH_MS',       max(2000, (int)localSetting($__localSettings, 'queue_refresh_ms', 5000)));
 define('READY_LIMIT',            (int)localSetting($__localSettings, 'ready_limit',            30));
 define('PREPARING_LIMIT',        (int)localSetting($__localSettings, 'preparing_limit',        30));
 define('GRID_COLUMNS',           (int)localSetting($__localSettings, 'grid_columns',           2));

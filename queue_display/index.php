@@ -394,6 +394,7 @@
     var prevLatest    = null;
     var prevReady     = [];
     var prevPreparing = [];
+    var flashTimer    = null;
     var failCount     = 0;
     var MAX_FAILS     = 10;
     var audioCtx      = null;
@@ -435,6 +436,7 @@
         var t = new Date(dtStr.replace(' ', 'T') + '+07:00');
         if (isNaN(t.getTime())) return '';
         var mins = Math.floor((Date.now() - t.getTime()) / 60000);
+        if (mins < 0)  return '';
         if (mins < 1)  return '< 1 นาที';
         if (mins < 60) return mins + ' นาที';
         var h = Math.floor(mins / 60);
@@ -534,14 +536,14 @@
                         readySec.style.flex       = '0 0 auto';
                         readyGridEl.style.display = 'none';
                     } else {
-                        readySec.style.flex       = String(Math.max(1, readyArr.length));
+                        readySec.style.flex       = String(Math.min(Math.max(1, readyArr.length), 6));
                         readyGridEl.style.display = '';
                     }
                     if (prepArr.length === 0) {
                         prepSec.style.flex        = '0 0 auto';
                         prepGridEl.style.display  = 'none';
                     } else {
-                        prepSec.style.flex        = String(Math.max(1, prepArr.length));
+                        prepSec.style.flex        = String(Math.min(Math.max(1, prepArr.length), 6));
                         prepGridEl.style.display  = '';
                     }
                 }
@@ -563,10 +565,11 @@
                 }
 
                 if (latest && prevLatest !== null && latest !== prevLatest) {
+                    if (flashTimer) { clearTimeout(flashTimer); flashTimer = null; }
                     latestEl.classList.remove('flash');
                     void latestEl.offsetWidth;
                     latestEl.classList.add('flash');
-                    setTimeout(function () { latestEl.classList.remove('flash'); }, 2400);
+                    flashTimer = setTimeout(function () { latestEl.classList.remove('flash'); flashTimer = null; }, 2400);
                     playBeep();
                 }
                 prevLatest = latest;
