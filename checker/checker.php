@@ -504,6 +504,7 @@ $_ckBase = _computeCheckerBase();
         .ct-badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;background:rgba(0,0,0,.06);color:var(--muted,#6b7280);white-space:nowrap}
         .warn-yellow .ct-badge{background:rgba(255,193,7,.18);color:#92660a}
         .warn-red .ct-badge{background:rgba(228,76,58,.14);color:#c0392b}
+        .ct-queue-tag{display:inline-block;margin-left:6px;font-size:13px;font-weight:700;padding:1px 7px;border-radius:12px;background:rgba(37,99,235,.12);color:var(--primary-dark,#1e40af);vertical-align:middle;letter-spacing:.5px}
         /* items list */
         .ct-items{display:flex;flex-direction:column;gap:0;flex:1}
         .ct-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid rgba(0,0,0,.05)}
@@ -2515,10 +2516,12 @@ function initSoundSettings() {
                         tableName:    row.DisplayTableName || '',
                         saleModeName: row.SaleModeName || '',
                         rows:         [],
-                        earliest:     row.SubmitOrderDateTime || ''
+                        earliest:     row.SubmitOrderDateTime || '',
+                        queueNames:   new Set()
                     };
                 }
                 map[key].rows.push(row);
+                if (row.QueueName) map[key].queueNames.add(row.QueueName);
                 if (row.SubmitOrderDateTime &&
                     (!map[key].earliest || row.SubmitOrderDateTime < map[key].earliest)) {
                     map[key].earliest = row.SubmitOrderDateTime;
@@ -2646,10 +2649,16 @@ function initSoundSettings() {
                 ? escapeHtml(tbl.saleModeName) + ' · ' + subText
                 : subText;
 
+            const queueBadge = (tbl.queueNames && tbl.queueNames.size > 0)
+                ? Array.from(tbl.queueNames).map(function(q){
+                    return `<span class="ct-queue-tag">#${escapeHtml(q)}</span>`;
+                }).join('')
+                : '';
+
             return `<article class="card-table ${warnCls}" data-table-id="${tbl.tableId}">
                 <div class="ct-head">
                     <div>
-                        <div class="ct-name">${primaryLabel}</div>
+                        <div class="ct-name">${primaryLabel}${queueBadge}</div>
                         <div class="ct-sub">${secondaryLabel}</div>
                     </div>
                     <div class="ct-badge">⏱️ ${timeLabel}</div>
