@@ -233,7 +233,6 @@ try {
         'preparing'       => array_column($preparing, 'q'),
         'preparing_times' => array_column($preparing, 't'),
         'latest_ready'    => !empty($ready) ? $ready[0]['q'] : '',
-        'latest_ready_at' => !empty($ready) ? $ready[0]['t'] : '',
     ));
 
 } catch (Exception $e) {

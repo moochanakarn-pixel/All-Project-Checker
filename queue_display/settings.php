@@ -467,7 +467,7 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
                             <span style="font-weight:800;font-size:14px;letter-spacing:2px">READY</span>
                             <span style="font-size:9px;opacity:.85">พร้อมเสิร์ฟ</span>
                         </div>
-                        <div id="pvReadyGrid" class="pv-grid" style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,1fr);padding:4px 10px;align-content:start;gap:2px;overflow:hidden">
+                        <div class="pv-grid" style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,1fr);padding:4px 10px;align-content:start;gap:2px;overflow:hidden">
                             <div class="pv-num" style="text-align:center;font-weight:700;font-size:20px;padding:3px">0001</div>
                             <div class="pv-num" style="text-align:center;font-weight:700;font-size:20px;padding:3px">0002</div>
                             <div class="pv-num" style="text-align:center;font-weight:700;font-size:20px;padding:3px">0003</div>
@@ -484,7 +484,7 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
                             <span style="font-weight:800;font-size:14px;letter-spacing:2px">PREPARING</span>
                             <span style="font-size:9px;opacity:.85">กำลังเตรียม</span>
                         </div>
-                        <div id="pvPrepGrid" class="pv-grid" style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,1fr);padding:4px 10px;align-content:start;gap:2px;overflow:hidden">
+                        <div class="pv-grid" style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,1fr);padding:4px 10px;align-content:start;gap:2px;overflow:hidden">
                             <div class="pv-num" style="text-align:center;font-weight:700;font-size:20px;padding:3px">0004</div>
                             <div class="pv-num" style="text-align:center;font-weight:700;font-size:20px;padding:3px">0005</div>
                         </div>
