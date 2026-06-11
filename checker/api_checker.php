@@ -1253,7 +1253,6 @@ function fetchActiveRows($conn)
 
     $hasMoveOrder        = columnExists($conn, 'orderprocessdetailfront', 'IsMoveOrder');
     $hasDisplayFlexible  = columnExists($conn, 'products', 'DisplayFlexibleProductAtChecker');
-    $hasQueueName        = columnExists($conn, 'ordertransactionfront', 'QueueName');
 
     $activeSql = "
         SELECT
@@ -1290,10 +1289,7 @@ function fetchActiveRows($conn)
                    AND otf2.TransactionStatusID = 7
                    AND DATE(otf2.OpenTime) = opf.OrderDate
                  LIMIT 1),
-            0) AS TransactionStatusID,
-            " . ($hasQueueName
-                ? "TRIM(COALESCE(otf_q.QueueName, '')) AS QueueName"
-                : "'' AS QueueName") . "
+            0) AS TransactionStatusID
         FROM orderprocessdetailfront opf
         LEFT JOIN salemode sm
             ON sm.SaleModeID = opf.SaleModeID
@@ -1301,10 +1297,7 @@ function fetchActiveRows($conn)
         ($hasDisplayFlexible
             ? "\n        LEFT JOIN products pr ON pr.ProductID = opf.ProductID"
             : '') .
-        $zoneJoinSql .
-        ($hasQueueName
-            ? "\n        LEFT JOIN ordertransactionfront otf_q ON otf_q.TransactionID = opf.TransactionID AND otf_q.ComputerID = opf.ComputerID"
-            : '') . "
+        $zoneJoinSql . "
         WHERE " . implode(' AND ', $where) . "
         ORDER BY
             opf.SubmitOrderDateTime ASC,
@@ -1335,8 +1328,6 @@ function fetchFinishedRows($conn)
         ? "\n        LEFT JOIN tableno tn ON tn.TableID = opf.TableID AND tn.Deleted = 0"
         : '';
 
-    $hasQueueName = columnExists($conn, 'ordertransactionfront', 'QueueName');
-
     $finishedSql = "
         SELECT
             opf.ProductLevelID,
@@ -1360,17 +1351,11 @@ function fetchFinishedRows($conn)
             opf.ProcessStatus,
             opf.SaleModeID,
             opf.FinishStaffID,
-            COALESCE(sm.SaleModeName, '-') AS SaleModeName,
-            " . ($hasQueueName
-                ? "TRIM(COALESCE(otf_q.QueueName, '')) AS QueueName"
-                : "'' AS QueueName") . "
+            COALESCE(sm.SaleModeName, '-') AS SaleModeName
         FROM orderprocessdetailfront opf
         LEFT JOIN salemode sm
             ON sm.SaleModeID = opf.SaleModeID
-           AND sm.Deleted = 0" . $zoneJoinSql .
-        ($hasQueueName
-            ? "\n        LEFT JOIN ordertransactionfront otf_q ON otf_q.TransactionID = opf.TransactionID AND otf_q.ComputerID = opf.ComputerID"
-            : '') . "
+           AND sm.Deleted = 0" . $zoneJoinSql . "
         WHERE " . implode(' AND ', $where) . "
         ORDER BY
             opf.FinishDateTime DESC,

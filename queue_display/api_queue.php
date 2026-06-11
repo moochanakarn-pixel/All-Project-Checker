@@ -155,7 +155,9 @@ try {
                 ComputerID,
                 SUM(CASE WHEN ProcessStatus IN (0,2) THEN 1 ELSE 0 END) AS pending_count,
                 SUM(CASE WHEN ProcessStatus = 1      THEN 1 ELSE 0 END) AS done_count,
-                MAX(FinishDateTime) AS last_finish
+                MAX(FinishDateTime)    AS last_finish,
+                MAX(TableID)           AS TableID,
+                MAX(DisplayTableName)  AS DisplayTableName
             FROM orderprocessdetailfront
             WHERE SubmitOrderDateTime >= CURDATE()
               AND ProductSetType >= 0
@@ -175,9 +177,17 @@ try {
     $ready     = array();
 
     while ($row = $result->fetch_assoc()) {
-        $q = trim((string)$row['QueueName']);
-        if ($q === '') {
-            $q = str_pad((int)$row['TransactionID'], 4, '0', STR_PAD_LEFT);
+        // แสดงเหมือน checker: dine-in → "โต๊ะ X", delivery → DisplayTableName
+        // fallback: QueueName → TransactionID
+        $tableId   = (int)($row['TableID'] ?? 0);
+        $tableName = trim((string)($row['DisplayTableName'] ?? ''));
+        if ($tableName !== '') {
+            $q = $tableId > 0 ? 'โต๊ะ ' . $tableName : $tableName;
+        } else {
+            $q = trim((string)$row['QueueName']);
+            if ($q === '') {
+                $q = str_pad((int)$row['TransactionID'], 4, '0', STR_PAD_LEFT);
+            }
         }
 
         $pendingCount = (int)$row['pending_count'];
