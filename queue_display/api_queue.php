@@ -144,7 +144,15 @@ try {
             TRIM(COALESCE(tr.QueueName, '')) AS QueueName,
             COALESCE(opd_stat.pending_count, 0) AS pending_count,
             COALESCE(opd_stat.done_count,    0) AS done_count,
-            opd_stat.last_finish
+            opd_stat.last_finish,
+            (SELECT opdf.TableID FROM orderprocessdetailfront opdf
+             WHERE opdf.TransactionID = dsq.TransactionID
+               AND opdf.ComputerID    = dsq.ComputerID
+             LIMIT 1) AS TableID,
+            (SELECT opdf.DisplayTableName FROM orderprocessdetailfront opdf
+             WHERE opdf.TransactionID = dsq.TransactionID
+               AND opdf.ComputerID    = dsq.ComputerID
+             LIMIT 1) AS DisplayTableName
         FROM OrderProcessDetail_DisplayStatusInQueue dsq
         LEFT JOIN ordertransactionfront tr
             ON  tr.TransactionID = dsq.TransactionID
@@ -155,9 +163,7 @@ try {
                 ComputerID,
                 SUM(CASE WHEN ProcessStatus IN (0,2) THEN 1 ELSE 0 END) AS pending_count,
                 SUM(CASE WHEN ProcessStatus = 1      THEN 1 ELSE 0 END) AS done_count,
-                MAX(FinishDateTime)    AS last_finish,
-                MAX(TableID)           AS TableID,
-                MAX(DisplayTableName)  AS DisplayTableName
+                MAX(FinishDateTime) AS last_finish
             FROM orderprocessdetailfront
             WHERE SubmitOrderDateTime >= CURDATE()
               AND ProductSetType >= 0
