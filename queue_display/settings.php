@@ -417,8 +417,75 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
                 </div>
             </div>
             <div class="field">
-                <label>ภาพพื้นหลัง (ชื่อไฟล์ในโฟลเดอร์ queue_display)</label>
-                <input type="text" name="bg_image" value="<?= h(sv($local,'bg_image','')) ?>" placeholder="background.jpg">
+                <label>ภาพพื้นหลัง</label>
+                <input type="text" name="bg_image" id="bgImageInput" value="<?= h(sv($local,'bg_image','')) ?>" placeholder="images/bg-dark.svg">
+                <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+                    <button type="button" class="bg-sample-btn"
+                        data-path="images/bg-dark.svg"
+                        data-hbg="#1e1b4b" data-htx="#a78bfa" data-qtx="#e2e8f0" data-abg="#0f0c29"
+                        style="background:linear-gradient(135deg,#0f0c29,#302b63);color:#a78bfa;border:1px solid #4c1d95;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">
+                        🌙 Dark
+                    </button>
+                    <button type="button" class="bg-sample-btn"
+                        data-path="images/bg-warm.svg"
+                        data-hbg="#92400e" data-htx="#fef3c7" data-qtx="#7c2d12" data-abg="#fffbeb"
+                        style="background:linear-gradient(135deg,#fff7ed,#fdba74);color:#92400e;border:1px solid #d97706;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">
+                        ☀️ Warm
+                    </button>
+                    <button type="button" class="bg-sample-btn"
+                        data-path="images/bg-fresh.svg"
+                        data-hbg="#1e40af" data-htx="#dbeafe" data-qtx="#1e3a8a" data-abg="#eff6ff"
+                        style="background:linear-gradient(135deg,#f0f9ff,#bfdbfe);color:#1e40af;border:1px solid #3b82f6;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">
+                        🌊 Fresh
+                    </button>
+                    <button type="button" class="bg-sample-btn"
+                        data-path=""
+                        data-hbg="#1a1a2e" data-htx="#ffffff" data-qtx="#1a1a2e" data-abg="#ffffff"
+                        style="background:#1e293b;color:#94a3b8;border:1px solid #334155;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">
+                        ✕ ไม่มี BG
+                    </button>
+                </div>
+                <div style="font-size:11px;color:#475569;margin-top:5px">คลิกเพื่อดู Preview — สีจะปรับตาม theme อัตโนมัติ</div>
+            </div>
+
+            <!-- ── Live Preview ── -->
+            <div class="field" style="margin-top:6px">
+                <label style="display:flex;align-items:center;justify-content:space-between">
+                    <span>Preview หน้าจอ</span>
+                    <span style="font-size:11px;color:#475569;font-weight:400">อัพเดทอัตโนมัติเมื่อเปลี่ยนสี / BG</span>
+                </label>
+                <div id="pvWrap" style="width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;margin-top:8px;border:2px solid #334155;display:flex;flex-direction:column;font-family:'Segoe UI',Arial,sans-serif;user-select:none">
+                    <!-- READY section -->
+                    <div style="flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden">
+                        <div class="pv-head" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:5px 8px;flex-shrink:0">
+                            <span style="font-weight:800;font-size:14px;letter-spacing:2px">READY</span>
+                            <span style="font-size:9px;opacity:.85">พร้อมเสิร์ฟ</span>
+                        </div>
+                        <div id="pvReadyGrid" class="pv-grid" style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,1fr);padding:4px 10px;align-content:start;gap:2px;overflow:hidden">
+                            <div class="pv-num" style="text-align:center;font-weight:700;font-size:20px;padding:3px">0001</div>
+                            <div class="pv-num" style="text-align:center;font-weight:700;font-size:20px;padding:3px">0002</div>
+                            <div class="pv-num" style="text-align:center;font-weight:700;font-size:20px;padding:3px">0003</div>
+                        </div>
+                    </div>
+                    <!-- Latest wrap -->
+                    <div id="pvLatest" style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:4px 0;border-top:1px solid rgba(128,128,128,0.2);border-bottom:1px solid rgba(128,128,128,0.2)">
+                        <div style="font-size:7px;color:#888;letter-spacing:2px;text-transform:uppercase">ล่าสุด</div>
+                        <div class="pv-num" style="font-size:28px;font-weight:900;line-height:1.1">0001</div>
+                    </div>
+                    <!-- PREPARING section -->
+                    <div style="flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden">
+                        <div class="pv-head" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:5px 8px;flex-shrink:0">
+                            <span style="font-weight:800;font-size:14px;letter-spacing:2px">PREPARING</span>
+                            <span style="font-size:9px;opacity:.85">กำลังเตรียม</span>
+                        </div>
+                        <div id="pvPrepGrid" class="pv-grid" style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,1fr);padding:4px 10px;align-content:start;gap:2px;overflow:hidden">
+                            <div class="pv-num" style="text-align:center;font-weight:700;font-size:20px;padding:3px">0004</div>
+                            <div class="pv-num" style="text-align:center;font-weight:700;font-size:20px;padding:3px">0005</div>
+                        </div>
+                    </div>
+                    <!-- Shop bar -->
+                    <div id="pvShopBar" style="flex-shrink:0;text-align:center;padding:4px;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;opacity:.35">ชื่อร้าน</div>
+                </div>
             </div>
         </div>
 
@@ -584,6 +651,65 @@ document.getElementById('btnTest').addEventListener('click', function() {
         })
         .catch(function(){ el.textContent = 'เกิดข้อผิดพลาด'; el.className = 'test-result err'; });
 });
+
+// ── Live Preview ──────────────────────────────────────────────────────────
+(function () {
+    var pvWrap   = document.getElementById('pvWrap');
+    var pvLatest = document.getElementById('pvLatest');
+
+    function updatePreview() {
+        var hbg   = (document.getElementById('t_hbg').value  || '#1a1a2e').trim();
+        var htx   = (document.getElementById('t_htx').value  || '#ffffff').trim();
+        var qtx   = (document.getElementById('t_qtx').value  || '#1a1a2e').trim();
+        var abg   = (document.getElementById('t_abg').value  || '#ffffff').trim();
+        var bgImg = document.getElementById('bgImageInput').value.trim();
+        var cols  = Math.min(8, Math.max(1, parseInt(document.querySelector('[name=grid_columns]').value, 10) || 2));
+
+        pvWrap.style.background         = abg;
+        pvWrap.style.backgroundImage    = bgImg ? "url('" + bgImg.replace(/'/g, "\\'") + "')" : '';
+        pvWrap.style.backgroundSize     = 'cover';
+        pvWrap.style.backgroundPosition = 'center';
+
+        document.querySelectorAll('.pv-head').forEach(function (el) {
+            el.style.background = hbg;
+            el.style.color      = htx;
+        });
+        document.querySelectorAll('.pv-num').forEach(function (el) {
+            el.style.color = qtx;
+        });
+        document.querySelectorAll('.pv-grid').forEach(function (el) {
+            el.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+        });
+        pvLatest.style.background = bgImg ? 'rgba(255,255,255,0.88)' : abg;
+        document.getElementById('pvShopBar').style.color = qtx;
+    }
+
+    ['t_hbg', 't_htx', 't_qtx', 't_abg'].forEach(function (id) {
+        document.getElementById(id).addEventListener('input', updatePreview);
+    });
+    ['cp_hbg', 'cp_htx', 'cp_qtx', 'cp_abg'].forEach(function (id) {
+        document.getElementById(id).addEventListener('input', updatePreview);
+    });
+    document.getElementById('bgImageInput').addEventListener('input', updatePreview);
+    document.querySelector('[name=grid_columns]').addEventListener('input', updatePreview);
+
+    document.querySelectorAll('.bg-sample-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.getElementById('bgImageInput').value = this.dataset.path;
+            document.getElementById('t_hbg').value  = this.dataset.hbg;
+            document.getElementById('cp_hbg').value = this.dataset.hbg;
+            document.getElementById('t_htx').value  = this.dataset.htx;
+            document.getElementById('cp_htx').value = this.dataset.htx;
+            document.getElementById('t_qtx').value  = this.dataset.qtx;
+            document.getElementById('cp_qtx').value = this.dataset.qtx;
+            document.getElementById('t_abg').value  = this.dataset.abg;
+            document.getElementById('cp_abg').value = this.dataset.abg;
+            updatePreview();
+        });
+    });
+
+    updatePreview();
+}());
 </script>
 <?php endif; ?>
 
