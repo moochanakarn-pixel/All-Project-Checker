@@ -257,6 +257,55 @@
         }
         #fsBtn.fs-visible { opacity: 1; pointer-events: auto; }
         #fsBtn:hover { background: rgba(0,0,0,0.65); }
+
+        /* ── Queue item wrapper ── */
+        .q-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        /* ── Elapsed time (PREPARING) ── */
+        .q-time {
+            font-size: clamp(9px, 1.4vw, 13px);
+            color: #aaa;
+            text-align: center;
+            line-height: 1.2;
+            padding-bottom: clamp(2px, 0.4vh, 5px);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0;
+        }
+        /* ── New-item fade-in ── */
+        @keyframes q-fadein {
+            from { opacity: 0; transform: scale(0.82); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+        .q-num.q-new { animation: q-fadein .3s ease-out; }
+        /* ── Latest READY highlight ── */
+        .q-num.q-latest {
+            background: rgba(37,99,235,0.10);
+            border-radius: 8px;
+            color: #1d4ed8;
+        }
+        /* ── Standby overlay ── */
+        #standby {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--c-app-bg);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            gap: clamp(8px, 2.5vh, 24px);
+            pointer-events: none;
+        }
+        .sb-icon { font-size: clamp(48px, 12vw, 96px); color: #22c55e; line-height: 1; }
+        .sb-text {
+            font-size: clamp(16px, 4vw, 40px);
+            font-weight: 700;
+            color: rgba(0,0,0,0.18);
+            letter-spacing: 4px;
+        }
     </style>
 <style>
     :root {
@@ -299,9 +348,13 @@
     </div>
 </div>
 <button id="fsBtn"></button>
+<div id="standby">
+    <div class="sb-icon">&#10003;</div>
+    <div class="sb-text">ไม่มีออเดอร์ค้างอยู่</div>
+</div>
 <div id="app">
 
-    <section class="qs">
+    <section class="qs" id="readySec">
         <div class="qs-head">
             <div class="qs-head-title">READY</div>
             <div class="qs-head-sub">พร้อมเสิร์ฟ</div>
@@ -316,7 +369,7 @@
         <span id="latestNum"></span>
     </div>
 
-    <section class="qs">
+    <section class="qs" id="prepSec">
         <div class="qs-head">
             <div class="qs-head-title">PREPARING</div>
             <div class="qs-head-sub">กำลังเตรียม</div>
@@ -338,10 +391,12 @@
     var SOUND_ENABLED = <?php echo SOUND_ENABLED ? 'true' : 'false'; ?>;
     var SOUND_VOLUME  = <?php echo (int)SOUND_VOLUME; ?> / 100;
     var SHOW_COMPUTER = <?php echo SHOW_COMPUTER_NAME ? 'true' : 'false'; ?>;
-    var prevLatest = null;
-    var failCount  = 0;
-    var MAX_FAILS  = 10;
-    var audioCtx   = null;
+    var prevLatest    = null;
+    var prevReady     = [];
+    var prevPreparing = [];
+    var failCount     = 0;
+    var MAX_FAILS     = 10;
+    var audioCtx      = null;
 
     function initAudio() {
         if (!audioCtx) {
@@ -375,13 +430,35 @@
         });
     }
 
-    function renderGrid(el, items) {
+    function elapsedText(dtStr) {
+        if (!dtStr) return '';
+        var t = new Date(dtStr.replace(' ', 'T') + '+07:00');
+        if (isNaN(t.getTime())) return '';
+        var mins = Math.floor((Date.now() - t.getTime()) / 60000);
+        if (mins < 1)  return '< 1 นาที';
+        if (mins < 60) return mins + ' นาที';
+        var h = Math.floor(mins / 60);
+        var m = mins % 60;
+        return h + ' ชม.' + (m ? ' ' + m + ' น.' : '');
+    }
+
+    function renderGrid(el, items, opts) {
+        opts = opts || {};
+        var prevSet = {};
+        (opts.prev || []).forEach(function (q) { prevSet[q] = true; });
+        var latestQ = opts.latest || '';
+        var times   = opts.times  || [];
         if (!items || !items.length) {
             el.innerHTML = '<div class="q-empty">ไม่มีรายการ</div>';
             return;
         }
-        el.innerHTML = items.map(function (q) {
-            return '<div class="q-num">' + esc(q) + '</div>';
+        el.innerHTML = items.map(function (q, i) {
+            var cls = 'q-num';
+            if (!prevSet[q])   cls += ' q-new';
+            if (q === latestQ) cls += ' q-latest';
+            var inner = '<div class="' + cls + '">' + esc(q) + '</div>';
+            if (times[i]) inner += '<div class="q-time">' + esc(elapsedText(times[i])) + '</div>';
+            return '<div class="q-item">' + inner + '</div>';
         }).join('');
     }
 
@@ -433,17 +510,51 @@
                     badge.textContent = d.computer_name;
                     badge.style.display = 'block';
                 }
-
                 if (d.shop_name) {
                     document.getElementById('shopName').textContent = d.shop_name;
                 }
 
-                renderGrid(document.getElementById('readyGrid'),     d.ready     || []);
-                renderGrid(document.getElementById('preparingGrid'), d.preparing || []);
+                var readyArr  = d.ready            || [];
+                var prepArr   = d.preparing        || [];
+                var prepTimes = d.preparing_times  || [];
+                var latest    = d.latest_ready     || '';
 
+                // ── Dynamic section sizing ────────────────────────────────
+                var readySec    = document.getElementById('readySec');
+                var prepSec     = document.getElementById('prepSec');
+                var readyGridEl = document.getElementById('readyGrid');
+                var prepGridEl  = document.getElementById('preparingGrid');
+                var standbyEl   = document.getElementById('standby');
+
+                if (readyArr.length === 0 && prepArr.length === 0) {
+                    standbyEl.style.display = 'flex';
+                } else {
+                    standbyEl.style.display = 'none';
+                    if (readyArr.length === 0) {
+                        readySec.style.flex       = '0 0 auto';
+                        readyGridEl.style.display = 'none';
+                    } else {
+                        readySec.style.flex       = String(Math.max(1, readyArr.length));
+                        readyGridEl.style.display = '';
+                    }
+                    if (prepArr.length === 0) {
+                        prepSec.style.flex        = '0 0 auto';
+                        prepGridEl.style.display  = 'none';
+                    } else {
+                        prepSec.style.flex        = String(Math.max(1, prepArr.length));
+                        prepGridEl.style.display  = '';
+                    }
+                }
+
+                // ── Render grids ──────────────────────────────────────────
+                renderGrid(readyGridEl, readyArr, { prev: prevReady,     latest: latest });
+                renderGrid(prepGridEl,  prepArr,  { prev: prevPreparing, times:  prepTimes });
+                prevReady     = readyArr;
+                prevPreparing = prepArr;
+
+                // ── Latest READY announce ─────────────────────────────────
                 var latestWrap = document.querySelector('.latest-wrap');
                 var latestEl   = document.getElementById('latestNum');
-                var latest     = d.latest_ready || '';
                 if (latest) {
                     latestWrap.style.display = 'flex';
                     latestEl.textContent = latest;
