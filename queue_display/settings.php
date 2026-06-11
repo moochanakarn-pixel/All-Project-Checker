@@ -439,6 +439,12 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
                         🌊 Fresh
                     </button>
                     <button type="button" class="bg-sample-btn"
+                        data-path="images/bg-matcha.svg"
+                        data-hbg="#2d5a1b" data-htx="#f0f5eb" data-qtx="#1e3d10" data-abg="#f0f5eb"
+                        style="background:linear-gradient(135deg,#e8f0df,#8fb58a);color:#1e3d10;border:1px solid #5a8c3c;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">
+                        🍵 Matcha
+                    </button>
+                    <button type="button" class="bg-sample-btn"
                         data-path=""
                         data-hbg="#1a1a2e" data-htx="#ffffff" data-qtx="#1a1a2e" data-abg="#ffffff"
                         style="background:#1e293b;color:#94a3b8;border:1px solid #334155;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600">
