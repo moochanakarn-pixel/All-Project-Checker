@@ -145,14 +145,13 @@ try {
             COALESCE(opd_stat.pending_count, 0) AS pending_count,
             COALESCE(opd_stat.done_count,    0) AS done_count,
             opd_stat.last_finish,
-            (SELECT opdf.TableID FROM orderprocessdetailfront opdf
+            (SELECT CONCAT(opdf.TableID, '|', opdf.DisplayTableName)
+             FROM orderprocessdetailfront opdf
              WHERE opdf.TransactionID = dsq.TransactionID
                AND opdf.ComputerID    = dsq.ComputerID
-             LIMIT 1) AS TableID,
-            (SELECT opdf.DisplayTableName FROM orderprocessdetailfront opdf
-             WHERE opdf.TransactionID = dsq.TransactionID
-               AND opdf.ComputerID    = dsq.ComputerID
-             LIMIT 1) AS DisplayTableName
+               AND opdf.ProductSetType >= 0
+             ORDER BY opdf.ProcessID ASC
+             LIMIT 1) AS TableInfo
         FROM OrderProcessDetail_DisplayStatusInQueue dsq
         LEFT JOIN ordertransactionfront tr
             ON  tr.TransactionID = dsq.TransactionID
@@ -165,7 +164,7 @@ try {
                 SUM(CASE WHEN ProcessStatus = 1      THEN 1 ELSE 0 END) AS done_count,
                 MAX(FinishDateTime) AS last_finish
             FROM orderprocessdetailfront
-            WHERE SubmitOrderDateTime >= CURDATE()
+            WHERE SubmitOrderDateTime >= DATE_SUB(CURDATE(), INTERVAL 1 DAY)
               AND ProductSetType >= 0
             GROUP BY TransactionID, ComputerID
         ) opd_stat
@@ -185,9 +184,10 @@ try {
     while ($row = $result->fetch_assoc()) {
         // แสดงเหมือน checker: dine-in → "โต๊ะ X", delivery → DisplayTableName
         // fallback: QueueName → TransactionID
-        $tableId   = (int)($row['TableID'] ?? 0);
-        $tableName = trim((string)($row['DisplayTableName'] ?? ''));
-        if ($tableName !== '') {
+        $tableInfo = isset($row['TableInfo']) ? explode('|', (string)$row['TableInfo'], 2) : array('0', '');
+        $tableId   = (int)($tableInfo[0] ?? 0);
+        $tableName = trim((string)($tableInfo[1] ?? ''));
+        if ($tableName !== '' && $tableName !== '-') {
             $q = $tableId > 0 ? 'โต๊ะ ' . $tableName : $tableName;
         } else {
             $q = trim((string)$row['QueueName']);

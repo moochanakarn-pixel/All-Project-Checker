@@ -672,7 +672,7 @@ document.getElementById('btnTest').addEventListener('click', function() {
         var cols  = Math.min(8, Math.max(1, parseInt(document.querySelector('[name=grid_columns]').value, 10) || 2));
 
         pvWrap.style.background         = abg;
-        pvWrap.style.backgroundImage    = bgImg ? "url('" + bgImg.replace(/'/g, "\\'") + "')" : '';
+        pvWrap.style.backgroundImage    = bgImg ? "url('" + encodeURI(bgImg).replace(/'/g, '%27') + "')" : '';
         pvWrap.style.backgroundSize     = 'cover';
         pvWrap.style.backgroundPosition = 'center';
 

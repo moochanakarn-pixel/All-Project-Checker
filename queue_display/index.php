@@ -74,7 +74,13 @@
             text-align: center;
             padding: clamp(2px, 0.6vh, 8px) 4px;
             line-height: 1.15;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+            min-width: 0;
         }
+        .q-item { min-width: 0; }
         .q-empty {
             grid-column: 1 / -1;
             text-align: center;
@@ -128,6 +134,10 @@
             letter-spacing: 4px;
             display: block;
             transition: color .2s, opacity .3s;
+            max-width: 90vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         /* ── Shop bar (bottom strip: shop name + clock) ── */
