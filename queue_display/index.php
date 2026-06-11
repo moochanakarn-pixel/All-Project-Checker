@@ -532,20 +532,6 @@
                     standbyEl.style.display = 'flex';
                 } else {
                     standbyEl.style.display = 'none';
-                    if (readyArr.length === 0) {
-                        readySec.style.flex       = '0 0 auto';
-                        readyGridEl.style.display = 'none';
-                    } else {
-                        readySec.style.flex       = String(Math.min(Math.max(1, readyArr.length), 6));
-                        readyGridEl.style.display = '';
-                    }
-                    if (prepArr.length === 0) {
-                        prepSec.style.flex        = '0 0 auto';
-                        prepGridEl.style.display  = 'none';
-                    } else {
-                        prepSec.style.flex        = String(Math.min(Math.max(1, prepArr.length), 6));
-                        prepGridEl.style.display  = '';
-                    }
                 }
 
                 // ── Render grids ──────────────────────────────────────────
