@@ -1474,7 +1474,6 @@ function mergeChildProcessRowsIntoParents($rows)
             // สินค้าชุด (SETA) → การ์ดแยกพร้อม parent_name + inherit status จาก parent
             $newCard                        = $row;
             $newCard['parent_name']         = trim((string)(isset($parentRow['ProductName']) ? $parentRow['ProductName'] : ''));
-            $newCard['comments']            = array();
             $newCard['TableID']             = $parentRow['TableID'];
             $newCard['DisplayTableName']    = $parentRow['DisplayTableName'];
             $newCard['OrderNo']             = $parentRow['OrderNo'];
