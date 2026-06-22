@@ -2,6 +2,9 @@
 queue_display/settings.local.php
 checker/settings.local.php
 
+# Claude Code internal state
+.claude/
+
 # PHP error logs
 *.log
 checker/logs/
