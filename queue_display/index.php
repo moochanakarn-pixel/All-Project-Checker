@@ -373,7 +373,7 @@
 </div>
 <?php if (SOUND_ENABLED): ?>
 <div id="audioBanner" style="
-    position:fixed;bottom:0;left:0;right:0;z-index:9000;
+    position:fixed;bottom:0;left:0;right:0;z-index:990;
     background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
     color:#fff;text-align:center;padding:16px 20px;
     font-size:17px;font-weight:700;letter-spacing:.5px;
@@ -430,11 +430,11 @@
     }
 
     function onUserGesture() {
+        initAudio();
         if (!audioUnlocked) {
             audioUnlocked = true;
             hideBanner();
         }
-        initAudio();
     }
 
     function playSound(queueLabel) {

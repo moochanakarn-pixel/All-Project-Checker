@@ -173,12 +173,12 @@ if ($action === 'upload_sound') {
         if (!is_dir($soundsDir) && !mkdir($soundsDir, 0755, true)) {
             throw new Exception('ไม่สามารถสร้างโฟลเดอร์ sounds/ ได้');
         }
-        foreach (glob($soundsDir . DIRECTORY_SEPARATOR . 'custom.*') ?: [] as $old) {
-            @unlink($old);
-        }
         $destPath = $soundsDir . DIRECTORY_SEPARATOR . 'custom.' . $ext;
         if (!move_uploaded_file($file['tmp_name'], $destPath)) {
             throw new Exception('ไม่สามารถบันทึกไฟล์ได้');
+        }
+        foreach (glob($soundsDir . DIRECTORY_SEPARATOR . 'custom.*') ?: [] as $old) {
+            if ($old !== $destPath) @unlink($old);
         }
         echo json_encode(['success' => true, 'path' => 'sounds/custom.' . $ext, 'name' => $file['name']]);
     } catch (Exception $e) {
@@ -779,8 +779,9 @@ if (uploadZone && soundFileInput) {
             .then(function (d) {
                 if (d.success) {
                     soundFilePath.value = d.path;
+                    var safeName = String(d.name || '').replace(/[&<>"']/g, function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});
                     document.getElementById('uploadLabel').innerHTML =
-                        '<div style="color:#4ade80;font-weight:600;font-size:15px">✓ ' + d.name + '</div>' +
+                        '<div style="color:#4ade80;font-weight:600;font-size:15px">✓ ' + safeName + '</div>' +
                         '<div style="font-size:12px;margin-top:4px">คลิกเพื่อเปลี่ยนไฟล์</div>';
                     uploadResult.textContent = 'อัปโหลดสำเร็จ';
                     uploadResult.style.color = '#4ade80';
