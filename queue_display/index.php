@@ -296,26 +296,6 @@
             border-radius: 8px;
             color: #1d4ed8;
         }
-        /* ── Standby overlay ── */
-        #standby {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: var(--c-app-bg);
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 50;
-            gap: clamp(8px, 2.5vh, 24px);
-            pointer-events: none;
-        }
-        .sb-icon { font-size: clamp(48px, 12vw, 96px); color: #22c55e; line-height: 1; }
-        .sb-text {
-            font-size: clamp(16px, 4vw, 40px);
-            font-weight: 700;
-            color: rgba(0,0,0,0.18);
-            letter-spacing: 4px;
-        }
     </style>
 <style>
     :root {
@@ -358,10 +338,6 @@
     </div>
 </div>
 <button id="fsBtn"></button>
-<div id="standby">
-    <div class="sb-icon">&#10003;</div>
-    <div class="sb-text">ไม่มีออเดอร์ค้างอยู่</div>
-</div>
 <div id="app">
 
     <section class="qs" id="readySec">
@@ -536,14 +512,6 @@
                 var prepSec     = document.getElementById('prepSec');
                 var readyGridEl = document.getElementById('readyGrid');
                 var prepGridEl  = document.getElementById('preparingGrid');
-                var standbyEl   = document.getElementById('standby');
-
-                if (readyArr.length === 0 && prepArr.length === 0) {
-                    standbyEl.style.display = 'flex';
-                } else {
-                    standbyEl.style.display = 'none';
-                }
-
                 // ── Render grids ──────────────────────────────────────────
                 renderGrid(readyGridEl, readyArr, { prev: prevReady,     latest: latest });
                 renderGrid(prepGridEl,  prepArr,  { prev: prevPreparing, times:  prepTimes });
