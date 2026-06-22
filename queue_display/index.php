@@ -388,10 +388,15 @@
     function initAudio() {
         if (!audioCtx) {
             try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
-        } else if (audioCtx.state === 'suspended') {
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
     }
+
+    // ลอง init ทันทีตอนโหลด — ได้ผลถ้าเปิด Chrome ด้วย
+    // --autoplay-policy=no-user-gesture-required
+    initAudio();
 
     function playBeep() {
         if (!SOUND_ENABLED || !audioCtx || audioCtx.state !== 'running') return;
