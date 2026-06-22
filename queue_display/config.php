@@ -44,6 +44,9 @@ define('QUEUE_COMPUTER_ID',      (int)localSetting($__localSettings, 'computer_i
 define('SHOP_PRODUCT_LEVEL_ID',  (int)localSetting($__localSettings, 'product_level_id',       0));
 define('SOUND_ENABLED',          (bool)(int)localSetting($__localSettings, 'sound_enabled',     1));
 define('SOUND_VOLUME',           max(0, min(100, (int)localSetting($__localSettings, 'sound_volume',  70))));
+define('SOUND_TYPE',      (string)localSetting($__localSettings, 'sound_type',      'beep'));
+define('SOUND_BEEP_TONE', (string)localSetting($__localSettings, 'sound_beep_tone', 'ding'));
+define('SOUND_FILE',      (string)localSetting($__localSettings, 'sound_file',      ''));
 define('SHOW_COMPUTER_NAME',     (bool)(int)localSetting($__localSettings, 'show_computer_name', 1));
 
 define('KDS_ENV_DB_HOST', 'KDS_DB_HOST');

@@ -129,6 +129,11 @@ if ($action === 'save' && !empty($_SESSION['qdisplay_auth'])) {
             'color_app_bg'          => safeColor($_POST['color_app_bg']      ?? '#ffffff', '#ffffff'),
             'sound_enabled'         => isset($_POST['sound_enabled'])         ? 1 : 0,
             'sound_volume'          => max(0, min(100, (int)($_POST['sound_volume']  ?? 70))),
+            'sound_type'      => in_array(($_POST['sound_type'] ?? ''), ['beep', 'tts', 'file'], true) ? (string)$_POST['sound_type'] : 'beep',
+            'sound_beep_tone' => in_array(($_POST['sound_beep_tone'] ?? ''), ['ding', 'double', 'low'], true) ? (string)$_POST['sound_beep_tone'] : 'ding',
+            'sound_file'      => preg_match('/^sounds\/custom\.(mp3|wav|ogg|m4a|aac)$/', trim((string)($_POST['sound_file'] ?? '')))
+                                    ? trim((string)$_POST['sound_file'])
+                                    : (string)sv($local, 'sound_file', ''),
             'show_computer_name'    => isset($_POST['show_computer_name'])    ? 1 : 0,
         ];
         $content = "<?php return " . var_export($new, true) . ";\n";
@@ -142,6 +147,44 @@ if ($action === 'save' && !empty($_SESSION['qdisplay_auth'])) {
             $isErr = true;
         }
     }
+}
+
+// Upload custom sound file
+if ($action === 'upload_sound') {
+    while (ob_get_level()) ob_end_clean();
+    header('Content-Type: application/json; charset=utf-8');
+    if (empty($_SESSION['qdisplay_auth'])) {
+        echo json_encode(['success' => false, 'message' => 'ไม่ได้รับอนุญาต']);
+        exit;
+    }
+    try {
+        if (!isset($_FILES['sound_file']) || $_FILES['sound_file']['error'] !== UPLOAD_ERR_OK) {
+            $errMap = [1 => 'ไฟล์ใหญ่เกิน', 2 => 'ไฟล์ใหญ่เกิน', 3 => 'อัปโหลดไม่สมบูรณ์', 4 => 'ไม่มีไฟล์'];
+            $errCode = isset($_FILES['sound_file']['error']) ? (int)$_FILES['sound_file']['error'] : 4;
+            throw new Exception(isset($errMap[$errCode]) ? $errMap[$errCode] : 'ข้อผิดพลาด code ' . $errCode);
+        }
+        $file = $_FILES['sound_file'];
+        if ($file['size'] > 5 * 1024 * 1024) throw new Exception('ไฟล์ใหญ่เกิน 5MB');
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, ['mp3', 'wav', 'ogg', 'm4a', 'aac'], true)) {
+            throw new Exception('รองรับเฉพาะ MP3, WAV, OGG, M4A, AAC');
+        }
+        $soundsDir = __DIR__ . DIRECTORY_SEPARATOR . 'sounds';
+        if (!is_dir($soundsDir) && !mkdir($soundsDir, 0755, true)) {
+            throw new Exception('ไม่สามารถสร้างโฟลเดอร์ sounds/ ได้');
+        }
+        foreach (glob($soundsDir . DIRECTORY_SEPARATOR . 'custom.*') ?: [] as $old) {
+            @unlink($old);
+        }
+        $destPath = $soundsDir . DIRECTORY_SEPARATOR . 'custom.' . $ext;
+        if (!move_uploaded_file($file['tmp_name'], $destPath)) {
+            throw new Exception('ไม่สามารถบันทึกไฟล์ได้');
+        }
+        echo json_encode(['success' => true, 'path' => 'sounds/custom.' . $ext, 'name' => $file['name']]);
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    }
+    exit;
 }
 
 $auth = !empty($_SESSION['qdisplay_auth']);
@@ -220,6 +263,19 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
 .toggle-slider::before{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#94a3b8;left:3px;top:3px;transition:.2s}
 .toggle-switch input:checked+.toggle-slider{background:#3b82f6}
 .toggle-switch input:checked+.toggle-slider::before{transform:translateX(20px);background:#fff}
+.sound-type-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.sound-type-opt{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 10px;border:2px solid #334155;border-radius:10px;cursor:pointer;transition:.15s;flex:1;min-width:90px;user-select:none}
+.sound-type-opt input[type=radio]{display:none}
+.sound-type-opt .st-icon{font-size:22px}
+.sound-type-opt .st-label{font-size:13px;font-weight:700;color:#e2e8f0}
+.sound-type-opt .st-sub{font-size:11px;color:#64748b}
+.sound-type-opt:has(input:checked){border-color:#3b82f6;background:rgba(59,130,246,.12)}
+.sound-type-opt:hover{border-color:#94a3b8}
+.sound-sub-box{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:12px;font-size:13px;color:#94a3b8;line-height:1.7}
+.upload-zone{border:2px dashed #334155;border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:.15s;margin-top:4px}
+.upload-zone:hover{border-color:#3b82f6;background:rgba(59,130,246,.04)}
+select.field-select{width:100%;background:#0f172a;border:1px solid #334155;color:#f1f5f9;padding:10px 12px;border-radius:8px;font-size:15px;outline:none;transition:.15s}
+select.field-select:focus{border-color:#3b82f6}
 </style>
 </head>
 <body>
@@ -507,15 +563,83 @@ body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;background:#0f172a
                     </div>
                 </label>
             </div>
-            <div class="field" id="volumeWrap">
-                <label>ระดับเสียง — <span id="volPct"><?= (int)sv($local,'sound_volume',70) ?></span>%</label>
-                <input type="range" name="sound_volume" id="volRange" min="0" max="100" step="5"
-                       value="<?= (int)sv($local,'sound_volume',70) ?>"
-                       style="width:100%;margin-top:8px;accent-color:#3b82f6;cursor:pointer;height:6px">
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
-                <button type="button" class="btn-test" id="btnTestSound">▶ ทดสอบเสียง</button>
-                <span id="testSoundResult" style="font-size:13px;font-weight:600"></span>
+            <div id="soundOptions">
+                <div class="field">
+                    <label>ประเภทเสียง</label>
+                    <div class="sound-type-row">
+                        <?php
+                        $curSoundType = (string)sv($local, 'sound_type', 'beep');
+                        $stypes = [
+                            'beep' => ['🔔', 'Beep',       'เสียงสังเคราะห์'],
+                            'tts'  => ['🗣',  'พูดชื่อคิว', 'Text-to-Speech'],
+                            'file' => ['🎵', 'ไฟล์เสียง',  'MP3 / WAV / OGG'],
+                        ];
+                        foreach ($stypes as $val => [$icon, $lbl, $sub]):
+                        ?>
+                        <label class="sound-type-opt">
+                            <input type="radio" name="sound_type" value="<?= h($val) ?>" <?= $curSoundType === $val ? 'checked' : '' ?>>
+                            <span class="st-icon"><?= $icon ?></span>
+                            <span class="st-label"><?= h($lbl) ?></span>
+                            <span class="st-sub"><?= h($sub) ?></span>
+                        </label>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Beep sub -->
+                <div class="field sound-sub" id="subBeep">
+                    <label>โทนเสียง</label>
+                    <select name="sound_beep_tone" id="beepToneSelect" class="field-select">
+                        <?php
+                        $curTone = (string)sv($local, 'sound_beep_tone', 'ding');
+                        $tones = ['ding' => 'Ding — ความถี่สูงแล้วต่ำ (ค่าเริ่มต้น)', 'double' => 'Double — สองครั้งติดกัน', 'low' => 'Low — ความถี่ต่ำ'];
+                        foreach ($tones as $v => $tl):
+                        ?>
+                        <option value="<?= h($v) ?>" <?= $curTone === $v ? 'selected' : '' ?>><?= h($tl) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <!-- TTS sub -->
+                <div class="field sound-sub" id="subTts" style="display:none">
+                    <div class="sound-sub-box">
+                        จะพูดชื่อโต๊ะ/คิวออกมาอัตโนมัติ เช่น <strong style="color:#f1f5f9">"โต๊ะ 5"</strong> หรือ <strong style="color:#f1f5f9">"A001"</strong><br>
+                        ใช้เสียงจาก OS/เบราว์เซอร์ — Windows ต้องมี Thai TTS voice ติดตั้งจึงจะพูดภาษาไทยได้ชัด
+                    </div>
+                </div>
+
+                <!-- File sub -->
+                <div class="field sound-sub" id="subFile" style="display:none">
+                    <input type="hidden" name="sound_file" id="soundFilePath" value="<?= h((string)sv($local,'sound_file','')) ?>">
+                    <?php $curSoundFile = (string)sv($local, 'sound_file', ''); ?>
+                    <div class="upload-zone" id="uploadZone">
+                        <div id="uploadLabel" style="color:#94a3b8;font-size:14px">
+                            <?php if ($curSoundFile !== ''): ?>
+                            <div style="color:#4ade80;font-weight:600;font-size:15px">✓ <?= h(basename($curSoundFile)) ?></div>
+                            <div style="font-size:12px;margin-top:4px">คลิกเพื่อเปลี่ยนไฟล์</div>
+                            <?php else: ?>
+                            <div style="font-size:15px">📂 คลิกเพื่อเลือกไฟล์เสียง</div>
+                            <div style="font-size:12px;margin-top:4px">MP3, WAV, OGG, M4A — ไม่เกิน 5MB</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <input type="file" id="soundFileInput" accept=".mp3,.wav,.ogg,.m4a,.aac,audio/*" style="display:none">
+                    <div id="uploadSoundResult" style="font-size:13px;font-weight:600;margin-top:8px"></div>
+                </div>
+
+                <!-- Volume -->
+                <div class="field" id="volumeWrap" style="margin-top:4px">
+                    <label>ระดับเสียง — <span id="volPct"><?= (int)sv($local,'sound_volume',70) ?></span>%</label>
+                    <input type="range" name="sound_volume" id="volRange" min="0" max="100" step="5"
+                           value="<?= (int)sv($local,'sound_volume',70) ?>"
+                           style="width:100%;margin-top:8px;accent-color:#3b82f6;cursor:pointer;height:6px">
+                </div>
+
+                <!-- Test -->
+                <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
+                    <button type="button" class="btn-test" id="btnTestSound">▶ ทดสอบเสียง</button>
+                    <span id="testSoundResult" style="font-size:13px;font-weight:600"></span>
+                </div>
             </div>
         </div>
 
@@ -602,39 +726,138 @@ document.getElementById('btnLoadComputers').addEventListener('click', function()
 var volRange     = document.getElementById('volRange');
 var volPct       = document.getElementById('volPct');
 var soundEnabled = document.getElementById('soundEnabled');
-var volumeWrap   = document.getElementById('volumeWrap');
+var soundOptions = document.getElementById('soundOptions');
 
 volRange.addEventListener('input', function () { volPct.textContent = this.value; });
 
 function applyVolumeToggle() {
-    volumeWrap.style.opacity       = soundEnabled.checked ? '1'    : '0.4';
-    volumeWrap.style.pointerEvents = soundEnabled.checked ? ''     : 'none';
+    soundOptions.style.opacity       = soundEnabled.checked ? '1'  : '0.4';
+    soundOptions.style.pointerEvents = soundEnabled.checked ? ''   : 'none';
 }
 soundEnabled.addEventListener('change', applyVolumeToggle);
 applyVolumeToggle();
 
+// Sound type switching
+var soundTypeOpts = document.querySelectorAll('.sound-type-opt');
+var soundSubs     = { beep: document.getElementById('subBeep'), tts: document.getElementById('subTts'), file: document.getElementById('subFile') };
+
+function applySoundType(val) {
+    soundTypeOpts.forEach(function (el) {
+        el.style.borderColor  = el.querySelector('input').value === val ? '#3b82f6' : '';
+        el.style.background   = el.querySelector('input').value === val ? 'rgba(59,130,246,.12)' : '';
+    });
+    Object.keys(soundSubs).forEach(function (k) {
+        if (soundSubs[k]) soundSubs[k].style.display = k === val ? '' : 'none';
+    });
+}
+
+soundTypeOpts.forEach(function (el) {
+    el.querySelector('input').addEventListener('change', function () { applySoundType(this.value); });
+});
+
+var checkedRadio = document.querySelector('[name=sound_type]:checked');
+applySoundType(checkedRadio ? checkedRadio.value : 'beep');
+
+// File upload
+var uploadZone     = document.getElementById('uploadZone');
+var soundFileInput = document.getElementById('soundFileInput');
+var soundFilePath  = document.getElementById('soundFilePath');
+var uploadResult   = document.getElementById('uploadSoundResult');
+
+if (uploadZone && soundFileInput) {
+    uploadZone.addEventListener('click', function () { soundFileInput.click(); });
+    soundFileInput.addEventListener('change', function () {
+        var file = this.files[0];
+        if (!file) return;
+        var fd = new FormData();
+        fd.append('action', 'upload_sound');
+        fd.append('sound_file', file);
+        uploadResult.textContent = 'กำลังอัปโหลด...';
+        uploadResult.style.color = '#94a3b8';
+        fetch('settings.php', { method: 'POST', body: fd })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+                if (d.success) {
+                    soundFilePath.value = d.path;
+                    document.getElementById('uploadLabel').innerHTML =
+                        '<div style="color:#4ade80;font-weight:600;font-size:15px">✓ ' + d.name + '</div>' +
+                        '<div style="font-size:12px;margin-top:4px">คลิกเพื่อเปลี่ยนไฟล์</div>';
+                    uploadResult.textContent = 'อัปโหลดสำเร็จ';
+                    uploadResult.style.color = '#4ade80';
+                } else {
+                    uploadResult.textContent = '✗ ' + (d.message || 'อัปโหลดไม่ได้');
+                    uploadResult.style.color = '#f87171';
+                }
+            })
+            .catch(function () {
+                uploadResult.textContent = '✗ เกิดข้อผิดพลาด';
+                uploadResult.style.color = '#f87171';
+            });
+    });
+}
+
+// Test sound button
 document.getElementById('btnTestSound').addEventListener('click', function () {
-    var resultEl = document.getElementById('testSoundResult');
-    try {
-        var ctx = new (window.AudioContext || window.webkitAudioContext)();
-        var vol = parseInt(volRange.value, 10) / 100;
-        var o   = ctx.createOscillator();
-        var g   = ctx.createGain();
-        o.connect(g); g.connect(ctx.destination);
-        o.frequency.setValueAtTime(880, ctx.currentTime);
-        o.frequency.setValueAtTime(660, ctx.currentTime + 0.12);
-        g.gain.setValueAtTime(0.5 * vol, ctx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
-        o.start(ctx.currentTime);
-        o.stop(ctx.currentTime + 0.45);
-        o.onended = function () { ctx.close(); };
-        resultEl.textContent = '✓ เล่นเสียงแล้ว';
-        resultEl.style.color = '#4ade80';
-    } catch (e) {
-        resultEl.textContent = '✗ ' + e.message;
-        resultEl.style.color = '#f87171';
+    var resultEl  = document.getElementById('testSoundResult');
+    var typeRadio = document.querySelector('[name=sound_type]:checked');
+    var soundType = typeRadio ? typeRadio.value : 'beep';
+    var vol       = parseInt(volRange.value, 10) / 100;
+
+    function showResult(ok, msg) {
+        resultEl.textContent = ok ? '✓ ' + msg : '✗ ' + msg;
+        resultEl.style.color = ok ? '#4ade80' : '#f87171';
+        setTimeout(function () { resultEl.textContent = ''; }, 3000);
     }
-    setTimeout(function () { resultEl.textContent = ''; }, 3000);
+
+    if (soundType === 'tts') {
+        if (!window.speechSynthesis) { showResult(false, 'เบราว์เซอร์นี้ไม่รองรับ TTS'); return; }
+        var utt = new SpeechSynthesisUtterance('โต๊ะ 5');
+        utt.lang   = 'th-TH';
+        utt.volume = vol;
+        utt.rate   = 0.9;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utt);
+        showResult(true, 'กำลังพูด...');
+        return;
+    }
+
+    if (soundType === 'file') {
+        var path = soundFilePath ? soundFilePath.value : '';
+        if (!path) { showResult(false, 'ยังไม่ได้อัปโหลดไฟล์'); return; }
+        var audio = new Audio(path + '?t=' + Date.now());
+        audio.volume = vol;
+        audio.play()
+            .then(function () { showResult(true, 'เล่นไฟล์แล้ว'); })
+            .catch(function (e) { showResult(false, e.message || 'เล่นไม่ได้'); });
+        return;
+    }
+
+    // beep
+    try {
+        var ctx  = new (window.AudioContext || window.webkitAudioContext)();
+        var tone = document.getElementById('beepToneSelect') ? document.getElementById('beepToneSelect').value : 'ding';
+        var now  = ctx.currentTime;
+
+        function beepTone(f1, f2, dur, at) {
+            var o = ctx.createOscillator();
+            var g = ctx.createGain();
+            o.connect(g); g.connect(ctx.destination);
+            o.frequency.setValueAtTime(f1, at);
+            if (f2 !== f1) o.frequency.setValueAtTime(f2, at + dur * 0.3);
+            g.gain.setValueAtTime(0.5 * (vol || 0.01), at);
+            g.gain.exponentialRampToValueAtTime(0.001, at + dur);
+            o.start(at); o.stop(at + dur);
+        }
+
+        if (tone === 'double')   { beepTone(1000, 1000, 0.18, now); beepTone(1000, 1000, 0.18, now + 0.28); }
+        else if (tone === 'low') { beepTone(440, 330, 0.6, now); }
+        else                     { beepTone(880, 660, 0.45, now); }
+
+        setTimeout(function () { try { ctx.close(); } catch (e) {} }, 1200);
+        showResult(true, 'เล่นเสียงแล้ว');
+    } catch (e) {
+        showResult(false, e.message || 'ไม่สามารถเล่นเสียงได้');
+    }
 });
 
 document.getElementById('btnTest').addEventListener('click', function() {

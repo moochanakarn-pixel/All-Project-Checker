@@ -371,50 +371,130 @@
     </div>
 
 </div>
+<?php if (SOUND_ENABLED): ?>
+<div id="audioBanner" style="
+    position:fixed;bottom:0;left:0;right:0;z-index:9000;
+    background:rgba(0,0,0,0.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    color:#fff;text-align:center;padding:16px 20px;
+    font-size:17px;font-weight:700;letter-spacing:.5px;
+    cursor:pointer;user-select:none;
+    transition:opacity .35s,transform .35s;
+    display:flex;align-items:center;justify-content:center;gap:10px">
+    <span style="font-size:22px;animation:bannerPulse 1.4s ease-in-out infinite">🔔</span>
+    <span>แตะหน้าจอเพื่อเปิดเสียง</span>
+</div>
+<style>
+@keyframes bannerPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.65;transform:scale(1.18)}}
+</style>
+<?php endif; ?>
 <script>
 (function () {
     var REFRESH_MS    = <?php echo (int)QUEUE_REFRESH_MS; ?>;
-    var SOUND_ENABLED = <?php echo SOUND_ENABLED ? 'true' : 'false'; ?>;
-    var SOUND_VOLUME  = <?php echo (int)SOUND_VOLUME; ?> / 100;
-    var SHOW_COMPUTER = <?php echo SHOW_COMPUTER_NAME ? 'true' : 'false'; ?>;
-    var prevLatest    = null;
-    var prevReady     = [];
-    var prevPreparing = [];
-    var flashTimer    = null;
-    var failCount     = 0;
-    var MAX_FAILS     = 10;
-    var audioCtx      = null;
+    var SOUND_ENABLED   = <?php echo SOUND_ENABLED ? 'true' : 'false'; ?>;
+    var SOUND_VOLUME    = <?php echo (int)SOUND_VOLUME; ?> / 100;
+    var SOUND_TYPE      = <?php echo json_encode(SOUND_TYPE); ?>;
+    var SOUND_BEEP_TONE = <?php echo json_encode(SOUND_BEEP_TONE); ?>;
+    var SOUND_FILE_URL  = <?php echo json_encode(SOUND_FILE !== '' ? SOUND_FILE : ''); ?>;
+    var SHOW_COMPUTER   = <?php echo SHOW_COMPUTER_NAME ? 'true' : 'false'; ?>;
+    var prevLatest      = null;
+    var prevReady       = [];
+    var prevPreparing   = [];
+    var flashTimer      = null;
+    var failCount       = 0;
+    var MAX_FAILS       = 10;
+    var audioCtx        = null;
+    var audioUnlocked   = false;
+
+    var audioBanner = document.getElementById('audioBanner');
+
+    function hideBanner() {
+        if (!audioBanner) return;
+        audioBanner.style.opacity   = '0';
+        audioBanner.style.transform = 'translateY(100%)';
+        setTimeout(function () { if (audioBanner) audioBanner.style.display = 'none'; }, 380);
+    }
 
     function initAudio() {
         if (!audioCtx) {
             try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
         }
         if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
+            audioCtx.resume().then(function () {
+                if (audioCtx.state === 'running') { audioUnlocked = true; hideBanner(); }
+            }).catch(function () {});
+        }
+        if (audioCtx && audioCtx.state === 'running' && !audioUnlocked) {
+            audioUnlocked = true;
+            hideBanner();
         }
     }
 
-    initAudio();
+    function onUserGesture() {
+        if (!audioUnlocked) {
+            audioUnlocked = true;
+            hideBanner();
+        }
+        initAudio();
+    }
+
+    function playSound(queueLabel) {
+        if (!SOUND_ENABLED) return;
+        if (SOUND_TYPE === 'tts') { playTTS(queueLabel); return; }
+        if (SOUND_TYPE === 'file') { playFile(); return; }
+        playBeep();
+    }
+
+    function _tone(f1, f2, dur, at) {
+        var o = audioCtx.createOscillator();
+        var g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.frequency.setValueAtTime(f1, at);
+        if (f2 !== f1) o.frequency.setValueAtTime(f2, at + dur * 0.3);
+        var safeVol = SOUND_VOLUME > 0 ? SOUND_VOLUME : 0.01;
+        g.gain.setValueAtTime(0.5 * safeVol, at);
+        g.gain.exponentialRampToValueAtTime(0.001, at + dur);
+        o.start(at);
+        o.stop(at + dur);
+    }
 
     function playBeep() {
         if (!SOUND_ENABLED || !audioCtx || audioCtx.state !== 'running') return;
         if (SOUND_VOLUME <= 0) return;
         try {
-            var o = audioCtx.createOscillator();
-            var g = audioCtx.createGain();
-            o.connect(g); g.connect(audioCtx.destination);
-            o.frequency.setValueAtTime(880, audioCtx.currentTime);
-            o.frequency.setValueAtTime(660, audioCtx.currentTime + 0.12);
-            g.gain.setValueAtTime(0.5 * SOUND_VOLUME, audioCtx.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.45);
-            o.start(audioCtx.currentTime);
-            o.stop(audioCtx.currentTime + 0.45);
+            var now = audioCtx.currentTime;
+            if (SOUND_BEEP_TONE === 'double')    { _tone(1000, 1000, 0.18, now); _tone(1000, 1000, 0.18, now + 0.28); }
+            else if (SOUND_BEEP_TONE === 'low')  { _tone(440, 330, 0.6, now); }
+            else                                 { _tone(880, 660, 0.45, now); }
         } catch (e) {}
     }
 
-    window._initQueueAudio = initAudio;
-    document.addEventListener('click',      initAudio);
-    document.addEventListener('touchstart', initAudio);
+    function playTTS(text) {
+        if (!SOUND_ENABLED || !window.speechSynthesis || !text) return;
+        try {
+            var utt    = new SpeechSynthesisUtterance(text);
+            utt.lang   = 'th-TH';
+            utt.volume = SOUND_VOLUME > 0 ? SOUND_VOLUME : 0.01;
+            utt.rate   = 0.9;
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utt);
+        } catch (e) {}
+    }
+
+    function playFile() {
+        if (!SOUND_ENABLED || !SOUND_FILE_URL) return;
+        try {
+            var audio    = new Audio(SOUND_FILE_URL);
+            audio.volume = SOUND_VOLUME > 0 ? SOUND_VOLUME : 0.01;
+            audio.play().catch(function () {});
+        } catch (e) {}
+    }
+
+    window._initQueueAudio = onUserGesture;
+    document.addEventListener('click',      onUserGesture);
+    document.addEventListener('touchstart', onUserGesture, { passive: true });
+    if (audioBanner) audioBanner.addEventListener('click', onUserGesture);
+
+    initAudio();
 
     function esc(s) {
         return String(s || '').replace(/[&<>"']/g, function (c) {
@@ -536,7 +616,7 @@
                     void latestEl.offsetWidth;
                     latestEl.classList.add('flash');
                     flashTimer = setTimeout(function () { latestEl.classList.remove('flash'); flashTimer = null; }, 2400);
-                    playBeep();
+                    playSound(latest);
                 }
                 prevLatest = latest;
             })
