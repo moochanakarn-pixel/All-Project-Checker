@@ -394,8 +394,6 @@
         }
     }
 
-    // ลอง init ทันทีตอนโหลด — ได้ผลถ้าเปิด Chrome ด้วย
-    // --autoplay-policy=no-user-gesture-required
     initAudio();
 
     function playBeep() {
