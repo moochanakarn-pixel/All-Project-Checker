@@ -395,6 +395,7 @@
 
     function playBeep() {
         if (!SOUND_ENABLED || !audioCtx || audioCtx.state !== 'running') return;
+        if (SOUND_VOLUME <= 0) return;
         try {
             var o = audioCtx.createOscillator();
             var g = audioCtx.createGain();
@@ -408,6 +409,7 @@
         } catch (e) {}
     }
 
+    window._initQueueAudio = initAudio;
     document.addEventListener('click',      initAudio);
     document.addEventListener('touchstart', initAudio);
 
@@ -507,9 +509,6 @@
                 var prepTimes = d.preparing_times  || [];
                 var latest    = d.latest_ready     || '';
 
-                // ── Dynamic section sizing ────────────────────────────────
-                var readySec    = document.getElementById('readySec');
-                var prepSec     = document.getElementById('prepSec');
                 var readyGridEl = document.getElementById('readyGrid');
                 var prepGridEl  = document.getElementById('preparingGrid');
                 // ── Render grids ──────────────────────────────────────────
@@ -589,6 +588,7 @@
     function dismissOverlay() {
         clearInterval(cntTimer);
         overlay.classList.add('fs-hidden');
+        if (window._initQueueAudio) window._initQueueAudio();
     }
 
     function updateBtn() {
