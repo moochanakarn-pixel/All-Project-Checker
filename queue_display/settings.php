@@ -812,13 +812,17 @@ document.getElementById('btnTestSound').addEventListener('click', function () {
 
     if (soundType === 'tts') {
         if (!window.speechSynthesis) { showResult(false, 'เบราว์เซอร์นี้ไม่รองรับ TTS'); return; }
-        var utt = new SpeechSynthesisUtterance('โต๊ะ 5');
-        utt.lang   = 'th-TH';
-        utt.volume = vol;
-        utt.rate   = 0.9;
+        var safeVol = vol > 0 ? vol : 0.01;
+        var tu1 = new SpeechSynthesisUtterance('โต๊ะ 5');
+        var tu2 = new SpeechSynthesisUtterance('พร้อมเสิร์ฟ');
+        tu1.lang = tu2.lang = 'th-TH';
+        tu1.volume = tu2.volume = safeVol;
+        tu1.rate = tu2.rate = 0.85;
+        tu1.pitch = 1.1; tu2.pitch = 1.0;
         window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utt);
-        showResult(true, 'กำลังพูด...');
+        window.speechSynthesis.speak(tu1);
+        window.speechSynthesis.speak(tu2);
+        showResult(true, 'กำลังพูด: "โต๊ะ 5 พร้อมเสิร์ฟ"');
         return;
     }
 

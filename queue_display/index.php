@@ -471,12 +471,20 @@
     function playTTS(text) {
         if (!SOUND_ENABLED || !window.speechSynthesis || !text) return;
         try {
-            var utt    = new SpeechSynthesisUtterance(text);
-            utt.lang   = 'th-TH';
-            utt.volume = SOUND_VOLUME > 0 ? SOUND_VOLUME : 0.01;
-            utt.rate   = 0.9;
+            var label = text.startsWith('โต๊ะ ')
+                ? text
+                : 'คิว ' + (/^\d+$/.test(text) ? String(parseInt(text, 10)) : text);
+            var vol   = SOUND_VOLUME > 0 ? SOUND_VOLUME : 0.01;
+            var u1    = new SpeechSynthesisUtterance(label);
+            var u2    = new SpeechSynthesisUtterance('พร้อมเสิร์ฟ');
+            u1.lang = u2.lang = 'th-TH';
+            u1.volume = u2.volume = vol;
+            u1.rate = u2.rate = 0.85;
+            u1.pitch = 1.1;
+            u2.pitch = 1.0;
             window.speechSynthesis.cancel();
-            window.speechSynthesis.speak(utt);
+            window.speechSynthesis.speak(u1);
+            window.speechSynthesis.speak(u2);
         } catch (e) {}
     }
 
