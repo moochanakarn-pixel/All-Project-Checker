@@ -176,7 +176,7 @@ try {
     ";
 
     $result = $conn->query($sql);
-    if (!$result) throw new Exception('Query error: ' . $conn->error);
+    if (!$result) { $conn->close(); throw new Exception('ไม่สามารถดึงข้อมูลได้'); }
 
     $preparing = array();
     $ready     = array();

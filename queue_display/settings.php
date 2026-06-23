@@ -41,7 +41,7 @@ if ($action === 'list_computers') {
         if ($h === '' || $n === '' || $u === '') throw new Exception('กรุณากรอก Host / DB Name / User ก่อน');
         $conn = new mysqli($h, $u, $w, $n, $p);
         if ($conn->connect_error) throw new Exception($conn->connect_error);
-        $conn->set_charset('utf8');
+        $conn->set_charset('utf8mb4');
         $res = $conn->query(
             "SELECT ComputerID, ComputerName FROM computername WHERE ComputerType = 4 ORDER BY ComputerName"
         );
@@ -84,6 +84,7 @@ if ($action === 'test_db') {
 if ($action === 'pin') {
     $pin = (string)($_POST['pin'] ?? '');
     if ($pin === $configuredPin) {
+        session_regenerate_id(true);
         $_SESSION['qdisplay_auth'] = true;
     } else {
         $msg = 'PIN ไม่ถูกต้อง';
@@ -113,16 +114,22 @@ if ($action === 'save' && !empty($_SESSION['qdisplay_auth'])) {
             'db_port'               => max(1, (int)($_POST['db_port']                ?? 3307)),
             'db_name'               => trim((string)($_POST['db_name']               ?? '')),
             'db_user'               => trim((string)($_POST['db_user']               ?? '')),
-            'db_pass'               => (string)($_POST['db_pass']                    ?? ''),
+            'db_pass'               => (($_POST['db_pass'] ?? '') !== '') ? (string)$_POST['db_pass'] : (string)sv($local, 'db_pass', ''),
             'settings_pin'          => $newPin,
             'computer_id'           => max(0, (int)($_POST['computer_id']            ?? 0)),
             'product_level_id'      => max(0, (int)($_POST['product_level_id']       ?? 0)),
-            'queue_refresh_ms'      => max(1000, (int)($_POST['queue_refresh_ms']    ?? 5000)),
+            'queue_refresh_ms'      => max(2000, (int)($_POST['queue_refresh_ms']    ?? 5000)),
             'ready_limit'           => max(1, (int)($_POST['ready_limit']            ?? 30)),
             'preparing_limit'       => max(1, (int)($_POST['preparing_limit']        ?? 30)),
             'ready_display_minutes' => max(0, (int)($_POST['ready_display_minutes']  ?? 40)),
             'grid_columns'          => max(1, min(8, (int)($_POST['grid_columns']    ?? 2))),
-            'bg_image'              => trim((string)($_POST['bg_image']              ?? '')),
+            'bg_image'              => (function ($v) {
+                $v = trim((string)$v);
+                if ($v === '') return '';
+                if (preg_match('/:\/\/|^\\/|\.\./', $v)) return '';
+                if (!preg_match('/^[a-zA-Z0-9\/_\-\.]+$/', $v)) return '';
+                return $v;
+            })(($_POST['bg_image'] ?? '')),
             'color_header_bg'       => safeColor($_POST['color_header_bg']   ?? '#1a1a2e', '#1a1a2e'),
             'color_header_text'     => safeColor($_POST['color_header_text'] ?? '#ffffff', '#ffffff'),
             'color_queue_text'      => safeColor($_POST['color_queue_text']  ?? '#1a1a2e', '#1a1a2e'),
@@ -137,8 +144,11 @@ if ($action === 'save' && !empty($_SESSION['qdisplay_auth'])) {
             'show_computer_name'    => isset($_POST['show_computer_name'])    ? 1 : 0,
         ];
         $content = "<?php return " . var_export($new, true) . ";\n";
-        if (file_put_contents(settingsFilePath(), $content) !== false) {
-            // reload
+        $dest = settingsFilePath();
+        $tmp  = $dest . '.tmp';
+        $ok   = file_put_contents($tmp, $content) !== false && rename($tmp, $dest);
+        if (!$ok) @unlink($tmp);
+        if ($ok) {
             $local = $new;
             $configuredPin = $newPin;
             $msg = 'บันทึกการตั้งค่าเรียบร้อยแล้ว';
@@ -168,6 +178,15 @@ if ($action === 'upload_sound') {
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($ext, ['mp3', 'wav', 'ogg', 'm4a', 'aac'], true)) {
             throw new Exception('รองรับเฉพาะ MP3, WAV, OGG, M4A, AAC');
+        }
+        $allowedMimes = ['audio/mpeg', 'audio/wav', 'audio/wave', 'audio/x-wav', 'audio/ogg', 'audio/mp4', 'audio/aac', 'audio/x-aac', 'audio/x-m4a', 'video/mp4'];
+        if (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime  = finfo_file($finfo, $file['tmp_name']);
+            finfo_close($finfo);
+            if (!in_array($mime, $allowedMimes, true)) {
+                throw new Exception('ประเภทไฟล์ไม่ถูกต้อง (' . $mime . ')');
+            }
         }
         $soundsDir = __DIR__ . DIRECTORY_SEPARATOR . 'sounds';
         if (!is_dir($soundsDir) && !mkdir($soundsDir, 0755, true)) {
@@ -369,7 +388,7 @@ select.field-select:focus{border-color:#3b82f6}
                 </div>
                 <div class="field">
                     <label>Password</label>
-                    <input type="password" name="db_pass" value="<?= h(sv($local,'db_pass','')) ?>" autocomplete="new-password">
+                    <input type="password" name="db_pass" autocomplete="new-password" placeholder="(ไม่เปลี่ยนหากเว้นว่าง)">
                 </div>
             </div>
             <button type="button" class="btn-test" id="btnTest">ทดสอบการเชื่อมต่อ</button>
@@ -418,7 +437,7 @@ select.field-select:focus{border-color:#3b82f6}
             <div class="row2">
                 <div class="field">
                     <label>Refresh (มิลลิวินาที)</label>
-                    <input type="number" name="queue_refresh_ms" value="<?= h(sv($local,'queue_refresh_ms',5000)) ?>" min="1000" step="500">
+                    <input type="number" name="queue_refresh_ms" value="<?= h(sv($local,'queue_refresh_ms',5000)) ?>" min="2000" step="500">
                 </div>
                 <div class="field">
                     <label>แสดง READY กี่นาที (0=ทั้งวัน)</label>

@@ -402,6 +402,7 @@
     var flashTimer      = null;
     var failCount       = 0;
     var MAX_FAILS       = 10;
+    var fetchInFlight   = false;
     var audioCtx        = null;
     var audioUnlocked   = false;
 
@@ -574,9 +575,12 @@
     }
 
     function fetchQueue() {
+        if (fetchInFlight) return;
+        fetchInFlight = true;
         fetch('api_queue.php?_=' + Date.now())
             .then(function (r) { return r.json(); })
             .then(function (d) {
+                fetchInFlight = false;
                 if (!d.success) {
                     if (d.setup_required) { showSetupError(d); return; }
                     showFetchError('ข้อผิดพลาด: ' + (d.error || 'ไม่สามารถดึงข้อมูลได้'));
@@ -585,6 +589,7 @@
                 hideSetupError();
                 hideFetchError();
                 failCount = 0;
+                sessionStorage.removeItem('qdReloads');
 
                 var badge = document.getElementById('compBadge');
                 if (SHOW_COMPUTER && d.computer_name) {
@@ -629,11 +634,16 @@
                 prevLatest = latest;
             })
             .catch(function (e) {
+                fetchInFlight = false;
                 console.warn('queue fetch error', e);
                 showFetchError('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
                 failCount++;
                 if (failCount >= MAX_FAILS) {
-                    setTimeout(function () { location.reload(); }, 1000);
+                    var reloads = parseInt(sessionStorage.getItem('qdReloads') || '0', 10);
+                    if (reloads < 3) {
+                        sessionStorage.setItem('qdReloads', String(reloads + 1));
+                        setTimeout(function () { location.reload(); }, 1500);
+                    }
                 }
             });
     }
@@ -729,9 +739,10 @@
 
 /* ── Reload อัตโนมัติ: ตอนตี 0 วันใหม่ ── */
 (function () {
-    var now  = new Date();
-    var next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 10);
-    setTimeout(function () { location.reload(); }, next - now);
+    var startDay = new Date().getDate();
+    setInterval(function () {
+        if (new Date().getDate() !== startDay) { location.reload(); }
+    }, 60000);
 }());
 
 /* ── นาฬิกาปัจจุบัน (มุมขวาล่าง) ── */
