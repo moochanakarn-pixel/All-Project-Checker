@@ -124,7 +124,7 @@ function getDbConnection()
     $db   = getDbConfig();
     $conn = new mysqli($db['host'], $db['user'], $db['pass'], $db['name'], (int)$db['port']);
     if ($conn->connect_error) throw new Exception('DB connection failed: ' . $conn->connect_error);
-    if (!$conn->set_charset('utf8mb4')) throw new Exception('Cannot set charset utf8mb4');
+    if (!$conn->set_charset('utf8')) throw new Exception('Cannot set charset utf8');
     $conn->query("SET time_zone = '+07:00'");
     return $conn;
 }

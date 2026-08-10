@@ -41,7 +41,7 @@ if ($action === 'list_computers') {
         if ($h === '' || $n === '' || $u === '') throw new Exception('กรุณากรอก Host / DB Name / User ก่อน');
         $conn = new mysqli($h, $u, $w, $n, $p);
         if ($conn->connect_error) throw new Exception($conn->connect_error);
-        $conn->set_charset('utf8mb4');
+        $conn->set_charset('utf8');
         $res = $conn->query(
             "SELECT ComputerID, ComputerName FROM computername WHERE ComputerType = 4 ORDER BY ComputerName"
         );
