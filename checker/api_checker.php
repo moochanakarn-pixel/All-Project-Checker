@@ -204,8 +204,8 @@ function validateSystemSettingsPayload($settings)
     if ($settings['threshold_red'] <= 0) {
         $errors[] = 'เวลาแจ้งเตือนสีแดงต้องมากกว่า 0';
     }
-    if ($settings['threshold_red'] < $settings['threshold_yellow']) {
-        $errors[] = 'เวลาแจ้งเตือนสีแดงต้องมากกว่าหรือเท่ากับสีเหลือง';
+    if ($settings['threshold_red'] <= $settings['threshold_yellow']) {
+        $errors[] = 'เวลาแจ้งเตือนสีแดงต้องมากกว่าสีเหลือง';
     }
     return $errors;
 }
