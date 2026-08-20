@@ -11,6 +11,18 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// กัน fatal error หลุดเป็น HTML — ob_start ไม่ครอบ E_ERROR
+register_shutdown_function(function () {
+    $err = error_get_last();
+    if ($err && in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        while (ob_get_level()) ob_end_clean();
+        http_response_code(200);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['success' => false, 'error' => 'Server error'], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+});
+
 // กัน HTML หลุดเป็น response — ต้องทำก่อน require
 set_error_handler(function($errno, $errstr, $errfile, $errline) {
     // log เงียบๆ
