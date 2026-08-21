@@ -2455,8 +2455,8 @@ function initSoundSettings() {
                     ? `<div class="product-total-hint">รวมทั้งคิว ${formatQty(totalQtyForProduct)}</div>`
                     : '';
 
-                const orderNumField = state.showOrderNumber && row.ProcessID
-                    ? `<div class="field"><div class="field-label">Order#</div><div class="field-value">${String(Number(row.ProcessID)).padStart(6, '0')}</div></div>`
+                const orderNumField = state.showOrderNumber && (row.OrderNo || row.ProcessID)
+                    ? `<div class="field"><div class="field-label">Order#</div><div class="field-value">${String(Number(row.OrderNo || row.ProcessID)).padStart(6, '0')}</div></div>`
                     : '';
 
                 return `
@@ -2590,8 +2590,8 @@ function initSoundSettings() {
                     ? `<div class="ct-item-qtyhint">รวมทั้งคิว ${formatQty(totalQty)}</div>` : '';
 
                 // order number
-                const orderNum = state.showOrderNumber && row.ProcessID
-                    ? `<span class="ct-item-ordnum">#${String(Number(row.ProcessID)).padStart(6,'0')}</span>` : '';
+                const orderNum = state.showOrderNumber && (row.OrderNo || row.ProcessID)
+                    ? `<span class="ct-item-ordnum">#${String(Number(row.OrderNo || row.ProcessID)).padStart(6,'0')}</span>` : '';
 
                 // meta line
                 const waitMins = getMinutesDiff(row.SubmitOrderDateTime);
