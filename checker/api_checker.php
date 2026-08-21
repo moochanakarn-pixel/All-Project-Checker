@@ -362,7 +362,7 @@ function writeSystemSettingsFile($settings)
     }
     // ล้าง OPcache เพื่อให้ require ครั้งถัดไปอ่านไฟล์ใหม่จาก disk จริงๆ
     if (function_exists('opcache_invalidate')) {
-        opcache_invalidate($path, true);
+        opcache_invalidate($settingsPath, true);
     }
 }
 
@@ -521,7 +521,9 @@ function handleListZones()
     try {
         $snapshot = systemSettingsSnapshot();
         $conn = connectWithSystemSettings($snapshot);
-        $shopId = defined('SHOP_ID') ? (int)SHOP_ID : 0;
+        $shopId = isset($_REQUEST['shop_id']) && (int)$_REQUEST['shop_id'] > 0
+            ? (int)$_REQUEST['shop_id']
+            : (defined('SHOP_ID') ? (int)SHOP_ID : 0);
         $sql = "SELECT zoneid, zonename FROM tablezone WHERE shopid = ? AND Deleted = 0 ORDER BY zonename";
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
@@ -807,6 +809,7 @@ function listActiveData($conn)
         autoConfirmVoids($conn);
     }
     $overridePrintServerUrl = requestString('print_server_url', '');
+    $allowedPrinterIds = fetchAllowedPrinterIds($conn, getEffectiveComputerId());
     $activeRows = fetchActiveRows($conn);
 
     jsonResponse(array(
@@ -815,6 +818,7 @@ function listActiveData($conn)
         'stats' => buildStats($activeRows, array()),
         'active_rows' => $activeRows,
         'filters' => buildFilterInfo($conn, $overridePrintServerUrl),
+        'no_printers_configured' => empty($allowedPrinterIds),
     ));
 }
 
@@ -935,7 +939,6 @@ function fetchPrintServerPrinters($overrideBase = '', $silent = true)
         $cache[$cacheKey] = $printers;
     } catch (Throwable $e) {
         if ($silent) {
-            $cache[$cacheKey] = array();
             return array();
         }
         throw $e;
@@ -1205,14 +1208,13 @@ function appendSaleModeZoneFilter(array &$where, array $saleModeIds, array $zone
     $hasZone     = !empty($zoneIds);
 
     if ($hasZone && $hasSaleMode) {
-        // ทั้งคู่: โต๊ะในโซน = ผ่านเสมอ, TableID=0 = กรองด้วย SaleMode
+        // ทั้งคู่: ต้องตรง SaleMode เสมอ + โต๊ะต้องอยู่ในโซนที่กำหนด
         $needZoneJoin = true;
         $safeZones = implode(',', array_map('intval', $zoneIds));
         $safeModes = implode(',', array_map('intval', $saleModeIds));
         $where[] = "(" .
-            "(opf.TableID > 0 AND tn.ZoneID IN ({$safeZones}))" .
-            " OR " .
-            "(opf.TableID = 0 AND opf.SaleModeID IN ({$safeModes}))" .
+            "opf.SaleModeID IN ({$safeModes})" .
+            " AND (opf.TableID = 0 OR tn.ZoneID IN ({$safeZones}))" .
         ")";
     } elseif ($hasZone) {
         // แค่ zone: TableID=0 ผ่านเสมอ

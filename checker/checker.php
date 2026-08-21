@@ -1495,11 +1495,16 @@ $_ckBase = _computeCheckerBase();
                 return;
             }
             let hasNew = false;
+            let hasGone = false;
             newIds.forEach(id => {
                 if (!soundSettings.lastKnownProcessIds.has(id)) hasNew = true;
             });
+            soundSettings.lastKnownProcessIds.forEach(id => {
+                if (!newIds.has(id)) hasGone = true;
+            });
             soundSettings.lastKnownProcessIds = newIds;
             if (hasNew) playAlertSound();
+            if (hasGone) playCancelSound();
         }
 
 function initSoundSettings() {
@@ -1599,9 +1604,6 @@ function initSoundSettings() {
         function _decodeSoundBuffer(ab, onSuccess, onError) {
             const ctx = getAudioCtx();
             ctx.decodeAudioData(ab, function(buf) {
-                if (soundSettings.lastKnownProcessIds === null) {
-                    soundSettings.lastKnownProcessIds = new Set((state.active_rows || []).map(function(r) { return String(r.ProcessID); }));
-                }
                 onSuccess(buf);
             }, onError || function() {});
         }
@@ -2224,6 +2226,9 @@ function initSoundSettings() {
                 state.active_rows = Array.isArray(data.active_rows) ? data.active_rows : [];
                 applyFilterInfo(data.filters || {});
                 checkForNewOrders(state.active_rows);
+                if (data.no_printers_configured) {
+                    showNotice('ยังไม่ได้ตั้งค่า Printer สำหรับเครื่องนี้ — ไปที่ Settings เพื่อ map Computer ID กับ Printer', 'warning');
+                }
 
                 updateView();
                 setStatusText('พร้อมใช้งาน');
@@ -3727,7 +3732,19 @@ function initSoundSettings() {
             updateShopName();
         };
 
-        shopSel.addEventListener('change', updateShopName);
+        shopSel.addEventListener('change', function() {
+            updateShopName();
+            var selectedShopId = parseInt(shopSel.value) || 0;
+            kdsApiFetch(_kdsBase + '/api_checker.php?action=list_zones&shop_id=' + selectedShopId + '&_=' + Date.now(), { cache: 'no-store' })
+                .then(function(r) { return r.json(); })
+                .then(function(d) {
+                    if (d.success && Array.isArray(d.zones)) {
+                        renderFilterChips('zoneFilterChips', d.zones, 'zoneid', 'zonename');
+                        state.zoneChipsReady = true;
+                    }
+                })
+                .catch(function() {});
+        });
     })();
 
     // ── Zone Filter ─────────────────────────────────────
