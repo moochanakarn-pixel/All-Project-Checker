@@ -2065,7 +2065,7 @@ function checkoutBarcode($conn)
     $conn->begin_transaction();
 
     try {
-        $row = fetchLockedProcessRowByBarcode($conn, (int)$barcodeInfo['process_id'], array(PROCESS_STATUS_ACTIVE, PROCESS_STATUS_IN_PROCESS));
+        $row = fetchLockedProcessRowByBarcode($conn, (int)$barcodeInfo['order_no'], array(PROCESS_STATUS_ACTIVE, PROCESS_STATUS_IN_PROCESS));
         if (!$row) {
             throw new Exception('Barcode not found');
         }
@@ -2142,18 +2142,18 @@ function parseCheckoutBarcode($barcodeRaw)
             'raw' => $barcodeRaw,
             'digits' => '',
             'display' => $barcodeRaw,
-            'process_id' => 0,
+            'order_no' => 0,
         );
     }
 
-    $processId = (int)$digitsOnly;
-    if ($processId <= 0) {
+    $orderNo = (int)$digitsOnly;
+    if ($orderNo <= 0) {
         return array(
             'valid' => false,
             'raw' => $barcodeRaw,
             'digits' => $digitsOnly,
             'display' => $digitsOnly,
-            'process_id' => 0,
+            'order_no' => 0,
         );
     }
 
@@ -2161,15 +2161,15 @@ function parseCheckoutBarcode($barcodeRaw)
         'valid' => true,
         'raw' => $barcodeRaw,
         'digits' => $digitsOnly,
-        'display' => str_pad((string)$processId, max(1, $displayDigits), '0', STR_PAD_LEFT),
-        'process_id' => $processId,
+        'display' => str_pad((string)$orderNo, max(1, $displayDigits), '0', STR_PAD_LEFT),
+        'order_no' => $orderNo,
     );
 }
 
-function fetchLockedProcessRowByBarcode($conn, $processId, array $statuses)
+function fetchLockedProcessRowByBarcode($conn, $orderNo, array $statuses)
 {
-    $processId = (int)$processId;
-    if ($processId <= 0) {
+    $orderNo = (int)$orderNo;
+    if ($orderNo <= 0) {
         return null;
     }
 
@@ -2188,7 +2188,7 @@ function fetchLockedProcessRowByBarcode($conn, $processId, array $statuses)
     }
 
     $where = array(
-        'opf.ProcessID = ?',
+        'opf.OrderNo = ?',
         'opf.ProcessStatus IN (' . implode(', ', $statusList) . ')',
         'COALESCE(opf.ProductSetType, 0) NOT IN (14, 15)'
     );
@@ -2215,7 +2215,7 @@ function fetchLockedProcessRowByBarcode($conn, $processId, array $statuses)
         throw new Exception('Prepare failed: ' . $conn->error);
     }
 
-    $stmt->bind_param('i', $processId);
+    $stmt->bind_param('i', $orderNo);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result ? $result->fetch_assoc() : null;

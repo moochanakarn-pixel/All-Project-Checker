@@ -717,7 +717,7 @@ $_ckBase = _computeCheckerBase();
                     <label class="setting-check">
                         <div>
                             <div class="setting-check-title">แสดงเลขออเดอร์บนการ์ด</div>
-                            <div class="setting-check-sub">แสดงเลข Order# (ProcessID) มุมบนขวาของการ์ด — ใช้ตรวจสอบกับใบเสร็จหรือสแกนบาร์โค้ด</div>
+                            <div class="setting-check-sub">แสดงเลข Order# (OrderNo) มุมบนขวาของการ์ด — ใช้ตรวจสอบกับใบเสร็จหรือสแกนบาร์โค้ด</div>
                         </div>
                         <input type="checkbox" id="showOrderNumber">
                     </label>
