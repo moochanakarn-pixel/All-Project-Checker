@@ -1042,11 +1042,13 @@ $_ckBase = _computeCheckerBase();
         }
 
         function getBarcodeAutoSubmitEnabled() {
-            return true;
+            const raw = localStorage.getItem(getBarcodeAutoSubmitStorageKey());
+            if (raw === null) return true;
+            return raw === '1';
         }
 
         function saveBarcodeAutoSubmit(value) {
-            return true;
+            try { localStorage.setItem(getBarcodeAutoSubmitStorageKey(), value ? '1' : '0'); } catch(e) {}
         }
 
         function getBarcodeCameraEnabled() {

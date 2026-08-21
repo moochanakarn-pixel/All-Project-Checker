@@ -255,6 +255,7 @@ function connectWithSystemSettings($settings)
 
     mysqli_report(MYSQLI_REPORT_OFF);
     $conn = @new mysqli($db['host'], $db['user'], $db['pass'], $db['name'], (int)$db['port']);
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     if ($conn->connect_error) {
         throw new Exception('เชื่อมต่อไม่ผ่าน: ' . $conn->connect_error);
     }
@@ -1907,6 +1908,7 @@ function confirmVoid($conn)
                    AND PrinterID = ?
                    AND ProcessStatus = " . (int)PROCESS_STATUS_VOIDED;
         $stmt = $conn->prepare($sql);
+        if (!$stmt) throw new Exception('Prepare failed: ' . $conn->error);
         $stmt->bind_param('isiiii', $confirmedStatus, $now, $productLevelId, $processId, $subProcessId, $printerId);
         $stmt->execute();
         $stmt->close();
@@ -1921,6 +1923,7 @@ function confirmVoid($conn)
                             AND PrinterID = ?
                             AND ProcessStatus = " . (int)PROCESS_STATUS_VOIDED;
             $cs = $conn->prepare($childSql);
+            if (!$cs) throw new Exception('Prepare failed: ' . $conn->error);
             $cs->bind_param('isiiii', $confirmedStatus, $now,
                 (int)$child['ProductLevelID'], (int)$child['ProcessID'],
                 (int)$child['SubProcessID'], (int)$child['PrinterID']);
@@ -2711,6 +2714,7 @@ function findNextSubProcessId($conn, $productLevelId, $processId, $printerId)
         WHERE ProductLevelID = ?
           AND ProcessID = ?
           AND PrinterID = ?
+        FOR UPDATE
     ";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
