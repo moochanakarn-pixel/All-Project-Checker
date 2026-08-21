@@ -46,7 +46,7 @@ define('BARCODE_AUTO_SUBMIT_DEFAULT', true);
 define('BARCODE_MIN_LENGTH', 1);
 define('BARCODE_DIGITS_DISPLAY', 6);
 
-define('BARCODE_CAMERA_ENABLED_DEFAULT', true);
+define('BARCODE_CAMERA_ENABLED_DEFAULT', (bool)localSetting($__localSettings, 'barcode_camera_enabled', true));
 define('KDS_TWO_STEP_CHECKOUT_DEFAULT', (bool)localSetting($__localSettings, 'kds_two_step_checkout', false));
 define('ALERT_THRESHOLD_YELLOW_DEFAULT', (int)localSetting($__localSettings, 'threshold_yellow', 10));
 define('ALERT_THRESHOLD_RED_DEFAULT', (int)localSetting($__localSettings, 'threshold_red', 20));
