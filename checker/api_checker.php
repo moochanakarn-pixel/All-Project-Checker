@@ -84,6 +84,7 @@ function writeActivityLog($action, $detail, $staffId = 0)
     if (!is_dir($dir)) {
         @mkdir($dir, 0755, true);
     }
+    $detail = str_replace(["\r", "\n", "\t"], ' ', (string)$detail);
     $line = date('Y-m-d H:i:s') . ' | ' . str_pad((string)$action, 14) . ' | CID:' . $cid . ' | Staff:' . (int)$staffId . ' | ' . $detail . PHP_EOL;
     $path = kdsLogPath($cid);
     @file_put_contents($path, $line, FILE_APPEND | LOCK_EX);
@@ -271,6 +272,7 @@ $_columnCache = array();
 function columnExists($conn, $table, $column)
 {
     global $_columnCache;
+    if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) return false;
     $key = $table . '.' . $column;
     if (isset($_columnCache[$key])) return $_columnCache[$key];
     $res = $conn->query("SHOW COLUMNS FROM `$table` LIKE '" . $conn->real_escape_string($column) . "'");
@@ -355,8 +357,7 @@ function writeSystemSettingsFile($settings)
     ));
 
     $content = "<?php\nreturn " . var_export($next, true) . ";\n";
-    $path = resolveKdsSettingsPath();
-    if (@file_put_contents($path, $content, LOCK_EX) === false) {
+    if (@file_put_contents($settingsPath, $content, LOCK_EX) === false) {
         throw new Exception('ไม่สามารถบันทึกไฟล์ settings.local.php ได้');
     }
     // ล้าง OPcache เพื่อให้ require ครั้งถัดไปอ่านไฟล์ใหม่จาก disk จริงๆ
@@ -524,18 +525,13 @@ function handleListZones()
         $sql = "SELECT zoneid, zonename FROM tablezone WHERE shopid = ? AND Deleted = 0 ORDER BY zonename";
         $stmt = $conn->prepare($sql);
         if (!$stmt) {
-            // ถ้า shopid ไม่มี column Deleted ลอง fallback
-            $sql2 = "SELECT zoneid, zonename FROM tablezone ORDER BY zonename";
-            $result2 = $conn->query($sql2);
-            $zones = array();
-            if ($result2) {
-                while ($row = $result2->fetch_assoc()) {
-                    $zones[] = array('zoneid' => (int)$row['zoneid'], 'zonename' => (string)$row['zonename']);
-                }
+            // Deleted column likely absent; retry without it but keep shopid filter
+            $stmt = $conn->prepare("SELECT zoneid, zonename FROM tablezone WHERE shopid = ? ORDER BY zonename");
+            if (!$stmt) {
+                $conn->close();
+                jsonResponse(array('success' => true, 'zones' => array()));
+                return;
             }
-            $conn->close();
-            jsonResponse(array('success' => true, 'zones' => $zones));
-            return;
         }
         $stmt->bind_param('i', $shopId);
         $stmt->execute();
@@ -1190,7 +1186,9 @@ function appendAllowedPrinterFilter(array &$where, array $allowedPrinterIds, $al
 function getStationFilter()
 {
     $settingsPath = resolveKdsSettingsPath();
+    ob_start();
     $local = is_file($settingsPath) ? (require $settingsPath) : array();
+    ob_end_clean();
     if (!is_array($local)) $local = array();
     return array(
         'allowed_sale_mode_ids' => parseIdList(isset($local['allowed_sale_mode_ids']) ? $local['allowed_sale_mode_ids'] : array()),
@@ -2753,7 +2751,7 @@ function fetchOutOfStockProducts($conn, $keyword = '')
     $params = array();
     if ($keyword !== '') {
         $where[] = '(p.ProductCode LIKE ? OR p.ProductName LIKE ? OR p.ProductName1 LIKE ? OR pd.ProductDeptName LIKE ? OR pg.ProductGroupName LIKE ?)';
-        $like = '%' . $keyword . '%';
+        $like = '%' . addcslashes($keyword, '%_\\') . '%';
         $types = 'sssss';
         $params = array($like, $like, $like, $like, $like);
     }
