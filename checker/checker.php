@@ -981,7 +981,8 @@ $_ckBase = _computeCheckerBase();
             soldOutKeyword: '',
             kdsTwoStepCheckout: kdsTwoStepCheckoutDefault,
             checkoutQtyMode: 1,
-            showOrderNumber: false
+            showOrderNumber: false,
+            _printerWarnShown: false
         };
 
         const barcodeCaptureState = {
@@ -1495,16 +1496,11 @@ $_ckBase = _computeCheckerBase();
                 return;
             }
             let hasNew = false;
-            let hasGone = false;
             newIds.forEach(id => {
                 if (!soundSettings.lastKnownProcessIds.has(id)) hasNew = true;
             });
-            soundSettings.lastKnownProcessIds.forEach(id => {
-                if (!newIds.has(id)) hasGone = true;
-            });
             soundSettings.lastKnownProcessIds = newIds;
             if (hasNew) playAlertSound();
-            if (hasGone) playCancelSound();
         }
 
 function initSoundSettings() {
@@ -2226,9 +2222,11 @@ function initSoundSettings() {
                 state.active_rows = Array.isArray(data.active_rows) ? data.active_rows : [];
                 applyFilterInfo(data.filters || {});
                 checkForNewOrders(state.active_rows);
-                if (data.no_printers_configured) {
+                if (data.no_printers_configured && !state._printerWarnShown) {
+                    state._printerWarnShown = true;
                     showNotice('ยังไม่ได้ตั้งค่า Printer สำหรับเครื่องนี้ — ไปที่ Settings เพื่อ map Computer ID กับ Printer', 'warning');
                 }
+                if (!data.no_printers_configured) { state._printerWarnShown = false; }
 
                 updateView();
                 setStatusText('พร้อมใช้งาน');
@@ -2597,8 +2595,8 @@ function initSoundSettings() {
                     ? `<div class="ct-item-qtyhint">รวมทั้งคิว ${formatQty(totalQty)}</div>` : '';
 
                 // order number
-                const orderNumVal = Number(row.OrderNo) > 0 ? row.OrderNo : row.ProcessID;
-                const orderNum = state.showOrderNumber && orderNumVal
+                const orderNumVal = Number(row.OrderNo) > 0 ? row.OrderNo : 0;
+                const orderNum = state.showOrderNumber && orderNumVal > 0
                     ? `<span class="ct-item-ordnum">#${String(Number(orderNumVal)).padStart(6,'0')}</span>` : '';
 
                 // meta line
@@ -3142,6 +3140,12 @@ function initSoundSettings() {
                 });
                 const data = await resp.json();
                 if (!data.success) throw new Error(data.error || 'เกิดข้อผิดพลาด');
+                const voidedRow = (state.active_rows || []).find(function(r) {
+                    return Number(r.ProductLevelID) === Number(productLevelId)
+                        && Number(r.ProcessID)      === Number(processId)
+                        && Number(r.SubProcessID)   === Number(subProcessId)
+                        && Number(r.PrinterID)      === Number(printerId);
+                });
                 state.active_rows = (state.active_rows || []).filter(function(r) {
                     return !(Number(r.ProductLevelID) === Number(productLevelId)
                           && Number(r.ProcessID)      === Number(processId)
@@ -3149,6 +3153,7 @@ function initSoundSettings() {
                           && Number(r.PrinterID)      === Number(printerId));
                 });
                 state.stats.active_rows = state.active_rows.length;
+                state.stats.active_qty = Math.max(0, Number(state.stats.active_qty || 0) - Number((voidedRow || {}).ProductAmount || 0));
                 updateView();
                 showNotice('ยืนยันยกเลิกเรียบร้อย', 'success');
             } catch (e) {
@@ -3317,7 +3322,10 @@ function initSoundSettings() {
 
         function getMinutesDiff(value) {
             if (!value) return 0;
-            const safe = String(value).replace(' ', 'T') + '+07:00';
+            const safeStr = String(value);
+            const safe = /[Z+\-]\d{2}:?\d{2}$/.test(safeStr)
+                ? safeStr.replace(' ', 'T')
+                : safeStr.replace(' ', 'T') + '+07:00';
             const dt = new Date(safe);
             if (Number.isNaN(dt.getTime())) return 0;
             return Math.max(0, Math.floor((Date.now() - dt.getTime()) / 60000));

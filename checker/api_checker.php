@@ -256,7 +256,6 @@ function connectWithSystemSettings($settings)
 
     mysqli_report(MYSQLI_REPORT_OFF);
     $conn = @new mysqli($db['host'], $db['user'], $db['pass'], $db['name'], (int)$db['port']);
-    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     if ($conn->connect_error) {
         throw new Exception('เชื่อมต่อไม่ผ่าน: ' . $conn->connect_error);
     }
@@ -939,6 +938,7 @@ function fetchPrintServerPrinters($overrideBase = '', $silent = true)
         $cache[$cacheKey] = $printers;
     } catch (Throwable $e) {
         if ($silent) {
+            $cache[$cacheKey] = array();
             return array();
         }
         throw $e;
