@@ -2597,8 +2597,9 @@ function initSoundSettings() {
                     ? `<div class="ct-item-qtyhint">รวมทั้งคิว ${formatQty(totalQty)}</div>` : '';
 
                 // order number
-                const orderNum = state.showOrderNumber && (row.OrderNo || row.ProcessID)
-                    ? `<span class="ct-item-ordnum">#${String(Number(row.OrderNo || row.ProcessID)).padStart(6,'0')}</span>` : '';
+                const orderNumVal = Number(row.OrderNo) > 0 ? row.OrderNo : row.ProcessID;
+                const orderNum = state.showOrderNumber && orderNumVal
+                    ? `<span class="ct-item-ordnum">#${String(Number(orderNumVal)).padStart(6,'0')}</span>` : '';
 
                 // meta line
                 const waitMins = getMinutesDiff(row.SubmitOrderDateTime);
@@ -2675,8 +2676,10 @@ function initSoundSettings() {
             }
             const productTotals = buildActiveProductTotals(rows);
             const groups = groupRowsByTable(rows);
-            // แสดงจำนวนการ์ด (บิล/โต๊ะ) ไม่ใช่จำนวน row
-            document.getElementById('queueSummary').textContent = 'ค้าง ' + groups.length + ' บิล';
+            const billCount = groups.reduce(function(s, g) {
+                return s + new Set(g.rows.map(function(r) { return r.ProcessID; })).size;
+            }, 0);
+            document.getElementById('queueSummary').textContent = 'ค้าง ' + billCount + ' บิล';
             wrap.innerHTML = groups.map(function(tbl){ return buildTableCard(tbl, productTotals); }).join('');
         }
 
@@ -3140,9 +3143,13 @@ function initSoundSettings() {
                 const data = await resp.json();
                 if (!data.success) throw new Error(data.error || 'เกิดข้อผิดพลาด');
                 state.active_rows = (state.active_rows || []).filter(function(r) {
-                    return !(Number(r.ProcessID) === Number(processId) && Number(r.SubProcessID) === Number(subProcessId));
+                    return !(Number(r.ProductLevelID) === Number(productLevelId)
+                          && Number(r.ProcessID)      === Number(processId)
+                          && Number(r.SubProcessID)   === Number(subProcessId)
+                          && Number(r.PrinterID)      === Number(printerId));
                 });
-                renderActiveView(state.active_rows);
+                state.stats.active_rows = state.active_rows.length;
+                updateView();
                 showNotice('ยืนยันยกเลิกเรียบร้อย', 'success');
             } catch (e) {
                 showNotice(e.message || 'เกิดข้อผิดพลาด', 'error');
@@ -3310,7 +3317,7 @@ function initSoundSettings() {
 
         function getMinutesDiff(value) {
             if (!value) return 0;
-            const safe = String(value).replace(' ', 'T');
+            const safe = String(value).replace(' ', 'T') + '+07:00';
             const dt = new Date(safe);
             if (Number.isNaN(dt.getTime())) return 0;
             return Math.max(0, Math.floor((Date.now() - dt.getTime()) / 60000));
@@ -4006,15 +4013,6 @@ function initSoundSettings() {
             .catch(function(){ nameBox.textContent = 'เกิดข้อผิดพลาด'; });
         }
 
-        // ─── View mode toggle init ───
-        document.querySelectorAll('.view-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() { setViewMode(this.dataset.view); });
-        });
-        // ตั้ง active button ตาม saved preference
-        document.querySelectorAll('.view-btn').forEach(function(btn) {
-            btn.classList.toggle('active', btn.dataset.view === viewState.current);
-        });
-
         // populate staffcode จาก saved settings
         const savedId = localStorage.getItem('checker_finish_staff_id');
         if (savedId && parseInt(savedId) > 0) {
@@ -4029,6 +4027,12 @@ function initSoundSettings() {
             }).catch(function(){});
         }
     })();
+
+    // ─── View mode toggle init (อยู่นอก IIFE เพื่อให้ทำงานได้เสมอ) ───
+    document.querySelectorAll('.view-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() { setViewMode(this.dataset.view); });
+        btn.classList.toggle('active', btn.dataset.view === viewState.current);
+    });
     </script>
 
 </body>
