@@ -539,28 +539,29 @@ $_ckBase = _computeCheckerBase();
             <div class="controls">
                 <div id="staffLoginArea" style="display:flex;align-items:center;gap:6px">
                     <input type="text" id="topStaffCodeInput" placeholder="Staff Code" autocomplete="off" style="text-transform:uppercase;width:110px;padding:6px 10px;border:1px solid var(--line,#e5e7eb);border-radius:8px;font-size:16px;background:#fff;color:#111">
-                    <button type="button" class="btn btn-primary" id="topStaffLoginBtn" style="min-height:36px;padding:0 12px;font-size:13px">เข้าสู่ระบบ</button>
+                    <button type="button" class="btn btn-primary" id="topStaffLoginBtn" style="min-height:36px;padding:0 12px;font-size:13px" data-i18n="login">เข้าสู่ระบบ</button>
                 </div>
                 <div id="staffLoggedArea" style="display:none;align-items:center;gap:6px">
                     <span id="topStaffNameLabel" style="font-size:13px;font-weight:bold;color:#fff;background:rgba(0,0,0,.18);padding:4px 10px;border-radius:8px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-                    <button type="button" class="btn btn-ghost" id="topStaffLogoutBtn" style="min-height:36px;padding:0 10px;font-size:13px">ออกจากระบบ</button>
+                    <button type="button" class="btn btn-ghost" id="topStaffLogoutBtn" style="min-height:36px;padding:0 10px;font-size:13px" data-i18n="logout">ออกจากระบบ</button>
                 </div>
-                <button type="button" class="btn btn-accent" id="openSystemSettingsBtn" style="display:none">⚙️ ตั้งค่าระบบ</button>
-                <button type="button" class="btn btn-neutral" id="openSoldOutBtn">🥫 ปิดสินค้าหมด</button>
+                <button type="button" class="btn btn-accent" id="openSystemSettingsBtn" style="display:none" data-i18n="system_settings">⚙️ ตั้งค่าระบบ</button>
+                <button type="button" class="btn btn-neutral" id="openSoldOutBtn" data-i18n="sold_out_btn">🥫 ปิดสินค้าหมด</button>
                 <div class="barcode-tools" id="barcodeTools">
                     <div class="field-card field-card-barcode">
-                        <label for="barcodeInput">สแกนบาร์โค้ด</label>
-                        <input type="text" id="barcodeInput" inputmode="numeric" autocomplete="off" placeholder="ยิงบาร์โค้ดแล้วเช็คเอาต์ทันที">
+                        <label for="barcodeInput" data-i18n="barcode_label">สแกนบาร์โค้ด</label>
+                        <input type="text" id="barcodeInput" inputmode="numeric" autocomplete="off" placeholder="ยิงบาร์โค้ดแล้วเช็คเอาต์ทันที" data-i18n-ph="barcode_ph">
                     </div>
-                    <button type="button" class="btn btn-neutral" id="openBarcodeCameraBtn">📷 สแกนกล้อง</button>
+                    <button type="button" class="btn btn-neutral" id="openBarcodeCameraBtn" data-i18n="camera_scan">📷 สแกนกล้อง</button>
                 </div>
-                <button type="button" class="btn btn-neutral" id="openZoneBtn">📍 โซน: <span id="zoneLabel">ทั้งหมด</span></button>
-                <button type="button" class="btn btn-ghost js-open-finished" id="openFinishedBtn">✅ เสร็จแล้ว <span id="topFinishedCount">0</span></button>
-                <button type="button" class="btn btn-primary" id="refreshBtn">🔄 รีเฟรช</button>
+                <button type="button" class="btn btn-neutral" id="openZoneBtn"><span data-i18n="zone_prefix">📍 โซน:</span>&nbsp;<span id="zoneLabel" data-zone-default="1">ทั้งหมด</span></button>
+                <button type="button" class="btn btn-ghost js-open-finished" id="openFinishedBtn"><span data-i18n="done_btn">✅ เสร็จแล้ว</span> <span id="topFinishedCount">0</span></button>
+                <button type="button" class="btn btn-primary" id="refreshBtn" data-i18n="refresh">🔄 รีเฟรช</button>
+                <button type="button" class="btn btn-ghost" id="langBtn" data-i18n="lang_btn" style="min-height:36px;padding:0 10px;font-size:13px">🌐 EN</button>
                 <button type="button" class="btn-fullscreen" id="fsBtn" title="เต็มจอ">
                     <svg class="fs-ico-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
                     <svg class="fs-ico-exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="display:none"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
-                    เต็มจอ
+                    <span data-i18n="fullscreen">เต็มจอ</span>
                 </button>
             </div>
         </div>
@@ -568,15 +569,15 @@ $_ckBase = _computeCheckerBase();
 
     <div class="stats">
         <div class="stat">
-            <div class="stat-label">คิวค้าง</div>
+            <div class="stat-label" data-i18n="stat_queue">คิวค้าง</div>
             <div class="stat-value" id="statActiveRows">0</div>
         </div>
         <div class="stat">
-            <div class="stat-label">รายการ</div>
+            <div class="stat-label" data-i18n="stat_items">รายการ</div>
             <div class="stat-value" id="statActiveQty">0</div>
         </div>
         <div class="stat">
-            <div class="stat-label">สถานะ</div>
+            <div class="stat-label" data-i18n="stat_status">สถานะ</div>
             <div class="stat-value" id="statStatusText" style="font-size:15px;color:var(--success)">พร้อมใช้งาน</div>
         </div>
     </div>
@@ -585,45 +586,45 @@ $_ckBase = _computeCheckerBase();
             <section class="panel">
                 <div class="panel-head">
                     <div>
-                        <h2 class="panel-title">คิวครัวที่ยังค้างอยู่</h2>
+                        <h2 class="panel-title" data-i18n="panel_title">คิวครัวที่ยังค้างอยู่</h2>
                     </div>
                     <div class="view-toggle">
-                        <button type="button" class="view-btn active" data-view="list" title="มุมมองรายการ">📋 รายการ</button>
-                        <button type="button" class="view-btn" data-view="table" title="มุมมองโต๊ะ">🍽️ โต๊ะ</button>
+                        <button type="button" class="view-btn active" data-view="list" title="มุมมองรายการ" data-i18n="view_list">📋 รายการ</button>
+                        <button type="button" class="view-btn" data-view="table" title="มุมมองโต๊ะ" data-i18n="view_table">🍽️ โต๊ะ</button>
                     </div>
-                    <div class="panel-badge" id="queueSummary">กำลังโหลด...</div>
+                    <div class="panel-badge" id="queueSummary" data-i18n="queue_loading">กำลังโหลด...</div>
                 </div>
                 <div class="cards" id="activeCards">
-                    <div class="empty">กำลังโหลดข้อมูล...</div>
+                    <div class="empty" data-i18n="empty_loading">กำลังโหลดข้อมูล...</div>
                 </div>
             </section>
         </div>
     </div>
 
-    <button type="button" class="fab js-open-finished" id="openFinishedFab">ดูรายการเสร็จ <span id="fabFinishedCount">0</span></button>
+    <button type="button" class="fab js-open-finished" id="openFinishedFab"><span data-i18n="fab_done">ดูรายการเสร็จ</span> <span id="fabFinishedCount">0</span></button>
 
     <div class="drawer-backdrop" id="finishedDrawerBackdrop"></div>
     <aside class="drawer" id="finishedDrawer" aria-hidden="true">
         <div class="drawer-head">
             <div>
-                <h2 class="drawer-title">รายการที่เสร็จแล้ววันนี้</h2>
-                <div class="drawer-sub">แสดงรายการที่เสร็จแล้วทั้งหมดของวันนี้ และกดย้อนกลับ 1 รายการได้</div>
+                <h2 class="drawer-title" data-i18n="drawer_title">รายการที่เสร็จแล้ววันนี้</h2>
+                <div class="drawer-sub" data-i18n="drawer_sub">แสดงรายการที่เสร็จแล้วทั้งหมดของวันนี้ และกดย้อนกลับ 1 รายการได้</div>
             </div>
-            <button type="button" class="btn btn-neutral drawer-close js-close-finished">ปิด</button>
+            <button type="button" class="btn btn-neutral drawer-close js-close-finished" data-i18n="close">ปิด</button>
         </div>
         <div class="drawer-list" id="recentFinishedList">
-            <div class="empty">ยังไม่มีรายการ</div>
+            <div class="empty" data-i18n="empty_no_items">ยังไม่มีรายการ</div>
         </div>
     </aside>
 
     <div class="modal-backdrop" id="timerSettingsBackdrop"></div>
     <div class="modal" id="timerSettingsModal" role="dialog" aria-modal="true" aria-labelledby="timerSettingsTitle">
         <div class="modal-head">
-            <h2 class="modal-title" id="timerSettingsTitle">⚙️ ตั้งค่า</h2>
+            <h2 class="modal-title" id="timerSettingsTitle" data-i18n="settings_title">⚙️ ตั้งค่า</h2>
         </div>
         <div class="modal-tabs">
-            <button class="modal-tab active" id="tabBtnSystem">⚙️ ระบบ</button>
-            <button class="modal-tab" id="tabBtnAppearance">🎨 หน้าตา</button>
+            <button class="modal-tab active" id="tabBtnSystem" data-i18n="tab_system">⚙️ ระบบ</button>
+            <button class="modal-tab" id="tabBtnAppearance" data-i18n="tab_appearance">🎨 หน้าตา</button>
         </div>
         <div class="modal-body">
             <div id="tabPanelSystem" class="tab-panel active">
@@ -871,7 +872,7 @@ $_ckBase = _computeCheckerBase();
     <div class="modal-backdrop" id="soldOutBackdrop"></div>
     <div class="modal" id="soldOutModal" role="dialog" aria-modal="true" aria-labelledby="soldOutTitle">
         <div class="modal-head">
-            <h2 class="modal-title" id="soldOutTitle">🥫 ปิดสินค้าหมด</h2>
+            <h2 class="modal-title" id="soldOutTitle" data-i18n="sold_out_modal_title">🥫 ปิดสินค้าหมด</h2>
             <div class="modal-sub">เลือกสินค้าแล้วกดยืนยัน ระบบจะอัปเดตสถานะสินค้าหมดในระบบหลักทันที</div>
         </div>
         <div class="modal-body">
@@ -893,7 +894,7 @@ $_ckBase = _computeCheckerBase();
     <div class="modal-backdrop" id="barcodeCameraBackdrop"></div>
     <div class="modal camera-modal" id="barcodeCameraModal" role="dialog" aria-modal="true" aria-labelledby="barcodeCameraTitle">
         <div class="modal-head">
-            <h2 class="modal-title" id="barcodeCameraTitle">📷 สแกนบาร์โค้ดด้วยกล้อง</h2>
+            <h2 class="modal-title" id="barcodeCameraTitle" data-i18n="camera_modal_title">📷 สแกนบาร์โค้ดด้วยกล้อง</h2>
             <div class="modal-sub">ใช้กล้องหน้าเป็นค่าเริ่มต้น และสลับเป็นกล้องหลังได้ตามการใช้งาน</div>
         </div>
         <div class="modal-body">
@@ -928,6 +929,84 @@ $_ckBase = _computeCheckerBase();
         const barcodeMediaSupported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
         const barcodeCameraSupported = !!(window.BarcodeDetector && barcodeMediaSupported);
         var outOfStockControlEnabled = <?php echo defined('ENABLE_OUT_OF_STOCK_CONTROL') && ENABLE_OUT_OF_STOCK_CONTROL ? 'true' : 'false'; ?>;
+
+        // ===== i18n =====
+        const LANG = {
+            th: {
+                login:'เข้าสู่ระบบ', logout:'ออกจากระบบ',
+                system_settings:'⚙️ ตั้งค่าระบบ', sold_out_btn:'🥫 ปิดสินค้าหมด',
+                barcode_label:'สแกนบาร์โค้ด', barcode_ph:'ยิงบาร์โค้ดแล้วเช็คเอาต์ทันที',
+                camera_scan:'📷 สแกนกล้อง', zone_prefix:'📍 โซน:',
+                zone_all:'ทั้งหมด', done_btn:'✅ เสร็จแล้ว',
+                refresh:'🔄 รีเฟรช', fullscreen:'เต็มจอ',
+                stat_queue:'คิวค้าง', stat_items:'รายการ', stat_status:'สถานะ',
+                panel_title:'คิวครัวที่ยังค้างอยู่',
+                view_list:'📋 รายการ', view_table:'🍽️ โต๊ะ',
+                drawer_title:'รายการที่เสร็จแล้ววันนี้',
+                drawer_sub:'แสดงรายการที่เสร็จแล้วทั้งหมดของวันนี้ และกดย้อนกลับ 1 รายการได้',
+                close:'ปิด', fab_done:'ดูรายการเสร็จ',
+                settings_title:'⚙️ ตั้งค่า', tab_system:'⚙️ ระบบ', tab_appearance:'🎨 หน้าตา',
+                sold_out_modal_title:'🥫 ปิดสินค้าหมด',
+                camera_modal_title:'📷 สแกนบาร์โค้ดด้วยกล้อง',
+                queue_loading:'กำลังโหลด...', queue_connecting:'กำลังเชื่อมต่อ...',
+                queue_conn_failed:'เชื่อมต่อไม่สำเร็จ',
+                queue_pending_rows:'ค้าง {n} แถว', queue_pending_bills:'ค้าง {n} บิล',
+                queue_empty:'ไม่มีคิวค้าง',
+                empty_loading:'กำลังโหลดข้อมูล...', empty_no_queue:'ไม่มีรายการค้างของวันนี้ในครัว',
+                empty_no_items:'ยังไม่มีรายการ', empty_no_finished:'ยังไม่มีรายการเสร็จวันนี้',
+                empty_products_loading:'กำลังโหลดรายการสินค้า...', empty_products_failed:'โหลดรายการสินค้าไม่สำเร็จ', empty_products_none:'ไม่พบรายการสินค้า',
+                status_ready:'พร้อมใช้งาน', status_loading:'กำลังโหลด...',
+                status_error:'เกิดข้อผิดพลาด', status_timeout:'หมดเวลา — รอรอบถัดไป',
+                status_checking_out:'กำลัง checkout...', status_confirming:'กำลังยืนยันรายการ...',
+                status_updated:'อัปเดตแล้ว', status_barcode_search:'กำลังค้นหา Barcode...',
+                status_resolving:'กำลังจบสถานะ...', status_undoing:'กำลังย้อนกลับ...',
+                status_marking_oos:'กำลังปิดสินค้าหมด...', status_marking_avail:'กำลังเปิดขายสินค้า...',
+                db_connecting:'กำลังเชื่อมต่อฐานข้อมูล...', db_conn_failed:'เชื่อมต่อฐานข้อมูลไม่สำเร็จ',
+                db_retry:'🔄 ลองเชื่อมต่อใหม่',
+                offline_banner:'⚠️ ระบบ OFFLINE — ไม่สามารถเชื่อมต่อฐานข้อมูลได้', offline_retry:'🔄 ลองใหม่',
+                lang_btn:'🌐 EN',
+            },
+            en: {
+                login:'Log In', logout:'Log Out',
+                system_settings:'⚙️ Settings', sold_out_btn:'🥫 Out of Stock',
+                barcode_label:'Scan Barcode', barcode_ph:'Scan barcode to checkout instantly',
+                camera_scan:'📷 Camera', zone_prefix:'📍 Zone:',
+                zone_all:'All', done_btn:'✅ Done',
+                refresh:'🔄 Refresh', fullscreen:'Fullscreen',
+                stat_queue:'Queue', stat_items:'Items', stat_status:'Status',
+                panel_title:'Kitchen Queue',
+                view_list:'📋 List', view_table:'🍽️ Table',
+                drawer_title:'Completed Today',
+                drawer_sub:'Shows all completed items today. Tap to undo one.',
+                close:'Close', fab_done:'View Done',
+                settings_title:'⚙️ Settings', tab_system:'⚙️ System', tab_appearance:'🎨 Appearance',
+                sold_out_modal_title:'🥫 Out of Stock',
+                camera_modal_title:'📷 Scan with Camera',
+                queue_loading:'Loading...', queue_connecting:'Connecting...',
+                queue_conn_failed:'Connection failed',
+                queue_pending_rows:'Pending {n} row(s)', queue_pending_bills:'Pending {n} bill(s)',
+                queue_empty:'No queue',
+                empty_loading:'Loading...', empty_no_queue:'No pending orders today',
+                empty_no_items:'No items', empty_no_finished:'No completed items today',
+                empty_products_loading:'Loading products...', empty_products_failed:'Failed to load products', empty_products_none:'No products found',
+                status_ready:'Ready', status_loading:'Loading...',
+                status_error:'Error', status_timeout:'Timeout — next poll soon',
+                status_checking_out:'Checking out...', status_confirming:'Confirming...',
+                status_updated:'Updated', status_barcode_search:'Searching...',
+                status_resolving:'Finishing...', status_undoing:'Undoing...',
+                status_marking_oos:'Marking out of stock...', status_marking_avail:'Marking available...',
+                db_connecting:'Connecting to database...', db_conn_failed:'Database connection failed',
+                db_retry:'🔄 Retry',
+                offline_banner:'⚠️ OFFLINE — Cannot connect to database', offline_retry:'🔄 Retry',
+                lang_btn:'🌐 TH',
+            }
+        };
+        let currentLang = (function(){ try { return localStorage.getItem('checker_lang') || 'th'; } catch(e) { return 'th'; } })();
+        function t(key) { return (LANG[currentLang] || LANG.th)[key] || key; }
+        function applyLang() {
+            document.querySelectorAll('[data-i18n]').forEach(function(el) { el.textContent = t(el.dataset.i18n); });
+            document.querySelectorAll('[data-i18n-ph]').forEach(function(el) { el.placeholder = t(el.dataset.i18nPh); });
+        }
 
         let isSubmitting = false;
         let noticeTimer = null;
@@ -1873,7 +1952,7 @@ function initSoundSettings() {
             if (!outOfStockControlEnabled) return;
             const list = document.getElementById('soldOutList');
             const q = state.soldOutKeyword || '';
-            if (list) list.innerHTML = '<div class="empty">กำลังโหลดรายการสินค้า...</div>';
+            if (list) list.innerHTML = '<div class="empty">' + t('empty_products_loading') + '</div>';
             try {
                 const response = await kdsApiFetch(_kdsBase + '/api_checker.php?action=list_out_of_stock_products&q=' + encodeURIComponent(q) + '&_=' + Date.now(), { cache: 'no-store' });
                 const data = await response.json();
@@ -1884,7 +1963,7 @@ function initSoundSettings() {
                 if (!state.soldOutModalOpen) return;
                 renderSoldOutProducts(state.soldOutProducts);
             } catch (error) {
-                if (list) list.innerHTML = '<div class="empty">โหลดรายการสินค้าไม่สำเร็จ</div>';
+                if (list) list.innerHTML = '<div class="empty">' + t('empty_products_failed') + '</div>';
                 showNotice(error.message || 'โหลดรายการสินค้าไม่สำเร็จ', 'error');
             }
         }
@@ -1893,7 +1972,7 @@ function initSoundSettings() {
             const list = document.getElementById('soldOutList');
             if (!list) return;
             if (!rows || !rows.length) {
-                list.innerHTML = '<div class="empty">ไม่พบรายการสินค้า</div>';
+                list.innerHTML = '<div class="empty">' + t('empty_products_none') + '</div>';
                 return;
             }
             list.innerHTML = rows.map(function(row){
@@ -1929,7 +2008,7 @@ function initSoundSettings() {
             if (!outOfStockControlEnabled || isSubmitting) return;
             if (!window.confirm(confirmText || 'ยืนยันทำรายการนี้?')) return;
             isSubmitting = true;
-            setStatusText(isOutOfStock ? 'กำลังปิดสินค้าหมด...' : 'กำลังเปิดขายสินค้า...');
+            setStatusText(isOutOfStock ? t('status_marking_oos') : t('status_marking_avail'));
             try {
                 const params = new URLSearchParams();
                 params.set('action', 'set_product_out_of_stock');
@@ -1951,7 +2030,7 @@ function initSoundSettings() {
                 showNotice(error.message || 'อัปเดตสินค้าหมดไม่สำเร็จ', 'error');
             } finally {
                 isSubmitting = false;
-                setStatusText('พร้อมใช้งาน');
+                setStatusText(t('status_ready'));
                 loadSoldOutProducts(true);
             }
         }
@@ -2199,7 +2278,7 @@ function initSoundSettings() {
             const activeOk = !!results[0];
             const finishedOk = !!results[1];
             if (activeOk && !finishedOk) {
-                setStatusText('พร้อมใช้งาน');
+                setStatusText(t('status_ready'));
                 console.warn('โหลดรายการเสร็จไม่สำเร็จ แต่คิวหลักยังใช้งานได้');
             }
         }
@@ -2210,7 +2289,7 @@ function initSoundSettings() {
             options = options || {};
             const silent = !!options.silent;
             try {
-                setStatusText('กำลังโหลด...');
+                setStatusText(t('status_loading'));
                 const response = await kdsApiFetch(_kdsBase + '/api_checker.php?action=list_active&_=' + Date.now(), { cache: 'no-store' });
                 const data = await response.json();
                 if (!response.ok || !data.success) {
@@ -2229,12 +2308,12 @@ function initSoundSettings() {
                 if (!data.no_printers_configured) { state._printerWarnShown = false; }
 
                 updateView();
-                setStatusText('พร้อมใช้งาน');
+                setStatusText(t('status_ready'));
                 if (_pollingErrorCount > 0) { _pollingErrorCount = 0; hidePollingOfflineBanner(); }
                 return true;
             } catch (error) {
-                if (error && error.name === 'AbortError') { setStatusText('หมดเวลา — รอรอบถัดไป'); return false; }
-                setStatusText('เกิดข้อผิดพลาด');
+                if (error && error.name === 'AbortError') { setStatusText(t('status_timeout')); return false; }
+                setStatusText(t('status_error'));
                 _pollingErrorCount++;
                 if (_pollingErrorCount >= 3) { showPollingOfflineBanner(); }
                 else if (!silent) { showNotice(error.message || 'โหลดคิวไม่สำเร็จ', 'error'); }
@@ -2360,10 +2439,10 @@ function initSoundSettings() {
         function renderActiveRows(rows) {
             const wrap = document.getElementById('activeCards');
             const productTotals = buildActiveProductTotals(rows);
-            document.getElementById('queueSummary').textContent = rows.length ? ('ค้าง ' + rows.length + ' แถว') : 'ไม่มีคิวค้าง';
+            document.getElementById('queueSummary').textContent = rows.length ? t('queue_pending_rows').replace('{n}', rows.length) : t('queue_empty');
 
             if (!rows.length) {
-                wrap.innerHTML = '<div class="empty">ไม่มีรายการค้างของวันนี้ในครัว</div>';
+                wrap.innerHTML = '<div class="empty">' + t('empty_no_queue') + '</div>';
                 return;
             }
 
@@ -2668,8 +2747,8 @@ function initSoundSettings() {
             const wrap = document.getElementById('activeCards');
             wrap.classList.add('table-view');
             if (!rows.length) {
-                document.getElementById('queueSummary').textContent = 'ไม่มีคิวค้าง';
-                wrap.innerHTML = '<div class="empty">ไม่มีรายการค้างของวันนี้ในครัว</div>';
+                document.getElementById('queueSummary').textContent = t('queue_empty');
+                wrap.innerHTML = '<div class="empty">' + t('empty_no_queue') + '</div>';
                 return;
             }
             const productTotals = buildActiveProductTotals(rows);
@@ -2677,7 +2756,7 @@ function initSoundSettings() {
             const billCount = groups.reduce(function(s, g) {
                 return s + new Set(g.rows.map(function(r) { return r.ProcessID; })).size;
             }, 0);
-            document.getElementById('queueSummary').textContent = 'ค้าง ' + billCount + ' บิล';
+            document.getElementById('queueSummary').textContent = t('queue_pending_bills').replace('{n}', billCount);
             wrap.innerHTML = groups.map(function(tbl){ return buildTableCard(tbl, productTotals); }).join('');
         }
 
@@ -2711,7 +2790,7 @@ function initSoundSettings() {
             const listWrap = document.getElementById('recentFinishedList');
 
             if (!rows.length) {
-                listWrap.innerHTML = '<div class="empty">ยังไม่มีรายการเสร็จวันนี้</div>';
+                listWrap.innerHTML = '<div class="empty">' + t('empty_no_finished') + '</div>';
                 return;
             }
 
@@ -2982,7 +3061,7 @@ function initSoundSettings() {
             }
 
             isSubmitting = true;
-            setStatusText(shouldConfirmFirst ? 'กำลังยืนยันรายการ...' : 'กำลัง checkout...');
+            setStatusText(shouldConfirmFirst ? t('status_confirming') : t('status_checking_out'));
 
             try {
                 const params = new URLSearchParams();
@@ -3009,20 +3088,20 @@ function initSoundSettings() {
                 if (shouldConfirmFirst) {
                     markRowConfirmedInState(clickedRow);
                     showNotice(data.message || 'ยืนยันรายการแล้ว', 'success');
-                    setStatusText('อัปเดตแล้ว');
+                    setStatusText(t('status_updated'));
                     updateView();
                     setTimeout(loadActiveRows, 120);
                 } else {
                     applyCheckoutToState(clickedRow, qtyToFinish);
                     feedbackSuccess();
-                    setStatusText('อัปเดตแล้ว');
+                    setStatusText(t('status_updated'));
                     setTimeout(loadActiveRows, 120);
                     if (data.refresh_finished) {
                         setTimeout(loadFinishedRows, 160);
                     }
                 }
             } catch (error) {
-                setStatusText('เกิดข้อผิดพลาด');
+                setStatusText(t('status_error'));
                 const msg = String(error.message || '');
                 const alreadyDone = msg.indexOf('checkout ไปแล้ว') !== -1 || msg.indexOf('ถูก checkout') !== -1;
                 if (!alreadyDone) {
@@ -3087,7 +3166,7 @@ function initSoundSettings() {
             }
 
             isSubmitting = true;
-            setStatusText('กำลังค้นหา Barcode...');
+            setStatusText(t('status_barcode_search'));
 
             try {
                 const params = new URLSearchParams();
@@ -3106,11 +3185,11 @@ function initSoundSettings() {
                 }
 
                 clearBarcodeInput();
-                setStatusText('อัปเดตแล้ว');
+                setStatusText(t('status_updated'));
                 await loadAll();
                 focusBarcodeInput();
             } catch (error) {
-                setStatusText('เกิดข้อผิดพลาด');
+                setStatusText(t('status_error'));
                 setBarcodeReadyHint('ไม่พบบาร์โค้ด', 'error');
                 clearBarcodeInput();
                 feedbackError();
@@ -3173,7 +3252,7 @@ function initSoundSettings() {
             }
 
             isSubmitting = true;
-            setStatusText('กำลังจบสถานะ...');
+            setStatusText(t('status_resolving'));
 
             try {
                 const params = new URLSearchParams();
@@ -3204,11 +3283,11 @@ function initSoundSettings() {
                 state.stats.active_qty = Math.max(0, Number(state.stats.active_qty || 0) - Number(clickedRow.ProductAmount || 0));
 
                 showNotice(data.message || 'จบสถานะสำเร็จ', 'success');
-                setStatusText('อัปเดตแล้ว');
+                setStatusText(t('status_updated'));
                 updateView();
                 setTimeout(loadActiveRows, 120);
             } catch (error) {
-                setStatusText('เกิดข้อผิดพลาด');
+                setStatusText(t('status_error'));
                 showNotice(error.message || 'จบสถานะไม่สำเร็จ', 'error');
                 await loadAll();
             } finally {
@@ -3221,7 +3300,7 @@ function initSoundSettings() {
             if (isSubmitting) return;
             const clickedRow = findFinishedRow(productLevelId, processId, subProcessId, printerId);
             isSubmitting = true;
-            setStatusText('กำลังย้อนกลับ...');
+            setStatusText(t('status_undoing'));
 
             try {
                 const params = new URLSearchParams();
@@ -3245,13 +3324,13 @@ function initSoundSettings() {
                     applyUndoToState(clickedRow);
                 }
                 showNotice(data.message || 'ย้อนกลับสำเร็จ', 'success');
-                setStatusText('อัปเดตแล้ว');
+                setStatusText(t('status_updated'));
                 setTimeout(loadActiveRows, 120);
                 if (data.refresh_finished) {
                     setTimeout(loadFinishedRows, 160);
                 }
             } catch (error) {
-                setStatusText('เกิดข้อผิดพลาด');
+                setStatusText(t('status_error'));
                 showNotice(error.message || 'ย้อนกลับไม่สำเร็จ', 'error');
                 await loadAll();
             } finally {
@@ -3579,7 +3658,7 @@ function initSoundSettings() {
             var banner = document.createElement('div');
             banner.id = 'kdsOfflineBanner';
             banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:200;background:#e44c3a;color:#fff;text-align:center;padding:10px 16px;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 4px 12px rgba(0,0,0,.2)';
-            banner.innerHTML = '⚠️ ระบบ OFFLINE — ไม่สามารถเชื่อมต่อฐานข้อมูลได้ <button onclick="hidePollingOfflineBanner();kdsStartupCheck()" style="padding:4px 14px;background:#fff;color:#e44c3a;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">🔄 ลองใหม่</button>';
+            banner.innerHTML = t('offline_banner') + ' <button onclick="hidePollingOfflineBanner();kdsStartupCheck()" style="padding:4px 14px;background:#fff;color:#e44c3a;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">' + t('offline_retry') + '</button>';
             document.body.prepend(banner);
         }
         function hidePollingOfflineBanner() {
@@ -3591,20 +3670,20 @@ function initSoundSettings() {
             var wrap = document.getElementById('activeCards');
             if (wrap) wrap.innerHTML = '<div class="empty" style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 20px">' +
                 '<div style="font-size:32px">🔌</div>' +
-                '<div style="font-size:16px;font-weight:700;color:var(--primary)">กำลังเชื่อมต่อฐานข้อมูล...</div>' +
+                '<div style="font-size:16px;font-weight:700;color:var(--primary)">' + t('db_connecting') + '</div>' +
                 '</div>';
-            document.getElementById('queueSummary').textContent = 'กำลังเชื่อมต่อ...';
+            document.getElementById('queueSummary').textContent = t('queue_connecting');
         }
 
         function showDbErrorState(msg) {
             var wrap = document.getElementById('activeCards');
             if (wrap) wrap.innerHTML = '<div class="empty" style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 20px">' +
                 '<div style="font-size:36px">⚠️</div>' +
-                '<div style="font-size:16px;font-weight:700;color:var(--danger)">เชื่อมต่อฐานข้อมูลไม่สำเร็จ</div>' +
+                '<div style="font-size:16px;font-weight:700;color:var(--danger)">' + t('db_conn_failed') + '</div>' +
                 '<div style="font-size:13px;color:var(--muted);max-width:320px;text-align:center;word-break:break-all">' + (msg || '') + '</div>' +
-                '<button id="kdsDbRetryBtn" style="margin-top:6px;padding:10px 28px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">🔄 ลองเชื่อมต่อใหม่</button>' +
+                '<button id="kdsDbRetryBtn" style="margin-top:6px;padding:10px 28px;background:var(--primary);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">' + t('db_retry') + '</button>' +
                 '</div>';
-            document.getElementById('queueSummary').textContent = 'เชื่อมต่อไม่สำเร็จ';
+            document.getElementById('queueSummary').textContent = t('queue_conn_failed');
             var retryBtn = document.getElementById('kdsDbRetryBtn');
             if (retryBtn) retryBtn.addEventListener('click', kdsStartupCheck);
         }
@@ -3636,6 +3715,23 @@ function initSoundSettings() {
         }
 
         kdsStartupCheck();
+
+        // lang toggle
+        (function() {
+            var btn = document.getElementById('langBtn');
+            if (btn) btn.addEventListener('click', function() {
+                currentLang = currentLang === 'th' ? 'en' : 'th';
+                try { localStorage.setItem('checker_lang', currentLang); } catch(e) {}
+                applyLang();
+                // reset zone default label if no zone selected
+                var zl = document.getElementById('zoneLabel');
+                if (zl && zl.dataset.zoneDefault === '1') { zl.textContent = t('zone_all'); }
+            });
+            applyLang();
+            // apply zone label on init
+            var zl = document.getElementById('zoneLabel');
+            if (zl && zl.dataset.zoneDefault === '1') { zl.textContent = t('zone_all'); }
+        })();
 
         setInterval(function() {
             if (isSubmitting) return;
@@ -3865,8 +3961,8 @@ function initSoundSettings() {
                 const btn = e.target.closest('.zone-item');
                 if (!btn) return;
                 currentZoneId   = parseInt(btn.dataset.zoneid);
-                currentZoneName = currentZoneId === 0 ? 'ทั้งหมด' : btn.textContent.replace('📍 ', '').trim();
-                if (zoneLabel) zoneLabel.textContent = currentZoneName;
+                currentZoneName = currentZoneId === 0 ? t('zone_all') : btn.textContent.replace('📍 ', '').trim();
+                if (zoneLabel) { zoneLabel.textContent = currentZoneName; zoneLabel.dataset.zoneDefault = currentZoneId === 0 ? '1' : '0'; }
                 localStorage.setItem('checker_zone_id', String(currentZoneId));
                 localStorage.setItem('checker_zone_name', currentZoneName);
                 kdsLogActivity('ZONE_CHANGE', 'Zone:' + currentZoneName + '(' + currentZoneId + ')', Number(localStorage.getItem('checker_finish_staff_id') || 0));
@@ -3878,7 +3974,7 @@ function initSoundSettings() {
         // คืนค่า zone จาก localStorage (จำ zone ข้ามรอบ refresh)
         (function restoreZone(){
             const savedId = parseInt(localStorage.getItem('checker_zone_id') || '0');
-            const savedName = localStorage.getItem('checker_zone_name') || 'ทั้งหมด';
+            const savedName = localStorage.getItem('checker_zone_name') || t('zone_all');
             if (savedId > 0) {
                 currentZoneId   = savedId;
                 currentZoneName = savedName;
