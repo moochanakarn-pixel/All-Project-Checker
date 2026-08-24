@@ -592,7 +592,7 @@ $_ckBase = _computeCheckerBase();
                         <button type="button" class="view-btn active" data-view="list" title="มุมมองรายการ" data-i18n="view_list">📋 รายการ</button>
                         <button type="button" class="view-btn" data-view="table" title="มุมมองโต๊ะ" data-i18n="view_table">🍽️ โต๊ะ</button>
                     </div>
-                    <div class="panel-badge" id="queueSummary" data-i18n="queue_loading">กำลังโหลด...</div>
+                    <div class="panel-badge" id="queueSummary">กำลังโหลด...</div>
                 </div>
                 <div class="cards" id="activeCards">
                     <div class="empty" data-i18n="empty_loading">กำลังโหลดข้อมูล...</div>
@@ -3726,6 +3726,8 @@ function initSoundSettings() {
                 // reset zone default label if no zone selected
                 var zl = document.getElementById('zoneLabel');
                 if (zl && zl.dataset.zoneDefault === '1') { zl.textContent = t('zone_all'); }
+                // re-render current view so dynamic texts (queueSummary, empty states) update immediately
+                try { updateView(); } catch(e) {}
             });
             applyLang();
             // apply zone label on init
