@@ -557,7 +557,7 @@ $_ckBase = _computeCheckerBase();
                 <button type="button" class="btn btn-neutral" id="openZoneBtn"><span data-i18n="zone_prefix">📍 โซน:</span>&nbsp;<span id="zoneLabel" data-zone-default="1">ทั้งหมด</span></button>
                 <button type="button" class="btn btn-ghost js-open-finished" id="openFinishedBtn"><span data-i18n="done_btn">✅ เสร็จแล้ว</span> <span id="topFinishedCount">0</span></button>
                 <button type="button" class="btn btn-primary" id="refreshBtn" data-i18n="refresh">🔄 รีเฟรช</button>
-                <button type="button" class="btn btn-ghost" id="langBtn" data-i18n="lang_btn" style="min-height:36px;padding:0 10px;font-size:13px">🌐 EN</button>
+
                 <button type="button" class="btn-fullscreen" id="fsBtn" title="เต็มจอ">
                     <svg class="fs-ico-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
                     <svg class="fs-ico-exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="display:none"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
@@ -852,6 +852,13 @@ $_ckBase = _computeCheckerBase();
                         <input type="range" id="fontScaleSlider" min="85" max="130" step="5" value="100" style="flex:1;accent-color:var(--primary)">
                         <span style="font-size:11px;color:var(--muted)">ใหญ่</span>
                         <span id="fontScaleLabel" style="font-size:12px;font-weight:bold;min-width:36px;text-align:right;color:var(--text)">100%</span>
+                    </div>
+                </div>
+                <div class="modal-section" style="margin-top:16px">
+                    <div class="modal-section-title">ภาษา / Language</div>
+                    <div class="appearance-btn-group">
+                        <button class="appearance-btn" id="langBtnTh" data-lang="th">🇹🇭 ไทย</button>
+                        <button class="appearance-btn" id="langBtnEn" data-lang="en">🇬🇧 English</button>
                     </div>
                 </div>
                 <div style="margin-top:20px;text-align:right">
@@ -3718,24 +3725,31 @@ function initSoundSettings() {
 
         kdsStartupCheck();
 
-        // lang toggle
+        // lang toggle (buttons in Appearance tab of settings modal)
         (function() {
-            var btn = document.getElementById('langBtn');
-            if (btn) btn.addEventListener('click', function() {
-                currentLang = currentLang === 'th' ? 'en' : 'th';
+            function updateLangBtnGroup() {
+                ['langBtnTh', 'langBtnEn'].forEach(function(id) {
+                    var b = document.getElementById(id);
+                    if (b) b.classList.toggle('active', b.dataset.lang === currentLang);
+                });
+            }
+            function applyLangChange(lang) {
+                currentLang = lang;
                 try { localStorage.setItem('checker_lang', currentLang); } catch(e) {}
                 applyLang();
-                // reset zone default label if no zone selected
+                updateLangBtnGroup();
                 var zl = document.getElementById('zoneLabel');
                 if (zl && zl.dataset.zoneDefault === '1') { zl.textContent = t('zone_all'); }
-                // re-render current view so dynamic texts update immediately — only after startup completes
                 if (_startupComplete) { try { updateView(); } catch(e) { console.error('lang updateView', e); } }
+            }
+            ['langBtnTh', 'langBtnEn'].forEach(function(id) {
+                var b = document.getElementById(id);
+                if (b) b.addEventListener('click', function() { applyLangChange(this.dataset.lang); });
             });
             applyLang();
-            // apply zone label on init
+            updateLangBtnGroup();
             var zl = document.getElementById('zoneLabel');
             if (zl && zl.dataset.zoneDefault === '1') { zl.textContent = t('zone_all'); }
-            // set queueSummary initial text in correct language (no data-i18n on element)
             var qs = document.getElementById('queueSummary');
             if (qs) qs.textContent = t('queue_loading');
         })();
