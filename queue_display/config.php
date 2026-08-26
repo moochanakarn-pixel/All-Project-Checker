@@ -4,7 +4,9 @@ function loadLocalSettings()
 {
     $file = getSettingsLocalFilePath();
     if (!is_file($file)) return array();
+    ob_start();
     $settings = require $file;
+    ob_end_clean();
     return is_array($settings) ? $settings : array();
 }
 
