@@ -2,7 +2,7 @@
 var cfg = window._kdsLockCfg || {};
 var MAX = cfg.maxScreens || 3;
 var HB  = cfg.hb || 8000;
-var KEY = 'kds_tabs';
+var KEY = 'kds_tabs_cid' + (window._kdsCid || 0);
 var pingInterval = null;
 
 // instanceId unique ต่อ tab นี้ — ใช้ sessionStorage

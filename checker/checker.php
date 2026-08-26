@@ -1011,6 +1011,7 @@ $_ckBase = _computeCheckerBase();
         let isSubmitting = false;
         let noticeTimer = null;
         let activeRefreshTick = 0;
+        var _startupComplete = false;
         var staffIsLoggedIn = false;   // var เพราะต้องแชร์ข้าม <script> block กับ staff login IIFE
         let _activeRowsLoading   = false;
         let _finishedRowsLoading = false;
@@ -3703,6 +3704,7 @@ function initSoundSettings() {
                 // DB OK — restore staff แล้วโหลดข้อมูล
                 if (typeof window.kdsDoStaffRestore === 'function') window.kdsDoStaffRestore();
                 loadAll().then(function() {
+                    _startupComplete = true;
                     focusBarcodeInput();
                     if (getBarcodeCameraEnabled() && barcodeMediaSupported && barcodeCameraSupported) {
                         setTimeout(openBarcodeCamera, 1500);
@@ -3726,13 +3728,16 @@ function initSoundSettings() {
                 // reset zone default label if no zone selected
                 var zl = document.getElementById('zoneLabel');
                 if (zl && zl.dataset.zoneDefault === '1') { zl.textContent = t('zone_all'); }
-                // re-render current view so dynamic texts (queueSummary, empty states) update immediately
-                try { updateView(); } catch(e) {}
+                // re-render current view so dynamic texts update immediately — only after startup completes
+                if (_startupComplete) { try { updateView(); } catch(e) { console.error('lang updateView', e); } }
             });
             applyLang();
             // apply zone label on init
             var zl = document.getElementById('zoneLabel');
             if (zl && zl.dataset.zoneDefault === '1') { zl.textContent = t('zone_all'); }
+            // set queueSummary initial text in correct language (no data-i18n on element)
+            var qs = document.getElementById('queueSummary');
+            if (qs) qs.textContent = t('queue_loading');
         })();
 
         setInterval(function() {

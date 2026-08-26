@@ -84,7 +84,7 @@ function writeActivityLog($action, $detail, $staffId = 0)
     if (!is_dir($dir)) {
         @mkdir($dir, 0755, true);
     }
-    $detail = str_replace(["\r", "\n", "\t"], ' ', (string)$detail);
+    $detail = str_replace(["\r", "\n", "\t", "|"], ' ', (string)$detail);
     $line = date('Y-m-d H:i:s') . ' | ' . str_pad((string)$action, 14) . ' | CID:' . $cid . ' | Staff:' . (int)$staffId . ' | ' . $detail . PHP_EOL;
     $path = kdsLogPath($cid);
     @file_put_contents($path, $line, FILE_APPEND | LOCK_EX);
