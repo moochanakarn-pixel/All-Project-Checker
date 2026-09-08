@@ -181,7 +181,7 @@ $_ckBase = _computeCheckerBase();
             padding:8px 16px;box-shadow:var(--shadow);min-width:90px
         }
         .stat-label{font-size:12px;color:var(--muted);white-space:nowrap}
-        .stat-value{font-size:28px;font-weight:bold;line-height:1;transition:color .3s ease}
+        .stat-value{font-size:20px;font-weight:bold;line-height:1;transition:color .3s ease}
         .stat-value.stat-warn{color:var(--secondary)}
         .stat-value.stat-crit{color:var(--danger)}
 
@@ -198,8 +198,8 @@ $_ckBase = _computeCheckerBase();
         }
         .panel-title{margin:0;font-size:17px;font-weight:bold}
         .panel-badge{
-            flex:0 0 auto;display:inline-flex;align-items:center;min-height:34px;padding:5px 14px;border-radius:999px;
-            background:var(--secondary-soft);color:#9a5200;font-size:15px;font-weight:bold
+            flex:0 0 auto;display:inline-flex;align-items:center;min-height:30px;padding:4px 12px;border-radius:999px;
+            background:var(--secondary-soft);color:#9a5200;font-size:13px;font-weight:bold
         }
 
         /* ── Cards grid: target 8 cards visible ── */
@@ -434,7 +434,7 @@ $_ckBase = _computeCheckerBase();
             .brand h1{font-size:18px}
             .stats{padding:6px 8px 3px}
             .stat{padding:5px 10px}
-            .stat-value{font-size:22px}
+            .stat-value{font-size:17px}
             .cards{grid-template-columns:repeat(2,1fr);padding:8px;gap:7px}
             .card{padding:9px;border-radius:14px}
             .table-name{font-size:17px}
