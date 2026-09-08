@@ -242,15 +242,13 @@ $_ckBase = _computeCheckerBase();
         .qty-badge.checkout-dark{background:linear-gradient(135deg,var(--secondary),#ffad59);border-color:#ffd8b0;color:#fff}
         .product-block{margin:0 0 8px}
         .product-name{margin:0;font-size:17px;line-height:1.2;word-break:break-word;font-weight:bold}
-        .product-total-hint{margin-top:6px;display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:999px;background:var(--secondary);color:#fff;letter-spacing:.2px}
-        .product-total-hint .qty-label{font-size:10px;opacity:.88;font-weight:600}
-        .product-total-hint .qty-num{font-size:17px;font-weight:900;line-height:1}
-        body.qty-style-b .product-total-hint{background:transparent;padding:2px 0;border-radius:0;color:var(--text-soft,#6b7280);gap:5px}
-        body.qty-style-b .product-total-hint .qty-label{font-size:11px;font-weight:500}
-        body.qty-style-b .product-total-hint .qty-num{min-width:22px;height:22px;padding:0 4px;border-radius:50%;background:var(--secondary);color:#fff;font-size:13px;font-weight:900;display:inline-flex;align-items:center;justify-content:center}
+        .product-total-hint{margin-top:6px;display:inline-flex;align-items:center;gap:4px;padding:2px 12px;border-radius:999px;background:var(--secondary);color:#fff;font-size:var(--qty-font,16px);font-weight:bold;letter-spacing:.2px}
+        .product-total-hint .qty-label{font-weight:600}
+        .product-total-hint .qty-num{font-weight:900;line-height:1}
+        body.qty-style-b .product-total-hint{background:transparent;padding:2px 0;border-radius:0;color:var(--text-soft,#6b7280);gap:6px}
+        body.qty-style-b .product-total-hint .qty-label{font-weight:500}
+        body.qty-style-b .product-total-hint .qty-num{min-width:1.7em;height:1.7em;padding:0 .3em;border-radius:50%;background:var(--secondary);color:#fff;font-weight:900;display:inline-flex;align-items:center;justify-content:center}
         body.qty-style-c .product-total-hint{background:var(--primary,#2563eb);gap:4px;padding:3px 12px}
-        body.qty-style-c .product-total-hint .qty-label{font-size:10px;opacity:.88;font-weight:600}
-        body.qty-style-c .product-total-hint .qty-num{font-size:17px;font-weight:900;line-height:1}
         body.hide-qty-hint .product-total-hint,body.hide-qty-hint .ct-item-qtyhint{display:none!important}
         .parent-name-label{
             display:inline-block;margin-bottom:3px;font-size:11px;font-weight:bold;color:#fff;
@@ -536,15 +534,13 @@ $_ckBase = _computeCheckerBase();
         .ct-item.item-combined{background:rgba(139,92,246,.05)}
         /* table-view: sub-item info lines */
         .ct-item-parent{font-size:10px;color:var(--muted,#6b7280);margin-top:1px;font-style:italic}
-        .ct-item-qtyhint{margin-top:4px;display:inline-flex;align-items:center;gap:3px;padding:1px 8px;border-radius:999px;background:var(--secondary);color:#fff;letter-spacing:.2px}
-        .ct-item-qtyhint .qty-label{font-size:9px;opacity:.88;font-weight:600}
-        .ct-item-qtyhint .qty-num{font-size:14px;font-weight:900;line-height:1}
-        body.qty-style-b .ct-item-qtyhint{background:transparent;padding:1px 0;border-radius:0;color:var(--text-soft,#6b7280);gap:4px}
-        body.qty-style-b .ct-item-qtyhint .qty-label{font-size:10px;font-weight:500}
-        body.qty-style-b .ct-item-qtyhint .qty-num{min-width:18px;height:18px;padding:0 3px;border-radius:50%;background:var(--secondary);color:#fff;font-size:11px;font-weight:900;display:inline-flex;align-items:center;justify-content:center}
+        .ct-item-qtyhint{margin-top:4px;display:inline-flex;align-items:center;gap:3px;padding:1px 8px;border-radius:999px;background:var(--secondary);color:#fff;font-size:var(--qty-font-sm,14px);font-weight:bold;letter-spacing:.2px}
+        .ct-item-qtyhint .qty-label{font-weight:600}
+        .ct-item-qtyhint .qty-num{font-weight:900;line-height:1}
+        body.qty-style-b .ct-item-qtyhint{background:transparent;padding:1px 0;border-radius:0;color:var(--text-soft,#6b7280);gap:5px}
+        body.qty-style-b .ct-item-qtyhint .qty-label{font-weight:500}
+        body.qty-style-b .ct-item-qtyhint .qty-num{min-width:1.7em;height:1.7em;padding:0 .3em;border-radius:50%;background:var(--secondary);color:#fff;font-weight:900;display:inline-flex;align-items:center;justify-content:center}
         body.qty-style-c .ct-item-qtyhint{background:var(--primary,#2563eb);gap:3px;padding:1px 8px}
-        body.qty-style-c .ct-item-qtyhint .qty-label{font-size:9px;opacity:.88;font-weight:600}
-        body.qty-style-c .ct-item-qtyhint .qty-num{font-size:14px;font-weight:900;line-height:1}
         .ct-item-ordnum{font-size:10px;color:var(--muted,#6b7280);font-weight:500;margin-left:4px}
         @media(max-width:600px){#activeCards.table-view{grid-template-columns:1fr}}
 </style>
@@ -902,6 +898,15 @@ $_ckBase = _computeCheckerBase();
                             <button class="appearance-btn" data-qty-style="a">🟠 A — ส้ม</button>
                             <button class="appearance-btn" data-qty-style="b">⭕ B — วงกลม</button>
                             <button class="appearance-btn" data-qty-style="c">🔵 C — ฟ้า</button>
+                        </div>
+                    </div>
+                    <div style="padding:6px 0 2px 4px">
+                        <div class="setting-check-sub" style="margin-bottom:6px">ขนาดตัวอักษร</div>
+                        <div class="appearance-btn-group">
+                            <button class="appearance-btn" data-qty-font="12">S</button>
+                            <button class="appearance-btn" data-qty-font="14">M</button>
+                            <button class="appearance-btn" data-qty-font="16">L</button>
+                            <button class="appearance-btn" data-qty-font="18">XL</button>
                         </div>
                     </div>
                 </div>
@@ -1325,6 +1330,16 @@ $_ckBase = _computeCheckerBase();
             });
         }
 
+        const _qtyFontKey = 'checker_qty_font_' + String(currentComputerIdFromConfig || 0);
+        function getQtyFont() { return parseInt(localStorage.getItem(_qtyFontKey) || '16', 10); }
+        function applyQtyFont(size) {
+            document.documentElement.style.setProperty('--qty-font', size + 'px');
+            document.documentElement.style.setProperty('--qty-font-sm', Math.max(10, size - 2) + 'px');
+            document.querySelectorAll('[data-qty-font]').forEach(function(b) {
+                b.classList.toggle('active', parseInt(b.dataset.qtyFont, 10) === size);
+            });
+        }
+
         const _barcodeVisibleKey = 'checker_barcode_visible_' + String(currentComputerIdFromConfig || 0);
 
         function getBarcodeVisible() {
@@ -1381,6 +1396,7 @@ $_ckBase = _computeCheckerBase();
             if (qtyChk) qtyChk.checked = getQtyHintVisible();
             // sync qty style buttons
             applyQtyStyle(getQtyStyle());
+            applyQtyFont(getQtyFont());
         }
         function initAppearancePanel() {
             document.querySelectorAll('[data-card]').forEach(function(btn) {
@@ -1431,6 +1447,14 @@ $_ckBase = _computeCheckerBase();
                 });
             });
             applyQtyStyle(getQtyStyle());
+            document.querySelectorAll('[data-qty-font]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const size = parseInt(btn.dataset.qtyFont, 10);
+                    try { localStorage.setItem(_qtyFontKey, String(size)); } catch(e) {}
+                    applyQtyFont(size);
+                });
+            });
+            applyQtyFont(getQtyFont());
         }
         function initSettingsTabs() {
             const btnSystem     = document.getElementById('tabBtnSystem');
