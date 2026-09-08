@@ -242,7 +242,8 @@ $_ckBase = _computeCheckerBase();
         .qty-badge.checkout-dark{background:linear-gradient(135deg,var(--secondary),#ffad59);border-color:#ffd8b0;color:#fff}
         .product-block{margin:0 0 8px}
         .product-name{margin:0;font-size:17px;line-height:1.2;word-break:break-word;font-weight:bold}
-        .product-total-hint{margin-top:6px;display:block;padding:0;background:transparent;border:none;border-radius:0;font-size:12px;font-weight:bold;color:var(--primary)}
+        .product-total-hint{margin-top:6px;display:inline-flex;align-items:center;padding:2px 10px;border-radius:999px;background:var(--secondary-soft);color:#9a5200;font-size:12px;font-weight:bold;letter-spacing:.2px}
+        body.hide-qty-hint .product-total-hint,body.hide-qty-hint .ct-item-qtyhint{display:none!important}
         .parent-name-label{
             display:inline-block;margin-bottom:3px;font-size:11px;font-weight:bold;color:#fff;
             background:linear-gradient(135deg,#16a34a,#15803d);
@@ -527,7 +528,7 @@ $_ckBase = _computeCheckerBase();
         .ct-item.item-combined{background:rgba(139,92,246,.05)}
         /* table-view: sub-item info lines */
         .ct-item-parent{font-size:10px;color:var(--muted,#6b7280);margin-top:1px;font-style:italic}
-        .ct-item-qtyhint{font-size:10px;color:var(--primary,#2563eb);margin-top:2px;font-weight:600}
+        .ct-item-qtyhint{margin-top:4px;display:inline-flex;align-items:center;padding:1px 8px;border-radius:999px;background:var(--secondary-soft);color:#9a5200;font-size:11px;font-weight:bold;letter-spacing:.2px}
         .ct-item-ordnum{font-size:10px;color:var(--muted,#6b7280);font-weight:500;margin-left:4px}
         @media(max-width:600px){#activeCards.table-view{grid-template-columns:1fr}}
 </style>
@@ -871,6 +872,13 @@ $_ckBase = _computeCheckerBase();
                             <div class="setting-check-sub">แสดง/ซ่อนแถบ "คิวค้าง / รายการ / สถานะ" ใต้แถบเครื่องมือ</div>
                         </div>
                         <input type="checkbox" id="statsBarVisible">
+                    </label>
+                    <label class="setting-check">
+                        <div>
+                            <div class="setting-check-title">แสดงป้าย "รวมทั้งคิว" ในการ์ด</div>
+                            <div class="setting-check-sub">แสดง/ซ่อนป้ายจำนวนรวมของรายการที่ซ้ำกันบนการ์ดออเดอร์</div>
+                        </div>
+                        <input type="checkbox" id="qtyHintVisible">
                     </label>
                 </div>
                 <div style="margin-top:20px;text-align:right">
@@ -1272,6 +1280,17 @@ $_ckBase = _computeCheckerBase();
             if (chk) chk.checked = !!visible;
         }
 
+        const _qtyHintKey = 'checker_qty_hint_visible_' + String(currentComputerIdFromConfig || 0);
+        function getQtyHintVisible() {
+            const v = localStorage.getItem(_qtyHintKey);
+            return v === null ? true : v === '1';
+        }
+        function applyQtyHintVisible(visible) {
+            document.body.classList.toggle('hide-qty-hint', !visible);
+            const chk = document.getElementById('qtyHintVisible');
+            if (chk) chk.checked = !!visible;
+        }
+
         const _barcodeVisibleKey = 'checker_barcode_visible_' + String(currentComputerIdFromConfig || 0);
 
         function getBarcodeVisible() {
@@ -1323,6 +1342,9 @@ $_ckBase = _computeCheckerBase();
             // sync stats bar toggle
             const statsChk = document.getElementById('statsBarVisible');
             if (statsChk) statsChk.checked = getStatsBarVisible();
+            // sync qty hint toggle
+            const qtyChk = document.getElementById('qtyHintVisible');
+            if (qtyChk) qtyChk.checked = getQtyHintVisible();
         }
         function initAppearancePanel() {
             document.querySelectorAll('[data-card]').forEach(function(btn) {
@@ -1357,6 +1379,14 @@ $_ckBase = _computeCheckerBase();
                 });
             }
             applyStatsBarVisible(getStatsBarVisible());
+            const qtyHintChk = document.getElementById('qtyHintVisible');
+            if (qtyHintChk) {
+                qtyHintChk.addEventListener('change', function() {
+                    try { localStorage.setItem(_qtyHintKey, this.checked ? '1' : '0'); } catch(e) {}
+                    applyQtyHintVisible(this.checked);
+                });
+            }
+            applyQtyHintVisible(getQtyHintVisible());
         }
         function initSettingsTabs() {
             const btnSystem     = document.getElementById('tabBtnSystem');
