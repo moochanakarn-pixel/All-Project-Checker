@@ -176,12 +176,14 @@ $_ckBase = _computeCheckerBase();
             max-width:1920px;margin:0 auto;
         }
         .stat{
-            display:flex;align-items:center;gap:8px;
+            display:flex;align-items:center;gap:10px;
             background:var(--surface);border:1px solid var(--line);border-radius:14px;
-            padding:7px 14px;box-shadow:var(--shadow)
+            padding:8px 16px;box-shadow:var(--shadow);min-width:90px
         }
         .stat-label{font-size:12px;color:var(--muted);white-space:nowrap}
-        .stat-value{font-size:20px;font-weight:bold;line-height:1}
+        .stat-value{font-size:28px;font-weight:bold;line-height:1;transition:color .3s ease}
+        .stat-value.stat-warn{color:var(--secondary)}
+        .stat-value.stat-crit{color:var(--danger)}
 
         /* ── Main page ── */
         .page{max-width:1920px;margin:0 auto;padding:6px 10px 16px}
@@ -196,8 +198,8 @@ $_ckBase = _computeCheckerBase();
         }
         .panel-title{margin:0;font-size:17px;font-weight:bold}
         .panel-badge{
-            flex:0 0 auto;display:inline-flex;align-items:center;min-height:30px;padding:4px 12px;border-radius:999px;
-            background:var(--secondary-soft);color:#9a5200;font-size:13px;font-weight:bold
+            flex:0 0 auto;display:inline-flex;align-items:center;min-height:34px;padding:5px 14px;border-radius:999px;
+            background:var(--secondary-soft);color:#9a5200;font-size:15px;font-weight:bold
         }
 
         /* ── Cards grid: target 8 cards visible ── */
@@ -432,7 +434,7 @@ $_ckBase = _computeCheckerBase();
             .brand h1{font-size:18px}
             .stats{padding:6px 8px 3px}
             .stat{padding:5px 10px}
-            .stat-value{font-size:17px}
+            .stat-value{font-size:22px}
             .cards{grid-template-columns:repeat(2,1fr);padding:8px;gap:7px}
             .card{padding:9px;border-radius:14px}
             .table-name{font-size:17px}
@@ -567,7 +569,7 @@ $_ckBase = _computeCheckerBase();
         </div>
     </div>
 
-    <div class="stats">
+    <div class="stats" id="statsBar">
         <div class="stat">
             <div class="stat-label" data-i18n="stat_queue">คิวค้าง</div>
             <div class="stat-value" id="statActiveRows">0</div>
@@ -860,6 +862,16 @@ $_ckBase = _computeCheckerBase();
                         <button class="appearance-btn" id="langBtnTh" data-lang="th">🇹🇭 ไทย</button>
                         <button class="appearance-btn" id="langBtnEn" data-lang="en">🇬🇧 English</button>
                     </div>
+                </div>
+                <div class="modal-section" style="margin-top:16px">
+                    <div class="modal-section-title">การแสดงผล</div>
+                    <label class="setting-check">
+                        <div>
+                            <div class="setting-check-title">แสดงแถบสรุปจำนวนคิว</div>
+                            <div class="setting-check-sub">แสดง/ซ่อนแถบ "คิวค้าง / รายการ / สถานะ" ใต้แถบเครื่องมือ</div>
+                        </div>
+                        <input type="checkbox" id="statsBarVisible">
+                    </label>
                 </div>
                 <div style="margin-top:20px;text-align:right">
                     <button type="button" class="btn btn-neutral" id="resetAppearanceBtn">↺ คืนค่า Default</button>
@@ -1248,6 +1260,18 @@ $_ckBase = _computeCheckerBase();
             }, 1200);
         }
 
+        const _statsBarKey       = 'checker_stats_bar_visible_' + String(currentComputerIdFromConfig || 0);
+        function getStatsBarVisible() {
+            const v = localStorage.getItem(_statsBarKey);
+            return v === null ? true : v === '1';
+        }
+        function applyStatsBarVisible(visible) {
+            const el = document.getElementById('statsBar');
+            if (el) el.style.display = visible ? '' : 'none';
+            const chk = document.getElementById('statsBarVisible');
+            if (chk) chk.checked = !!visible;
+        }
+
         const _barcodeVisibleKey = 'checker_barcode_visible_' + String(currentComputerIdFromConfig || 0);
 
         function getBarcodeVisible() {
@@ -1296,6 +1320,9 @@ $_ckBase = _computeCheckerBase();
             const label  = document.getElementById('fontScaleLabel');
             if (slider) slider.value = font;
             if (label)  label.textContent = font + '%';
+            // sync stats bar toggle
+            const statsChk = document.getElementById('statsBarVisible');
+            if (statsChk) statsChk.checked = getStatsBarVisible();
         }
         function initAppearancePanel() {
             document.querySelectorAll('[data-card]').forEach(function(btn) {
@@ -1322,6 +1349,14 @@ $_ckBase = _computeCheckerBase();
                     resetAppearanceSettings();
                 });
             }
+            const statsBarChk = document.getElementById('statsBarVisible');
+            if (statsBarChk) {
+                statsBarChk.addEventListener('change', function() {
+                    try { localStorage.setItem(_statsBarKey, this.checked ? '1' : '0'); } catch(e) {}
+                    applyStatsBarVisible(this.checked);
+                });
+            }
+            applyStatsBarVisible(getStatsBarVisible());
         }
         function initSettingsTabs() {
             const btnSystem     = document.getElementById('tabBtnSystem');
@@ -2369,8 +2404,12 @@ function initSoundSettings() {
         }
 
         function renderStats(stats) {
-            document.getElementById('statActiveRows').textContent = Number(stats.active_rows || 0);
-            document.getElementById('statActiveQty').textContent = formatQty(stats.active_qty || 0);
+            const rows = Number(stats.active_rows || 0);
+            const colorClass = rows >= 16 ? 'stat-crit' : rows >= 6 ? 'stat-warn' : '';
+            const rowEl = document.getElementById('statActiveRows');
+            const qtyEl = document.getElementById('statActiveQty');
+            if (rowEl) { rowEl.textContent = rows; rowEl.className = 'stat-value' + (colorClass ? ' ' + colorClass : ''); }
+            if (qtyEl) { qtyEl.textContent = formatQty(stats.active_qty || 0); qtyEl.className = 'stat-value' + (colorClass ? ' ' + colorClass : ''); }
             const finishedCount = Number(stats.recent_finished_rows || 0);
             document.getElementById('fabFinishedCount').textContent = finishedCount;
             document.getElementById('topFinishedCount').textContent = finishedCount;
