@@ -892,21 +892,23 @@ $_ckBase = _computeCheckerBase();
                         </div>
                         <input type="checkbox" id="qtyHintVisible">
                     </label>
-                    <div style="padding:6px 0 2px 4px">
-                        <div class="setting-check-sub" style="margin-bottom:6px">สไตล์ป้าย "รวมทั้งคิว"</div>
-                        <div class="appearance-btn-group">
-                            <button class="appearance-btn" data-qty-style="a">🟠 A — ส้ม</button>
-                            <button class="appearance-btn" data-qty-style="b">⭕ B — วงกลม</button>
-                            <button class="appearance-btn" data-qty-style="c">🔵 C — ฟ้า</button>
+                    <div id="qtyHintSubControls">
+                        <div style="padding:6px 0 2px 4px">
+                            <div class="setting-check-sub" style="margin-bottom:6px">สไตล์ป้าย "รวมทั้งคิว"</div>
+                            <div class="appearance-btn-group">
+                                <button class="appearance-btn" data-qty-style="a">🟠 A — ส้ม</button>
+                                <button class="appearance-btn" data-qty-style="b">⭕ B — วงกลม</button>
+                                <button class="appearance-btn" data-qty-style="c">🔵 C — ฟ้า</button>
+                            </div>
                         </div>
-                    </div>
-                    <div style="padding:6px 0 2px 4px">
-                        <div class="setting-check-sub" style="margin-bottom:6px">ขนาดตัวอักษร</div>
-                        <div class="appearance-btn-group">
-                            <button class="appearance-btn" data-qty-font="12">S</button>
-                            <button class="appearance-btn" data-qty-font="14">M</button>
-                            <button class="appearance-btn" data-qty-font="16">L</button>
-                            <button class="appearance-btn" data-qty-font="18">XL</button>
+                        <div style="padding:6px 0 2px 4px">
+                            <div class="setting-check-sub" style="margin-bottom:6px">ขนาดตัวอักษร</div>
+                            <div class="appearance-btn-group">
+                                <button class="appearance-btn" data-qty-font="12">S</button>
+                                <button class="appearance-btn" data-qty-font="14">M</button>
+                                <button class="appearance-btn" data-qty-font="16">L</button>
+                                <button class="appearance-btn" data-qty-font="18">XL</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1318,6 +1320,8 @@ $_ckBase = _computeCheckerBase();
             document.body.classList.toggle('hide-qty-hint', !visible);
             const chk = document.getElementById('qtyHintVisible');
             if (chk) chk.checked = !!visible;
+            const sub = document.getElementById('qtyHintSubControls');
+            if (sub) sub.style.display = visible ? '' : 'none';
         }
 
         const _qtyStyleKey = 'checker_qty_hint_style_' + String(currentComputerIdFromConfig || 0);
@@ -1372,9 +1376,17 @@ $_ckBase = _computeCheckerBase();
         }
         function resetAppearanceSettings() {
             localStorage.removeItem(_appearanceKey);
+            try { localStorage.removeItem(_statsBarKey); } catch(e) {}
+            try { localStorage.removeItem(_qtyHintKey); } catch(e) {}
+            try { localStorage.removeItem(_qtyStyleKey); } catch(e) {}
+            try { localStorage.removeItem(_qtyFontKey); } catch(e) {}
             const pageEl = document.querySelector('.page');
             if (pageEl) pageEl.style.zoom = '';
             applyAppearanceSettings();
+            applyStatsBarVisible(true);
+            applyQtyHintVisible(true);
+            applyQtyStyle('a');
+            applyQtyFont(16);
             syncAppearanceUI();
         }
         function syncAppearanceUI() {
