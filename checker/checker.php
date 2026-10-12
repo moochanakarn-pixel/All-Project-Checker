@@ -3412,7 +3412,7 @@ function initSoundSettings() {
                         ProcessID: processId,
                         SubProcessID: subProcessId,
                         PrinterID: printerId,
-                        finish_staff_id: currentFinishStaffId(),
+                        finish_staff_id: getFinishStaffId(),
                     }),
                 });
                 const data = await resp.json();
