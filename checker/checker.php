@@ -2223,7 +2223,7 @@ function initSoundSettings() {
             } finally {
                 isSubmitting = false;
                 setStatusText(t('status_ready'));
-                loadSoldOutProducts(true);
+                if (state.soldOutModalOpen) loadSoldOutProducts(true);
             }
         }
 
