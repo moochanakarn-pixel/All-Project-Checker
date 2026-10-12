@@ -1400,7 +1400,8 @@ $_ckBase = _computeCheckerBase();
             const s = loadAppearanceSettings();
             document.documentElement.style.setProperty('--card-min-w', _cardSizes[s.card] || '220px');
             const pageEl = document.querySelector('.page');
-            if (pageEl) pageEl.style.zoom = (parseInt(s.font || '100', 10) / 100);
+            const fontVal = Math.min(130, Math.max(85, parseInt(s.font || '100', 10)));
+            if (pageEl) pageEl.style.zoom = fontVal / 100;
         }
         function resetAppearanceSettings() {
             localStorage.removeItem(_appearanceKey);
