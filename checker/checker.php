@@ -906,8 +906,8 @@ $_ckBase = _computeCheckerBase();
                         </div>
                         <input type="checkbox" id="qtyHintVisible">
                     </label>
-                    <div id="qtyHintSubControls">
-                        <div style="padding:6px 0 2px 4px">
+                    <div id="qtyHintSubControls" style="margin-top:8px;margin-left:8px;padding:8px 12px;border-left:3px solid var(--line);border-radius:0 8px 8px 0;background:var(--surface-soft)">
+                        <div style="padding:4px 0 2px 0">
                             <div class="setting-check-sub" style="margin-bottom:6px">สไตล์ป้าย "รวมทั้งคิว"</div>
                             <div class="appearance-btn-group">
                                 <button class="appearance-btn" data-qty-style="a">🟠 A — ส้ม</button>
@@ -915,8 +915,8 @@ $_ckBase = _computeCheckerBase();
                                 <button class="appearance-btn" data-qty-style="c">🔵 C — ฟ้า</button>
                             </div>
                         </div>
-                        <div style="padding:6px 0 2px 4px">
-                            <div class="setting-check-sub" style="margin-bottom:6px">ขนาดตัวอักษร</div>
+                        <div style="padding:8px 0 2px 0">
+                            <div class="setting-check-sub" style="margin-bottom:6px">ขนาดป้าย</div>
                             <div class="appearance-btn-group">
                                 <button class="appearance-btn" data-qty-font="12">S</button>
                                 <button class="appearance-btn" data-qty-font="14">M</button>
