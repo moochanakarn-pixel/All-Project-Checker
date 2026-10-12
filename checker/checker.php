@@ -421,12 +421,15 @@ $_ckBase = _computeCheckerBase();
         .sound-preview-btn{min-height:32px;padding:0 12px;font-size:12px}
         .sound-file-input{display:none}
 
+        /* ── Fixed column count (set via Appearance) ── */
+        body.grid-cols-fixed .cards{grid-template-columns:repeat(var(--grid-cols,4),1fr) !important}
+
         /* ── Responsive ── */
         @media (max-width:1200px){
-            .cards{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+            .cards:not(body.grid-cols-fixed .cards){grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
         }
         @media (max-width:820px){
-            .cards{grid-template-columns:repeat(2,1fr)}
+            .cards:not(body.grid-cols-fixed .cards){grid-template-columns:repeat(2,1fr)}
             .grid{grid-template-columns:1fr}
             .panel-head{padding:10px 12px}
             .fab{display:none !important}
@@ -858,6 +861,17 @@ $_ckBase = _computeCheckerBase();
                         <button class="appearance-btn" data-card="m">M</button>
                         <button class="appearance-btn" data-card="l">L</button>
                         <button class="appearance-btn" data-card="xl">XL</button>
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">จำนวนคอลัมน์</div>
+                    <div class="appearance-btn-group">
+                        <button class="appearance-btn" data-grid-cols="auto">Auto</button>
+                        <button class="appearance-btn" data-grid-cols="2">2</button>
+                        <button class="appearance-btn" data-grid-cols="3">3</button>
+                        <button class="appearance-btn" data-grid-cols="4">4</button>
+                        <button class="appearance-btn" data-grid-cols="5">5</button>
+                        <button class="appearance-btn" data-grid-cols="6">6</button>
                     </div>
                 </div>
                 <div class="modal-section">
@@ -1334,6 +1348,20 @@ $_ckBase = _computeCheckerBase();
             });
         }
 
+        const _colsKey = 'checker_grid_cols_' + String(currentComputerIdFromConfig || 0);
+        function getGridCols() { return localStorage.getItem(_colsKey) || 'auto'; }
+        function applyGridCols(cols) {
+            if (cols === 'auto' || !cols) {
+                document.body.classList.remove('grid-cols-fixed');
+            } else {
+                document.documentElement.style.setProperty('--grid-cols', cols);
+                document.body.classList.add('grid-cols-fixed');
+            }
+            document.querySelectorAll('[data-grid-cols]').forEach(function(b) {
+                b.classList.toggle('active', b.dataset.gridCols === cols);
+            });
+        }
+
         const _qtyFontKey = 'checker_qty_font_' + String(currentComputerIdFromConfig || 0);
         function getQtyFont() { return parseInt(localStorage.getItem(_qtyFontKey) || '16', 10); }
         function applyQtyFont(size) {
@@ -1380,6 +1408,7 @@ $_ckBase = _computeCheckerBase();
             try { localStorage.removeItem(_qtyHintKey); } catch(e) {}
             try { localStorage.removeItem(_qtyStyleKey); } catch(e) {}
             try { localStorage.removeItem(_qtyFontKey); } catch(e) {}
+            try { localStorage.removeItem(_colsKey); } catch(e) {}
             const pageEl = document.querySelector('.page');
             if (pageEl) pageEl.style.zoom = '';
             applyAppearanceSettings();
@@ -1387,6 +1416,7 @@ $_ckBase = _computeCheckerBase();
             applyQtyHintVisible(true);
             applyQtyStyle('a');
             applyQtyFont(16);
+            applyGridCols('auto');
             syncAppearanceUI();
         }
         function syncAppearanceUI() {
@@ -1409,6 +1439,7 @@ $_ckBase = _computeCheckerBase();
             // sync qty style buttons
             applyQtyStyle(getQtyStyle());
             applyQtyFont(getQtyFont());
+            applyGridCols(getGridCols());
         }
         function initAppearancePanel() {
             document.querySelectorAll('[data-card]').forEach(function(btn) {
@@ -1467,6 +1498,14 @@ $_ckBase = _computeCheckerBase();
                 });
             });
             applyQtyFont(getQtyFont());
+            document.querySelectorAll('[data-grid-cols]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const cols = btn.dataset.gridCols;
+                    try { localStorage.setItem(_colsKey, cols); } catch(e) {}
+                    applyGridCols(cols);
+                });
+            });
+            applyGridCols(getGridCols());
         }
         function initSettingsTabs() {
             const btnSystem     = document.getElementById('tabBtnSystem');
