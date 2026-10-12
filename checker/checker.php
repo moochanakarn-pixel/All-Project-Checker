@@ -424,12 +424,12 @@ $_ckBase = _computeCheckerBase();
         /* ── Fixed column count (set via Appearance) ── */
         body.grid-cols-fixed .cards{grid-template-columns:repeat(var(--grid-cols,4),1fr) !important}
 
-        /* ── Responsive ── */
+        /* ── Responsive (grid-cols-fixed wins via !important above) ── */
         @media (max-width:1200px){
-            .cards:not(body.grid-cols-fixed .cards){grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+            .cards{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
         }
         @media (max-width:820px){
-            .cards:not(body.grid-cols-fixed .cards){grid-template-columns:repeat(2,1fr)}
+            .cards{grid-template-columns:repeat(2,1fr)}
             .grid{grid-template-columns:1fr}
             .panel-head{padding:10px 12px}
             .fab{display:none !important}
