@@ -2,7 +2,7 @@
 
 ระบบ Kitchen Display System (KDS) สำหรับแสดงคิวอาหารในครัว รองรับการ checkout, สแกนบาร์โค้ด และควบคุมสินค้าหมด
 
-**เวอร์ชันปัจจุบัน:** v1.11.0
+**เวอร์ชันปัจจุบัน:** v1.12.1
 
 ---
 
@@ -85,6 +85,7 @@ return [
 
 | เวอร์ชัน | รายการ |
 |---|---|
+| v1.12.1 | `confirmVoid` เรียก undefined `currentFinishStaffId()` → `getFinishStaffId()` |
 | v1.9.0 | รายการยกเลิก (voided) ไม่แสดงบนจอ KDS |
 | v1.9.0 | Notice "checkout สำเร็จ" บังปุ่มกด |
 | v1.9.0 | Zone table cache stale — โต๊ะย้ายโซนแล้วการ์ดไม่โผล่ |
@@ -123,6 +124,27 @@ return [
 ---
 
 # Patch Notes
+
+## v1.12.1 — 2026-10-12
+
+### 🐛 Bug Fixes
+- **[Void] `confirmVoid` เรียก undefined function** — แก้ `currentFinishStaffId()` → `getFinishStaffId()` ป้องกัน `ReferenceError` เมื่อกด "ยืนยันยกเลิก"
+
+---
+
+## v1.12.0 — 2026-10-12
+
+### 🆕 Features
+- **[Appearance] ป้าย "รวมทั้งคิว"** — แสดงยอดรวมทุก order ของโต๊ะในรูปแบบ badge พร้อมเลือก 3 สไตล์ (A/B/C) และ 4 ขนาด (S/M/L/XL) ผ่านแท็บ "หน้าตา" ใน Settings; toggle ปิด/เปิดได้
+- **[Appearance] เลือกจำนวนคอลัมน์** — ตัวเลือก Auto/2/3/4/5/6 คอลัมน์ใน Settings → หน้าตา; บันทึกลง `localStorage` รองรับ tablet
+
+### 🐛 Bug Fixes
+- **[Appearance] Font Scale clamping** — ค่าจาก localStorage ที่เกินขอบเขต (< 85 หรือ > 130) ถูก clamp ก่อน apply
+- **[Appearance] Slider performance** — apply zoom ตรงจาก slider value ไม่อ่าน localStorage ซ้ำ
+- **[Appearance] Duplicate label** — แก้ label ซ้ำในหน้า Settings → หน้าตา พร้อมจัดกลุ่ม sub-controls ให้ชัดขึ้น
+- **[Out-of-stock] Finally block redundant call** — guard `loadSoldOutProducts` ด้วย `state.soldOutModalOpen` ป้องกัน API call ที่ไม่จำเป็นเมื่อ modal ปิดแล้ว
+
+---
 
 ## v1.11.0 — 2026-05-21
 
