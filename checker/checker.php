@@ -1453,11 +1453,12 @@ $_ckBase = _computeCheckerBase();
             const slider = document.getElementById('fontScaleSlider');
             if (slider) {
                 slider.addEventListener('input', function() {
-                    const v = slider.value;
+                    const v = Math.min(130, Math.max(85, parseInt(slider.value, 10)));
                     const label = document.getElementById('fontScaleLabel');
                     if (label) label.textContent = v + '%';
-                    saveAppearanceSettings({font: v});
-                    applyAppearanceSettings();
+                    saveAppearanceSettings({font: String(v)});
+                    const pageEl = document.querySelector('.page');
+                    if (pageEl) pageEl.style.zoom = v / 100;
                 });
             }
             const resetBtn = document.getElementById('resetAppearanceBtn');
