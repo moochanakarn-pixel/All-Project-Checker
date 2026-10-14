@@ -1,5 +1,13 @@
 # Checker KDS — Changelog
 
+## v1.12.2 — 2026-10-14
+
+### 🐛 Bug Fixes
+- **[Barcode] Camera duplicate checkout เมื่อ API ช้า** — ขยาย camera cooldown 1500ms → 3000ms ให้นานกว่า `isDuplicateScan` window ป้องกัน checkout ซ้ำเมื่อ server ตอบช้า
+- **[Barcode] ไม่มี feedback เมื่อ scan สำเร็จ** — เพิ่ม `feedbackSuccess()` ใน `checkoutBarcode` success path ให้ตรงกับ `checkoutOne`
+
+---
+
 ## v1.12.1 — 2026-10-12
 
 ### 🐛 Bug Fixes

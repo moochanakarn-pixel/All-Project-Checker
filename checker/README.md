@@ -2,7 +2,7 @@
 
 ระบบ Kitchen Display System (KDS) สำหรับแสดงคิวอาหารในครัว รองรับการ checkout, สแกนบาร์โค้ด และควบคุมสินค้าหมด
 
-**เวอร์ชันปัจจุบัน:** v1.12.1
+**เวอร์ชันปัจจุบัน:** v1.12.2
 
 ---
 
@@ -85,6 +85,8 @@ return [
 
 | เวอร์ชัน | รายการ |
 |---|---|
+| v1.12.2 | Camera barcode duplicate checkout เมื่อ API ช้า (cooldown 1500→3000ms) |
+| v1.12.2 | `checkoutBarcode` ไม่มี feedback เสียง/สั่นเมื่อสำเร็จ |
 | v1.12.1 | `confirmVoid` เรียก undefined `currentFinishStaffId()` → `getFinishStaffId()` |
 | v1.9.0 | รายการยกเลิก (voided) ไม่แสดงบนจอ KDS |
 | v1.9.0 | Notice "checkout สำเร็จ" บังปุ่มกด |
