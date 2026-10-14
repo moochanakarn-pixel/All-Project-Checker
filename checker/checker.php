@@ -1638,11 +1638,12 @@ $_ckBase = _computeCheckerBase();
                 barcodeCaptureState.lastCameraValue = foundValue;
                 if (status) status.innerHTML = '<strong>พบโค้ด:</strong> ' + escapeHtml(foundValue);
                 applyScannedBarcodeValue(foundValue, true);
-                // continuous mode — ไม่ปิดกล้อง รอ 1.5 วิแล้วพร้อมรับโค้ดถัดไป
+                // continuous mode — ไม่ปิดกล้อง รอ 3 วิแล้วพร้อมรับโค้ดถัดไป
+                // ใช้ 3000ms (> isDuplicateScan 1500ms) ป้องกัน checkout ซ้ำเมื่อ API ช้า
                 setTimeout(function() {
                     barcodeCaptureState.lastCameraValue = '';
                     if (status && state.barcodeCameraOpen) status.textContent = 'พร้อมรับถัดไป หันไปที่บาร์โค้ดถัดไป';
-                }, 1500);
+                }, 3000);
             }
 
             barcodeCaptureState.cameraScanTimer = requestAnimationFrame(scanBarcodeFrame);
@@ -3383,6 +3384,7 @@ function initSoundSettings() {
                 }
 
                 clearBarcodeInput();
+                feedbackSuccess();
                 setStatusText(t('status_updated'));
                 await loadAll();
                 focusBarcodeInput();
