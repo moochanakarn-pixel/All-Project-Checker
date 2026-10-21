@@ -1,5 +1,12 @@
 # Checker KDS — Changelog
 
+## v1.13.1 — 2026-10-21
+
+### 🐛 Bug Fixes
+- **[Filter] `resolveStationFilter` — guard `ComputerID = 0`** — ถ้า `CURRENT_COMPUTER_ID` ไม่ได้ตั้งค่า (= 0) จะ query DB ด้วย `WHERE ComputerID = 0` ซึ่งไม่มี row → แสดงทุก order โดยไม่ตั้งใจ; แก้โดย early-return ไป `settings.local.php` ทันทีเมื่อ `computerId <= 0`
+
+---
+
 ## v1.13.0 — 2026-10-21
 
 ### 🆕 Features

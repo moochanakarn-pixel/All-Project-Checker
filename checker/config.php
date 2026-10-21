@@ -30,7 +30,7 @@ $__localSettings = loadLocalSettings();
 // App configuration
 // =============================
 define('APP_TITLE', 'Checker KDS');
-define('APP_VERSION', '1.13.0');
+define('APP_VERSION', '1.13.1');
 define('APP_TIMEZONE', 'Asia/Bangkok');
 define('APP_REFRESH_MS', 15000);
 define('FINISHED_REFRESH_EVERY', 3);
