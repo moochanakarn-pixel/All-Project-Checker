@@ -1218,11 +1218,11 @@ function getStationFilter()
 }
 
 // อ่าน filter จาก DB (checkeraccesssalemode / checkeraccesstablezone) ถ้ามี table
-// Priority: DB rows > settings.local.php > ไม่กรอง
+// Priority: DB table > settings.local.php
 // ถ้า table มีอยู่ + มี row → ใช้ DB rows
-// ถ้า table มีอยู่ + ไม่มี row (ยังไม่ตั้งค่า) → fallback ไป settings.local.php
+// ถ้า table มีอยู่ + ไม่มี row → [] = ไม่กรอง (POS intent: no rows = show all)
 // ถ้า table ไม่มีอยู่ → fallback ไป settings.local.php
-// ถ้า computerId <= 0 (ไม่ได้ตั้งค่า) → ใช้ settings.local.php ทั้งหมด (ไม่ query DB)
+// ถ้า computerId <= 0 (ไม่ได้ตั้งค่า CURRENT_COMPUTER_ID) → ใช้ settings.local.php ทั้งหมด
 function resolveStationFilter($conn)
 {
     $computerId = (int)getEffectiveComputerId();
@@ -1242,7 +1242,7 @@ function resolveStationFilter($conn)
             $ids = array();
             while ($row = $res->fetch_assoc()) { $ids[] = (int)$row['SaleModeID']; }
             $stmt->close();
-            if ($ids) { $saleModeIds = $ids; } // null ถ้าไม่มี row → fallback ไป local
+            $saleModeIds = $ids; // [] = ไม่กรอง (ตาม POS intent)
         }
     }
 
@@ -1255,7 +1255,7 @@ function resolveStationFilter($conn)
             $ids = array();
             while ($row = $res->fetch_assoc()) { $ids[] = (int)$row['ZoneID']; }
             $stmt->close();
-            if ($ids) { $zoneIds = $ids; } // null ถ้าไม่มี row → fallback ไป local
+            $zoneIds = $ids; // [] = ไม่กรอง (ตาม POS intent)
         }
     }
 
