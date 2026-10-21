@@ -1217,14 +1217,19 @@ function getStationFilter()
     );
 }
 
-// อ่าน filter จาก DB (CheckerAccessSaleMode / CheckerAccessTableZone) ถ้ามี table
-// Priority: DB table > settings.local.php
-// ถ้า table มีอยู่แต่ไม่มี row ของ ComputerID นี้ → [] = ไม่กรอง (แสดงทั้งหมด)
-// ถ้า table ไม่มีอยู่ → fallback ไป getStationFilter() (settings.local.php)
-// หมายเหตุ: ชื่อ table ใช้ lowercase ตามที่ POS system สร้างไว้ (checkeraccesssalemode, checkeraccesstablezone)
+// อ่าน filter จาก DB (checkeraccesssalemode / checkeraccesstablezone) ถ้ามี table
+// Priority: DB rows > settings.local.php > ไม่กรอง
+// ถ้า table มีอยู่ + มี row → ใช้ DB rows
+// ถ้า table มีอยู่ + ไม่มี row (ยังไม่ตั้งค่า) → fallback ไป settings.local.php
+// ถ้า table ไม่มีอยู่ → fallback ไป settings.local.php
+// ถ้า computerId <= 0 (ไม่ได้ตั้งค่า) → ใช้ settings.local.php ทั้งหมด (ไม่ query DB)
 function resolveStationFilter($conn)
 {
-    $computerId  = (int)getEffectiveComputerId();
+    $computerId = (int)getEffectiveComputerId();
+    if ($computerId <= 0) {
+        return getStationFilter();
+    }
+
     $saleModeIds = null;
     $zoneIds     = null;
 
@@ -1233,11 +1238,11 @@ function resolveStationFilter($conn)
         if ($stmt) {
             $stmt->bind_param('i', $computerId);
             $stmt->execute();
-            $res  = $stmt->get_result();
-            $ids  = array();
+            $res = $stmt->get_result();
+            $ids = array();
             while ($row = $res->fetch_assoc()) { $ids[] = (int)$row['SaleModeID']; }
             $stmt->close();
-            $saleModeIds = $ids;
+            if ($ids) { $saleModeIds = $ids; } // null ถ้าไม่มี row → fallback ไป local
         }
     }
 
@@ -1246,11 +1251,11 @@ function resolveStationFilter($conn)
         if ($stmt) {
             $stmt->bind_param('i', $computerId);
             $stmt->execute();
-            $res  = $stmt->get_result();
-            $ids  = array();
+            $res = $stmt->get_result();
+            $ids = array();
             while ($row = $res->fetch_assoc()) { $ids[] = (int)$row['ZoneID']; }
             $stmt->close();
-            $zoneIds = $ids;
+            if ($ids) { $zoneIds = $ids; } // null ถ้าไม่มี row → fallback ไป local
         }
     }
 
