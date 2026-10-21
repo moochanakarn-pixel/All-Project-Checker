@@ -1,5 +1,18 @@
 # Checker KDS — Changelog
 
+## v1.13.0 — 2026-10-21
+
+### 🆕 Features
+- **[Filter] อ่าน SaleMode filter จาก DB** — เพิ่ม `resolveStationFilter($conn)` ที่อ่านค่าจาก `checkeraccesssalemode` (ComputerID, SaleModeID) ก่อน fallback ไป `settings.local.php` — ร้านที่ยังไม่มี table ใช้งานได้ปกติ (backward compatible)
+- **[Filter] อ่าน Table Zone filter จาก DB** — อ่านค่าจาก `checkeraccesstablezone` (ComputerID, ZoneID) ด้วย logic เดียวกัน; ไม่มี row ของ ComputerID นี้ = ไม่กรอง (แสดงทุกโซน) ตรงกับ "Not select all table zone = view all table zone" ของ POS
+- **[Utility] `tableExists($conn, $table)`** — helper ตรวจสอบ table ด้วย `information_schema` + prepared statement มี cache ป้องกัน query ซ้ำ
+
+### ⚙️ หมายเหตุ
+- ต้อง run script เพิ่ม table ก่อนใช้ฟีเจอร์นี้: `checkeraccesssalemode`, `checkeraccesstablezone`
+- ตั้งค่าผ่านหน้า "Manage Computer Checker" ใน POS system (ฝั่ง POS เป็นผู้ write ข้อมูล, Checker อ่านอย่างเดียว)
+
+---
+
 ## v1.12.2 — 2026-10-14
 
 ### 🐛 Bug Fixes
