@@ -279,6 +279,24 @@ function columnExists($conn, $table, $column)
     return $_columnCache[$key];
 }
 
+$_tableCache = array();
+function tableExists($conn, $table)
+{
+    global $_tableCache;
+    if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) return false;
+    if (isset($_tableCache[$table])) return $_tableCache[$table];
+    $stmt = $conn->prepare(
+        "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? LIMIT 1"
+    );
+    if (!$stmt) { $_tableCache[$table] = false; return false; }
+    $stmt->bind_param('s', $table);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $_tableCache[$table] = ($res && $res->num_rows > 0);
+    $stmt->close();
+    return $_tableCache[$table];
+}
+
 function lookupStaffDisplayNameByConnection($conn, $staffId)
 {
     $staffId = (int)$staffId;
@@ -1199,6 +1217,54 @@ function getStationFilter()
     );
 }
 
+// อ่าน filter จาก DB (CheckerAccessSaleMode / CheckerAccessTableZone) ถ้ามี table
+// Priority: DB table > settings.local.php
+// ถ้า table มีอยู่แต่ไม่มี row ของ ComputerID นี้ → [] = ไม่กรอง (แสดงทั้งหมด)
+// ถ้า table ไม่มีอยู่ → fallback ไป getStationFilter() (settings.local.php)
+function resolveStationFilter($conn)
+{
+    $computerId  = (int)getEffectiveComputerId();
+    $saleModeIds = null;
+    $zoneIds     = null;
+
+    if (tableExists($conn, 'CheckerAccessSaleMode')) {
+        $stmt = $conn->prepare('SELECT SaleModeID FROM CheckerAccessSaleMode WHERE ComputerID = ?');
+        if ($stmt) {
+            $stmt->bind_param('i', $computerId);
+            $stmt->execute();
+            $res  = $stmt->get_result();
+            $ids  = array();
+            while ($row = $res->fetch_assoc()) { $ids[] = (int)$row['SaleModeID']; }
+            $stmt->close();
+            $saleModeIds = $ids;
+        }
+    }
+
+    if (tableExists($conn, 'CheckerAccessTableZone')) {
+        $stmt = $conn->prepare('SELECT ZoneID FROM CheckerAccessTableZone WHERE ComputerID = ?');
+        if ($stmt) {
+            $stmt->bind_param('i', $computerId);
+            $stmt->execute();
+            $res  = $stmt->get_result();
+            $ids  = array();
+            while ($row = $res->fetch_assoc()) { $ids[] = (int)$row['ZoneID']; }
+            $stmt->close();
+            $zoneIds = $ids;
+        }
+    }
+
+    if ($saleModeIds === null || $zoneIds === null) {
+        $local = getStationFilter();
+        if ($saleModeIds === null) $saleModeIds = $local['allowed_sale_mode_ids'];
+        if ($zoneIds     === null) $zoneIds     = $local['allowed_zone_ids'];
+    }
+
+    return array(
+        'allowed_sale_mode_ids' => $saleModeIds,
+        'allowed_zone_ids'      => $zoneIds,
+    );
+}
+
 // เพิ่ม WHERE clause สำหรับ SaleMode และ Zone filter
 // logic: TableID > 0 = มีโต๊ะ → โซนตัดสิน (ผ่าน SaleMode filter เสมอ)
 //        TableID = 0  = ไม่มีโต๊ะ → SaleMode ตัดสิน
@@ -1246,7 +1312,7 @@ function buildStats($activeRows, $finishedRows)
 function fetchActiveRows($conn)
 {
     $allowedPrinterIds = fetchAllowedPrinterIds($conn, getEffectiveComputerId());
-    $stationFilter = getStationFilter();
+    $stationFilter = resolveStationFilter($conn);
 
     $statusList = implode(', ', VOID_CONFIRM_MODE
         ? array((int)PROCESS_STATUS_ACTIVE, (int)PROCESS_STATUS_IN_PROCESS, (int)PROCESS_STATUS_VOIDED)
@@ -1326,7 +1392,7 @@ function fetchActiveRows($conn)
 function fetchFinishedRows($conn)
 {
     $allowedPrinterIds = fetchAllowedPrinterIds($conn, getEffectiveComputerId());
-    $stationFilter = getStationFilter();
+    $stationFilter = resolveStationFilter($conn);
 
     $where = array('opf.ProcessStatus = ' . (int)PROCESS_STATUS_FINISHED);
     appendAllowedPrinterFilter($where, $allowedPrinterIds, 'opf');
