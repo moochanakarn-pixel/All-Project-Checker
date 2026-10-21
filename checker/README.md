@@ -47,6 +47,18 @@ return [
 
 > **หมายเหตุ:** ค่า `db_port` ถูกล็อคที่ 3307 และไม่แสดงในหน้า Settings UI — หากต้องการเปลี่ยน ให้แก้ `settings.local.php` โดยตรง
 
+### Filter SaleMode / Zone (Legacy)
+
+ค่าด้านล่างนี้เป็น **legacy** — ใช้ได้เฉพาะเมื่อไม่มี DB table `checkeraccesssalemode` / `checkeraccesstablezone` บนระบบนั้น เมื่อ table มีอยู่แล้ว ค่าเหล่านี้จะถูก ignore โดยอัตโนมัติ (DB wins)
+
+```php
+// legacy — ลบออกหลัง migrate ไปใช้ DB table แล้ว
+'allowed_sale_mode_ids' => [1, 2],   // กรอง SaleMode ที่จะแสดงบน KDS นี้
+'allowed_zone_ids'      => [1, 3],   // กรอง Table Zone ที่จะแสดงบน KDS นี้
+```
+
+> **Migration path:** ตั้งค่าผ่านหน้า "Manage Computer Checker" ใน POS → ลบ key ทั้งสองออกจาก `settings.local.php`
+
 ค่าสำคัญใน `config.php`:
 
 | ค่า | Default | ความหมาย |
