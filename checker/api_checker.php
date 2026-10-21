@@ -1221,14 +1221,15 @@ function getStationFilter()
 // Priority: DB table > settings.local.php
 // ถ้า table มีอยู่แต่ไม่มี row ของ ComputerID นี้ → [] = ไม่กรอง (แสดงทั้งหมด)
 // ถ้า table ไม่มีอยู่ → fallback ไป getStationFilter() (settings.local.php)
+// หมายเหตุ: ชื่อ table ใช้ lowercase ตามที่ POS system สร้างไว้ (checkeraccesssalemode, checkeraccesstablezone)
 function resolveStationFilter($conn)
 {
     $computerId  = (int)getEffectiveComputerId();
     $saleModeIds = null;
     $zoneIds     = null;
 
-    if (tableExists($conn, 'CheckerAccessSaleMode')) {
-        $stmt = $conn->prepare('SELECT SaleModeID FROM CheckerAccessSaleMode WHERE ComputerID = ?');
+    if (tableExists($conn, 'checkeraccesssalemode')) {
+        $stmt = $conn->prepare('SELECT SaleModeID FROM checkeraccesssalemode WHERE ComputerID = ?');
         if ($stmt) {
             $stmt->bind_param('i', $computerId);
             $stmt->execute();
@@ -1240,8 +1241,8 @@ function resolveStationFilter($conn)
         }
     }
 
-    if (tableExists($conn, 'CheckerAccessTableZone')) {
-        $stmt = $conn->prepare('SELECT ZoneID FROM CheckerAccessTableZone WHERE ComputerID = ?');
+    if (tableExists($conn, 'checkeraccesstablezone')) {
+        $stmt = $conn->prepare('SELECT ZoneID FROM checkeraccesstablezone WHERE ComputerID = ?');
         if ($stmt) {
             $stmt->bind_param('i', $computerId);
             $stmt->execute();
