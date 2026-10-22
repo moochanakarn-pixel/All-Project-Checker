@@ -5,6 +5,9 @@
 ### 🐛 Bug Fixes
 - **[Filter] `resolveStationFilter` — guard `ComputerID = 0`** — ถ้า `CURRENT_COMPUTER_ID` ไม่ได้ตั้งค่า (= 0) จะ query DB ด้วย `WHERE ComputerID = 0` ซึ่งไม่มี row → แสดงทุก order โดยไม่ตั้งใจ; แก้โดย early-return ไป `settings.local.php` ทันทีเมื่อ `computerId <= 0`
 
+### 📝 Docs
+- **[README] `allowed_sale_mode_ids` / `allowed_zone_ids` เป็น legacy** — เพิ่มหัวข้อ "Filter SaleMode / Zone (Legacy)" อธิบาย migration path: เมื่อ DB table มีอยู่แล้ว ค่า 2 key นี้ถูก ignore อัตโนมัติ (DB wins) — ลบออกจาก `settings.local.php` หลัง migrate
+
 ---
 
 ## v1.13.0 — 2026-10-21
