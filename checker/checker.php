@@ -491,18 +491,6 @@ $_ckBase = _computeCheckerBase();
         .btn-fullscreen:hover{background:rgba(255,255,255,0.30);transform:scale(1.04)}
         .btn-fullscreen svg{width:15px;height:15px;flex-shrink:0}
 
-        /* ── Exit App Button (corner close for --app kiosk mode) ── */
-        #kdsExitBtn{
-            position:fixed;bottom:12px;right:12px;z-index:9999;
-            width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;
-            background:rgba(0,0,0,0.30);color:#fff;
-            display:flex;align-items:center;justify-content:center;
-            opacity:0.35;transition:opacity .2s,background .2s,transform .15s;
-            backdrop-filter:blur(4px);
-        }
-        #kdsExitBtn:hover,#kdsExitBtn:active{opacity:1;background:rgba(220,38,38,0.85);transform:scale(1.08)}
-        #kdsExitBtn svg{width:18px;height:18px;pointer-events:none}
-
         /* fullscreen auto-hide UI */
         .fs-ui-hidden .stats,
         .fs-ui-hidden .panel-head { opacity:0; max-height:0; overflow:hidden; margin:0; padding:0; pointer-events:none; transition:opacity .35s, max-height .35s; }
@@ -3996,19 +3984,6 @@ function initSoundSettings() {
         });
         document.addEventListener("fullscreenchange", updateIcon);
         updateIcon();
-    })();
-    </script>
-
-    <button id="kdsExitBtn" title="ปิดโปรแกรม" aria-label="ปิดโปรแกรม">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-    </button>
-    <script>
-    (function(){
-        var eb = document.getElementById('kdsExitBtn');
-        if(!eb) return;
-        eb.addEventListener('click', function(){ window.close(); });
     })();
     </script>
 

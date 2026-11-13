@@ -1,12 +1,5 @@
 # Checker KDS — Changelog
 
-## v1.13.2 — 2026-11-13
-
-### 🆕 Features
-- **[UI] ปุ่มปิดโปรแกรมมุมหน้าจอ (Exit App Button)** — เพิ่มปุ่ม `×` ตรึงมุมล่างขวา (`position:fixed`) สำหรับ touchscreen ในครัวที่ไม่มีคีย์บอร์ด; กด 1 ครั้งเพื่อปิด Chrome app ผ่าน `window.close()` — ใช้ร่วมกับ shortcut `--app=URL --start-fullscreen` ซึ่งปุ่ม fullscreen เดิมทำงานผิดปกติ (Chrome's own fullscreen ทำให้ `document.fullscreenElement` เป็น null); ปุ่มแสดงแบบกึ่งโปร่งใส และเปลี่ยนเป็นสีแดงเมื่อ hover/tap
-
----
-
 ## v1.13.1 — 2026-10-21
 
 ### 🐛 Bug Fixes
